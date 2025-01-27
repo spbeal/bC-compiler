@@ -1,8 +1,9 @@
 %{
-#include "scanType.h"
-#include "parser.tab.h" // This has to be the last include
 #include "treeNodes.h"
 #include "treeUtils.h"
+#include "scanType.h"
+#include "parser.tab.h" // This has to be the last include
+
 
 using namespace std;
 
@@ -14,12 +15,16 @@ char *lastToken=(char *)"";
 //extern int numErrors;
 
 int setValue(int linenum, int tokenClass, char *svalue) {
-    yylval->tokenData->tokenclass = tokenClass;
-    yylval->tokenData->linenum = linenum;
-    yylval->tokenData->tokenstr = strdup(svalue);
-    yylval->tokenData->cvalue = svalue[0];
-    yylval->tokenData->nvalue = atoi(svalue);
-    yylval->tokenData->svalue = strdup(svalue);
+    yylval.tokenData = new TokenData;
+    yylval.tokenData->tokenclass = tokenClass;
+    yylval.tokenData->linenum = linenum;
+    yylval.tokenData->tokenstr = strdup(svalue);
+    yylval.tokenData->cvalue = svalue[0];
+    yylval.tokenData->nvalue = atoi(svalue);
+    yylval.tokenData->svalue = strdup(svalue);
+
+    yylval.tokenData->tokenstr = lastToken = strdup(svalue);
+
 
     switch (tokenClass) {
 

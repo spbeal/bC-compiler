@@ -3,9 +3,10 @@
 #include <iostream>
 #include <unistd.h>
 #include "scanType.h"
-
 #include "treeNodes.h"
 #include "treeUtils.h"
+
+
 
 using namespace std;
 
@@ -26,10 +27,10 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << endl;
 }
 
+// the syntax tree goes here
 int numErrors;
 int numWarnings;
 extern int line;
-extern int yylex();
 
 TreeNode *addSibling(TreeNode *t, TreeNode *s)
 {
@@ -38,185 +39,270 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
    // make sure s is not null. If it is this s a major error. Exit the program!
    // Make sure t is not null. If it is, just return s
    // look down t’s sibling list until you fin with with sibblin = null (the end o f the lsit) and add s there.
-   while (t->sibling != NULL)
+   TreeNode * curr = t;
+   while (curr->sibling != NULL)
    {
-      t = t->sibling;
+      curr = t->sibling;
    }
-   t->sibling = s;
+   curr->sibling = s;
    return s;
 }
 // pass the static and type attribute down the sibling list
 void setType(TreeNode *t, ExpType type, bool isStatic)
 {
-   while (t) {
-      t->type = type;
-      t->isStatic = isStatic;
-      t = t->sibling;
+  TreeNode * curr = t;
+   while (curr != NULL) {
+      curr->type = type;
+      curr->isStatic = isStatic;
+      curr = curr->sibling;
    // set t->type and t->isStatic
    // t = t->sibling;
    }
 }
-// the syntax tree goes here
 TreeNode *syntaxTree;
 
 %}
+
 %union
 {
-   TokenData *tokenData;
-   TreeNode *tree;
-   ExpType type; // for passing type spec up the tree
-   // struct   TokenData tokenData ;
+   TokenData * tokenData;
+   TreeNode * tree;
+   ExpType type; 
 }
 
-// %type  <tree>  OP
-// %type  <tree>  NEQ
-// %type  <tree>  AND
-// %type  <tree>  NOT
-// %type  <tree>  OR
-// %type  <tree>  PRECOMPILER
-// %type  <tree>  NUMCONST
+%type   <tree> program 
+%type   <tree> precomList declList 
+%type   <tree> decl localDecls varDecl varDeclId scopedVarDecl varDeclList varDeclInit 
+%type   <tree> funDecl
+%type   <tree> parms parmList parmTypeList parmIdList parmId
+%type   <tree> stmt expStmt compoundStmt stmtList returnStmt breakStmt
+%type   <tree> factor 
+%type   <tree> matched unmatched 
+%type   <tree> mutable immutable
+%type   <tree> call args argList
+%type   <tree> iterRange
+%type   <tree> exp simpleExp andExp unaryRelExp relExp minmaxExp sumExp mulExp unaryExp
+%type   <tree> constant 
 
-// %type  <tree>  EQ
-// %type  <tree>  LEQ
-// %type  <tree>  GEQ
-// %type  <tree>  MAX
-// %type  <tree>  MIN
-// %type  <tree>  ADDASS
-// %type  <tree>  SUBASS
-// %type  <tree>  MULASS
-// %type  <tree>  DIVASS
-// %type  <tree>  DEC
-// %type  <tree>  INC
-
-// %type  <tree>  INT
-// %type  <tree>  BOOL
-// %type  <tree>  BOOLCONST
-// %type  <tree>  CHAR
-
-// %type  <tree>  ID
-// %type  <tree>  RETURN
-// %type  <tree>  BREAK
-// %type  <tree>  THEN
-// %type  <tree>  IF
-// %type  <tree>  FOR
-// %type  <tree>  WHILE
-// %type  <tree>  ELSE
-// %type  <tree>  STATIC
-// %type  <tree>  TO
-// %type  <tree>  DO
-// %type  <tree>  BY
-
-// %type  <tree>  COMMENT
-
-// %type  <tree>  CHARCONST
-// %type  <tree>  STRINGCONST
-// %type   <tree>  ERROR 
-
-%token <tokenData> FIRSTOP
-%token <tokenData> LASTOP
-%token <tokenData> LASTTERM
-%type <tree> term program
 %type <type> typeSpec
 
+%token <tokenData> FIRSTOP
 %token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':'
-
 %token   <tokenData>  OP
-%token   <tokenData>  NEQ
-%token   <tokenData>  AND
-%token   <tokenData>  NOT
-%token   <tokenData>  OR
+%token   <tokenData>  NEQ AND NOT OR
 %token   <tokenData>  PRECOMPILER
 %token   <tokenData>  NUMCONST
-
-%token   <tokenData>  EQ
-%token   <tokenData>  LEQ
-%token   <tokenData>  GEQ
-%token   <tokenData>  MAX
-%token   <tokenData>  MIN
-%token   <tokenData>  ADDASS
-%token   <tokenData>  SUBASS
-%token   <tokenData>  MULASS
-%token   <tokenData>  DIVASS
-%token   <tokenData>  DEC
-%token   <tokenData>  INC
+%token   <tokenData>  EQ LEQ GEQ 
+%token   <tokenData>  MAX MIN
+%token   <tokenData>  ADDASS SUBASS MULASS DIVASS
+%token   <tokenData>  DEC INC 
 %token   <tokenData>  SIZEOF
 
-
-%token   <tokenData>  INT
+%token   <tokenData>  INT 
 %token   <tokenData>  BOOL
 %token   <tokenData>  BOOLCONST
 %token   <tokenData>  CHAR
-
 %token   <tokenData>  ID
 %token   <tokenData>  RETURN
 %token   <tokenData>  BREAK
-%token   <tokenData>  THEN
-%token   <tokenData>  IF
-%token   <tokenData>  FOR
-%token   <tokenData>  WHILE
-%token   <tokenData>  ELSE
-%token   <tokenData>  STATIC
-%token   <tokenData>  TO
-%token   <tokenData>  DO
-%token   <tokenData>  BY
-
-%token   <tokenData>  COMMENT
-
-%token   <tokenData>  CHARCONST
-%token   <tokenData>  CHSIGN
-%token   <tokenData>  STRINGCONST
-
 %token   <tokenData>  ERROR 
-// %type <tokenData>  term program
+
+%token   <tokenData>  THEN IF ELSE
+%token   <tokenData>  FOR BY TO
+%token   <tokenData>  WHILE DO 
+%token   <tokenData>  STATIC
+%token   <tokenData>  COMMENT
+%token   <tokenData>  CHARCONST STRINGCONST
+%token   <tokenData>  CHSIGN
+%token <tokenData> LASTOP
+
+%token <tokenData> LASTTERM
+
 %%
-program  :  program term
-   |  term  {$$=$1;}
-   ;
-term  : 
-      OP {printToken(yylval->tokenData, "OP");}
-   |  EQ {printToken(yylval->tokenData, "EQ");}
-   |  NEQ {printToken(yylval->tokenData, "NEQ");}
-   |  LEQ {printToken(yylval->tokenData, "LEQ");}
-   |  GEQ {printToken(yylval->tokenData, "GEQ");}
-   |  MAX {printToken(yylval->tokenData, "MAX");}
-   |  MIN {printToken(yylval->tokenData, "MIN");}
-   |  ADDASS {printToken(yylval->tokenData, "ADDASS");}
-   |  MULASS {printToken(yylval->tokenData, "MULASS");}
-   |  SUBASS {printToken(yylval->tokenData, "SUBASS");}
-   |  DIVASS {printToken(yylval->tokenData, "DIVASS");}
-   |  DEC {printToken(yylval->tokenData, "DEC");}
-   |  INC {printToken(yylval->tokenData, "INC");}
-   |  AND {printToken(yylval->tokenData, "AND");}
-   |  NOT {printToken(yylval->tokenData, "NOT");}
-   |  OR {printToken(yylval->tokenData, "OR");}
+program : precomList declList {syntaxTree = $2;}
+    ;
+precomList : precomList PRECOMPILER {$$ = NULL;}
+    | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
+    | /* empty */                   {$$=NULL;}
+    ;
+declList : declList decl {$$ = addSibling($1, $2);}
+    | decl      {$$ = $1;}
+    ;
+decl : varDecl  {$$=$1;}
+    | funDecl   {$$=$1;}
+    ;
+varDecl : typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
+    ;
+scopedVarDecl : STATIC typeSpec varDeclList ';' {;}
+    | typeSpec varDeclList ';' {;}
+    ;
+varDeclList : varDeclList ',' varDeclInit {;}
+    | varDeclInit {;}
+    ;
+varDeclInit : varDeclId {;}
+    | varDeclId ':' simpleExp {$$ = $1; if ($$ != NULL) $$->child[0] = $3;}
+    ;
+varDeclId : ID {;}
+    | ID '[' NUMCONST ']' {;}
+    ;
+typeSpec : INT {$$ = Integer;}
+    | BOOL {$$ = Boolean;}
+    | CHAR {$$ = Char;}
+    ;
+funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
+    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
+    ;
+parms : parmList {$$ = $1;}
+    |  {$$ = NULL;}
+    ;
+parmList : parmList ';' parmTypeList {$$ = addSibling($1, $3);}
+    | parmTypeList {$$ = $1;}
+    ;
+parmTypeList : typeSpec parmIdList {setType($2, $1, false); $$ = $2;}
+    ;
+parmIdList: parmIdList ',' parmId {$$ = addSibling($1, $3);}
+    | parmId {$$ = $1;}
+    ;
+parmId: ID {$$ = newDeclNode(ParamK, UndefinedType, $1);}
+    | ID '[' ']' {$$->isArray = true; $$ = newDeclNode(ParamK, UndefinedType, $1);}
+    ;
+stmt : matched {$$ = $1;}
+    | unmatched {$$ = $1;}
+    ;
+matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2, $4, $6);}
+    | WHILE simpleExp DO matched { $$ = newStmtNode(WhileK, $1, $2, $4);}
+    | FOR ID '=' iterRange DO matched { $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
+    | expStmt { $$ = NULL;}
+    | compoundStmt {;}
+    | returnStmt {;}
+    | breakStmt {;}
+    ;
+iterRange : simpleExp TO simpleExp {;}
+    | simpleExp TO simpleExp BY simpleExp {;}
+    ;
+unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $4);}        
+             | IF simpleExp THEN matched ELSE unmatched {$$ = newStmtNode(IfK, $1, $2, $4, $6);} 
+             | WHILE simpleExp DO unmatched     {$$ = newStmtNode(WhileK, $1, $2, $4);}          
+             | FOR ID '=' iterRange DO unmatched {$$ = newStmtNode(ForK, $1, NULL, $4, $6); newDeclNode(VarK, Integer, $2);}      
+           ;
+expStmt    : exp ';'  {;}
+             | ';'    {;}                                     {/* NULL*/}
+           ;
+compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
+    ;
+localDecls : localDecls scopedVarDecl    {;}          {/* addSibling*/}
+             | /* empty */      {;}                         { /* NULL*/}
+             ;
+stmtList : stmtList stmt    {$$ = ($2==NULL ? $1 : addSibling($1, $2)); }
+    |           {;}
+    ;
+returnStmt : RETURN ';'      {;}                             {/* newStmtNode*/}
+             | RETURN exp ';'    {;}                          {/* newStmtNode*/}
+           ;
+breakStmt  : BREAK ';'              {;}                   {/* newStmtNode*/}
+           ;
 
-   |  COMMENT {;}
+exp        : mutable assignop exp     {;}           {/* newExpNode*/}
+             | mutable INC            {;}                  {/* newExpNode*/}
+             | mutable DEC            {;}                  {/* newExpNode*/}
+             | simpleExp              {;}
+           ;
 
-   |  INT {printToken(yylval->tokenData, "INT");}
-   |  BOOL {printToken(yylval->tokenData, "BOOL");}
-   |  BOOLCONST {printToken(yylval->tokenData, "BOOLCONST");}
-   |  CHAR {printToken(yylval->tokenData, "CHAR");}
+assignop  : '=' {;}
+            | ADDASS {;}
+            | SUBASS {;}
+            | MULASS {;}
+            | DIVASS {;}
+          ;
 
-   |  RETURN {printToken(yylval->tokenData, "RETURN");}
-   |  BREAK {printToken(yylval->tokenData, "BREAK");}
-   |  THEN {printToken(yylval->tokenData, "THEN");}
-   |  IF {printToken(yylval->tokenData, "IF");}
-   |  FOR {printToken(yylval->tokenData, "FOR");}
-   |  WHILE {printToken(yylval->tokenData, "WHILE");}
-   |  ELSE {printToken(yylval->tokenData, "ELSE");}
-   |  STATIC {printToken(yylval->tokenData, "STATIC");}
-   |  TO {printToken(yylval->tokenData, "TO");}
-   |  DO {printToken(yylval->tokenData, "DO");}
-   |  BY {printToken(yylval->tokenData, "BY");}
+simpleExp  : simpleExp OR andExp {;}                {/* newExpNode*/}
+             | andExp {;}
+           ;
 
+andExp     : andExp AND unaryRelExp  {;}            {/* newExpNode*/}
+             | unaryRelExp          {;}
+           ;
 
-   |  ID {printToken(yylval->tokenData, "ID");}
-   |  CHARCONST {printToken(yylval->tokenData, "CHARCONST");}
-   |  STRINGCONST {printToken(yylval->tokenData, "STRINGCONST");}
-   |  PRECOMPILER {printToken(yylval->tokenData, "PRECOMPILER");}
-   |  NUMCONST {printToken(yylval->tokenData, "NUMCONST");}
-   |  ERROR    {cout << "ERROR(SCANNER Line " << yylval->tokenData.linenum << "): Invalid input character " << yylval->tokenData.tokenstr << endl; }
-   ;
+unaryRelExp : NOT unaryRelExp     {;}                 {/* newExpNode*/}
+              | relExp              {;}
+            ;
+
+relExp     : minmaxExp relop minmaxExp    {;}      {/* newExpNode*/}
+             | minmaxExp                    {;}
+           ;
+
+relop      : LEQ {;}
+             | '<' {;}
+             | '>' {;}
+             | GEQ {;}
+             | EQ {;}
+             | NEQ {;}
+           ;
+
+minmaxExp  : minmaxExp minmaxop sumExp  {;}              {/* newExpNode*/}
+             | sumExp  {;}
+           ;
+
+minmaxop   : MAX {;}
+             | MIN {;}
+           ;
+
+sumExp     : sumExp sumop mulExp  {;}              {/* newExpNode*/}
+             | mulExp {;}
+           ;
+
+sumop      : '+' {;}
+             | '-' {;}
+           ;
+
+mulExp     : mulExp mulop unaryExp  {;}           {/* newExpNode*/}
+             | unaryExp  {;}
+           ;
+
+mulop      : '*' {;}
+             | '/' {;}
+             | '%' {;}
+           ;
+
+unaryExp   : unaryop unaryExp  {;}                 {/* newExpNode*/}
+             | factor   {;}
+           ;
+
+unaryop    : '-'        {;}                                     {/*$1->tokenclass=CHSIGN; $$=$1;*/}
+             | '*'  {;}                                      {/*$1->tokenclass=SIZEOF; $$=$1;*/}
+             | '?'  {;}
+             ;
+           ;
+
+factor     : immutable {;}
+             | mutable {;}
+           ;
+
+mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
+             | ID '[' exp ']'   {$$ = newExpNode(IdK, $1);}                       
+           ;
+
+immutable  : '(' exp ')'    {;}                        {/* DRBC Note: Be careful!*/}
+             | call         {;}
+             | constant     {;}
+           ;
+
+call       : ID '(' args ')'    {;}                    {/*newExpNode*/}
+           ;
+
+args       : argList  {;}
+             | /* empty */         {;}                       { /* NULL;*/}
+           ;
+
+argList    : argList ',' exp  {;}                     {/* addSibling*/}
+             | exp      {;}
+           ;
+
+constant   : NUMCONST       {;}                            {/* newExpNode:  also set type and attr.string*/}
+             | CHARCONST    {;}                               {/* newExpNode;  also set type and attr.string*/}
+             | STRINGCONST  {;}                               {/* newExpNode; $$->size = $1->nvalue + 1; $$->isArray = true; also set type and attr.string*/}
+             | BOOLCONST    {;}                               {/* newExpNode;  also set type and attr.string*/}
+           ;
 %%
 
 char * largerTokens[LASTTERM+1];
@@ -286,6 +372,11 @@ int main(int argc, char **argv) {
       yyin = fopen (argv[index], "r");
       yyparse();
       fclose (yyin);
+   }
+
+   if(numErrors == 0){
+      //printDotTree(astDot,syntaxTree, false, false);
+      printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
    return 0;
 }

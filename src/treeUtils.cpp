@@ -1,21 +1,103 @@
 #include "treeUtils.h"
 #include <string.h>
+//#include "dot.h"
+
+TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *token)
+{
+   TreeNode* newNode = new TreeNode;
+
+   newNode->child[0] = c0;
+   newNode->child[1] = c1;
+   newNode->child[2] = c2;
+   newNode->sibling = NULL;
+
+   if (token != NULL)
+   {
+      newNode->lineno = token->linenum; 
+      newNode->attr.op = token->tokenclass;
+      newNode->attr.value = token->nvalue;
+      newNode->attr.cvalue = token->cvalue;
+      newNode->attr.name = token->tokenstr;
+      newNode->attr.string = token->svalue;
+      /*
+    yylval.tokenData = new TokenData;
+    yylval.tokenData->tokenclass = tokenClass;
+    yylval.tokenData->linenum = linenum;
+    yylval.tokenData->tokenstr = strdup(svalue);
+    yylval.tokenData->cvalue = svalue[0];
+    yylval.tokenData->nvalue = atoi(svalue);
+    yylval.tokenData->svalue = strdup(svalue);
+      */
+   }
+   /*
+    bool isStatic;                         // is staticly allocated?
+    bool isArray;                          // is this an array?
+    bool isConst;                          // can be computed at compile time?
+    bool isUsed;                           // is this variable used?
+    bool isAssigned;                       // has the variable been given a value?
+    */
+
+   newNode->isStatic = false;
+   newNode->isArray = false;
+   newNode->isConst = false;
+   newNode->isUsed = false;
+   newNode->isAssigned = false;
+
+   return newNode;
+}
 
 TreeNode *newDeclNode(DeclKind kind, ExpType type, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
-   TreeNode *newNode = new TreeNode;
+   TreeNode *newNode = initalizeNode(c0,c1,c2,token);
+
+   newNode->nodekind = DeclK;
+   newNode->kind.decl = kind;
+   newNode->type = type;
+
    return newNode;
+
+   /*
+   • varDeclId
+   • funDecl
+   • matched : FOR ID '=' iterRange DO matched
+   • unmatched : FOR ID '=' iterRange DO unmatched
+   */
 }
 
 TreeNode *newStmtNode(StmtKind kind, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
-   TreeNode *newNode = new TreeNode;
+   // compound, matched, unmatched, iterRange, returnStmt, breakStmt
+   TreeNode *newNode = initalizeNode(c0,c1,c2,token);
+   // int i;
+   // newNode->nodeNum++;
+   newNode->nodekind = StmtK;
+   newNode->kind.stmt = kind;
+   //newNode->type = type;
+      //<more code>
+
    return newNode;
 }
 
 TreeNode *newExpNode(ExpKind kind, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
-   TreeNode *newNode = new TreeNode;
+   /* exp
+   • simpleExp
+   • andExp
+   • unaryRelExp
+   • relExp
+   • minmaxExpn
+   • sumExp
+   • mulExp
+   • unaryExp
+   • mutable
+   • call
+   • constant
+   */
+   TreeNode *newNode = initalizeNode(c0,c1,c2,token);
+   newNode->nodekind = ExpK;
+   newNode->kind.exp = kind;
+   //newNode->type = type;
+   //newNode->nodekind = kind;
    return newNode;
 }
 
@@ -25,13 +107,12 @@ static void printSpaces(FILE *listing, int depth)
 }
 
 void printTreeNode(FILE *listing,
-                   TreeNode *tree)
+                   TreeNode *tree, bool a, bool b)
 {
-   fprintf(listing, "Line Number: %d" tree->lineno);
+   fprintf(listing, "Line Number: %d", tree->lineno);
    fprintf(listing, "Line Number");
    // fprintf(listing, "Decl Node");
    // fprintf(listing, "Exp Node");
-   fprintf();
 }
 
 
@@ -41,7 +122,7 @@ void printTreeRec(FILE *listing, int depth, int siblingCnt, TreeNode *tree)
    if(tree == NULL) return;
    if (tree!=NULL) {
       // print self
-      printTreeNode(listing, tree);
+      printTreeNode(listing, tree, true, true);
       fprintf(listing, "\n");
 
       // print children
@@ -72,6 +153,7 @@ void printTree(FILE *listing, TreeNode *tree)
       return;
    }
    printTreeRec(listing, 1, 1, tree);
+   //printDotTree(astDot, syntaxTree, false, false);
 }
 
 

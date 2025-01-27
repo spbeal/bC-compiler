@@ -24,7 +24,10 @@ TreeNode *newExpNode(ExpKind kind,
 char *tokenToStr(int type);
 char *expTypeToStr(ExpType type, bool isArray=false, bool isStatic=false);
 
-void printTreeNode(FILE *out, TreeNode *syntaxTree);
+void printTreeNode(FILE *out, TreeNode *syntaxTree, bool a, bool b);
 void printTree(FILE *out, TreeNode *syntaxTree);
+void printTreeRec(FILE *listing, int depth, int siblingCnt, TreeNode *tree);
+TreeNode *addSibling(TreeNode *t, TreeNode *s);
+void setType(TreeNode *t, ExpType type, bool isStatic);
 
 #endif

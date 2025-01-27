@@ -27,7 +27,7 @@ LIBS = -lm
 $(PARSE): $(OBJS)
 	$(CC) $(CPPFLAGS) $(OBJS) $(LIBS) -o bC
 
-$(PARSE).tab.h $(PARSE).tab.c: $(PARSE).y scanType.h treeUtils.h
+$(PARSE).tab.h $(PARSE).tab.c: $(PARSE).y scanType.h treeNodes.h treeUtils.h
 	bison -v -t -d $(PARSE).y  
 
 lex.yy.c: $(PARSE).l $(PARSE).tab.h scanType.h
