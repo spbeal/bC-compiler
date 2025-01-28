@@ -1,7 +1,4 @@
 %{
-#include <cstdio>
-#include <iostream>
-#include <unistd.h>
 #include "scanType.h"
 #include "treeNodes.h"
 #include "treeUtils.h"

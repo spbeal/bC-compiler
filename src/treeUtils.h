@@ -4,6 +4,10 @@
 #include "scanType.h"
 #include <string.h>
 
+#include <cstdio>
+#include <iostream>
+#include <unistd.h>
+
 // lots of these save the TokenData block so line number and yytext are saved
 TreeNode *newDeclNode(DeclKind kind,
                       ExpType type,
