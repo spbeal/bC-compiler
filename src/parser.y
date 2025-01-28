@@ -202,7 +202,7 @@ returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}
 breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
-exp        : mutable assignop exp     {$$ = newExpNode(AssignK, $3, $1, $2);}                  
+exp        : mutable assignop exp     {;}                  
              | mutable INC            {$$ = newExpNode(AssignK, $2, $1);}                 
              | mutable DEC            {$$ = newExpNode(AssignK, $2, $1);}              
              | simpleExp              {$$ = $1;}
