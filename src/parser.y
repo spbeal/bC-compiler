@@ -202,7 +202,7 @@ returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}
 breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
-exp        : mutable assignop exp     {$$ = newExpNode(AssignK, $2, $1, $3);}                  
+exp        : mutable assignop exp     {$$ = newExpNode(AssignK, $1, $2, $3);}                  
              | mutable INC            {$$ = newExpNode(AssignK, $2, $1);}                 
              | mutable DEC            {$$ = newExpNode(AssignK, $2, $1);}              
              | simpleExp              {$$ = $1;}
@@ -227,7 +227,7 @@ unaryRelExp : NOT unaryRelExp     {$$ = newExpNode(Opk, $1, $2);}
               | relExp              {$$ = $1;}
             ;
 
-relExp     : minmaxExp relop minmaxExp    {$$ = newExpNode(Opk, $2, $1, $3);}            
+relExp     : minmaxExp relop minmaxExp    {$$ = newExpNode(Opk, $1, $2, $3);}            
              | minmaxExp                    {$$ = $1;}
            ;
 
