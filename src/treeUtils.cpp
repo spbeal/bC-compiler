@@ -42,6 +42,8 @@ TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *tok
    newNode->isConst = false;
    newNode->isUsed = false;
    newNode->isAssigned = false;
+   // offset
+   newNode->size = 1;
 
    return newNode;
 }
@@ -49,7 +51,8 @@ TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *tok
 TreeNode *newDeclNode(DeclKind kind, ExpType type, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
    TreeNode *newNode = initalizeNode(c0,c1,c2,token);
-
+   
+   newNode->nodeNum++;
    newNode->nodekind = DeclK;
    newNode->kind.decl = kind;
    newNode->type = type;
@@ -68,8 +71,8 @@ TreeNode *newStmtNode(StmtKind kind, TokenData *token, TreeNode *c0, TreeNode *c
 {
    // compound, matched, unmatched, iterRange, returnStmt, breakStmt
    TreeNode *newNode = initalizeNode(c0,c1,c2,token);
-   // int i;
-   // newNode->nodeNum++;
+   //int i = 0;
+   newNode->nodeNum++;
    newNode->nodekind = StmtK;
    newNode->kind.stmt = kind;
    //newNode->type = type;
@@ -94,6 +97,7 @@ TreeNode *newExpNode(ExpKind kind, TokenData *token, TreeNode *c0, TreeNode *c1,
    • constant
    */
    TreeNode *newNode = initalizeNode(c0,c1,c2,token);
+   newNode->nodeNum++;
    newNode->nodekind = ExpK;
    newNode->kind.exp = kind;
    //newNode->type = type;
@@ -109,10 +113,34 @@ static void printSpaces(FILE *listing, int depth)
 void printTreeNode(FILE *listing,
                    TreeNode *tree, bool a, bool b)
 {
-   fprintf(listing, "Line Number: %d", tree->lineno);
-   fprintf(listing, "Line Number");
+   for (int i = 0; i < 3; i++)
+   {
+      if (newNode->child[i] != NULL)
+      {
+         fprintf(listing, "Child: %d", i);
+         fprintf(listing, tree->child[i]);
+      }
+   }
+
+   fprintf(listing, "line: %d", tree->lineno);
    // fprintf(listing, "Decl Node");
    // fprintf(listing, "Exp Node");
+
+   /*
+      newNode->child[0] = c0;
+   newNode->child[1] = c1;
+   newNode->child[2] = c2;
+   newNode->sibling = NULL;
+
+   if (token != NULL)
+   {
+      newNode->lineno = token->linenum; 
+      newNode->attr.op = token->tokenclass;
+      newNode->attr.value = token->nvalue;
+      newNode->attr.cvalue = token->cvalue;
+      newNode->attr.name = token->tokenstr;
+      newNode->attr.string = token->svalue;
+   */
 }
 
 

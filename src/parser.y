@@ -133,17 +133,17 @@ decl : varDecl  {$$=$1;}
     ;
 varDecl : typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
     ;
-scopedVarDecl : STATIC typeSpec varDeclList ';' {;}
-    | typeSpec varDeclList ';' {;}
+scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $2; setType($2, $1, true); yyerrok;}
+    | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
     ;
-varDeclList : varDeclList ',' varDeclInit {;}
-    | varDeclInit {;}
+varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
+    | varDeclInit {$$ = $1;}
     ;
-varDeclInit : varDeclId {;}
+varDeclInit : varDeclId { $$ = $1;}
     | varDeclId ':' simpleExp {$$ = $1; if ($$ != NULL) $$->child[0] = $3;}
     ;
-varDeclId : ID {;}
-    | ID '[' NUMCONST ']' {;}
+varDeclId : ID {newDeclNode(VarK, UndefinedType, $1);}
+    | ID '[' NUMCONST ']' {$$->isArray = true; $$ = newDeclNode(VarK, Integer, $1);}
     ;
 typeSpec : INT {$$ = Integer;}
     | BOOL {$$ = Boolean;}
@@ -186,25 +186,25 @@ unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $
              | FOR ID '=' iterRange DO unmatched {$$ = newStmtNode(ForK, $1, NULL, $4, $6); newDeclNode(VarK, Integer, $2);}      
            ;
 expStmt    : exp ';'  {;}
-             | ';'    {;}                                     {/* NULL*/}
+             | ';'    {;}                                   
            ;
 compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
     ;
-localDecls : localDecls scopedVarDecl    {;}          {/* addSibling*/}
-             | /* empty */      {;}                         { /* NULL*/}
+localDecls : localDecls scopedVarDecl    {;}         
+             | /* empty */      {;}                        
              ;
 stmtList : stmtList stmt    {$$ = ($2==NULL ? $1 : addSibling($1, $2)); }
     |           {;}
     ;
-returnStmt : RETURN ';'      {;}                             {/* newStmtNode*/}
-             | RETURN exp ';'    {;}                          {/* newStmtNode*/}
+returnStmt : RETURN ';'      {;}                        
+             | RETURN exp ';'    {;}                        
            ;
-breakStmt  : BREAK ';'              {;}                   {/* newStmtNode*/}
+breakStmt  : BREAK ';'              {;}             
            ;
 
-exp        : mutable assignop exp     {;}           {/* newExpNode*/}
-             | mutable INC            {;}                  {/* newExpNode*/}
-             | mutable DEC            {;}                  {/* newExpNode*/}
+exp        : mutable assignop exp     {;}        
+             | mutable INC            {;}               
+             | mutable DEC            {;}              
              | simpleExp              {;}
            ;
 
@@ -215,19 +215,19 @@ assignop  : '=' {;}
             | DIVASS {;}
           ;
 
-simpleExp  : simpleExp OR andExp {;}                {/* newExpNode*/}
+simpleExp  : simpleExp OR andExp {;}            
              | andExp {;}
            ;
 
-andExp     : andExp AND unaryRelExp  {;}            {/* newExpNode*/}
+andExp     : andExp AND unaryRelExp  {;}          
              | unaryRelExp          {;}
            ;
 
-unaryRelExp : NOT unaryRelExp     {;}                 {/* newExpNode*/}
+unaryRelExp : NOT unaryRelExp     {;}             
               | relExp              {;}
             ;
 
-relExp     : minmaxExp relop minmaxExp    {;}      {/* newExpNode*/}
+relExp     : minmaxExp relop minmaxExp    {;}  
              | minmaxExp                    {;}
            ;
 
@@ -239,7 +239,7 @@ relop      : LEQ {;}
              | NEQ {;}
            ;
 
-minmaxExp  : minmaxExp minmaxop sumExp  {;}              {/* newExpNode*/}
+minmaxExp  : minmaxExp minmaxop sumExp  {;}            
              | sumExp  {;}
            ;
 
@@ -247,7 +247,7 @@ minmaxop   : MAX {;}
              | MIN {;}
            ;
 
-sumExp     : sumExp sumop mulExp  {;}              {/* newExpNode*/}
+sumExp     : sumExp sumop mulExp  {;}            
              | mulExp {;}
            ;
 
@@ -255,7 +255,7 @@ sumop      : '+' {;}
              | '-' {;}
            ;
 
-mulExp     : mulExp mulop unaryExp  {;}           {/* newExpNode*/}
+mulExp     : mulExp mulop unaryExp  {;}         
              | unaryExp  {;}
            ;
 
@@ -264,12 +264,12 @@ mulop      : '*' {;}
              | '%' {;}
            ;
 
-unaryExp   : unaryop unaryExp  {;}                 {/* newExpNode*/}
+unaryExp   : unaryop unaryExp  {;}                 
              | factor   {;}
            ;
 
-unaryop    : '-'        {;}                                     {/*$1->tokenclass=CHSIGN; $$=$1;*/}
-             | '*'  {;}                                      {/*$1->tokenclass=SIZEOF; $$=$1;*/}
+unaryop    : '-'        {;}                                     
+             | '*'  {;}                                      
              | '?'  {;}
              ;
            ;
@@ -282,26 +282,26 @@ mutable    : ID    {$$ = newExpNode(IdK, $1);}
              | ID '[' exp ']'   {$$ = newExpNode(IdK, $1);}                       
            ;
 
-immutable  : '(' exp ')'    {;}                        {/* DRBC Note: Be careful!*/}
+immutable  : '(' exp ')'    {;}                        
              | call         {;}
              | constant     {;}
            ;
 
-call       : ID '(' args ')'    {;}                    {/*newExpNode*/}
+call       : ID '(' args ')'    {;}                   
            ;
 
 args       : argList  {;}
-             | /* empty */         {;}                       { /* NULL;*/}
+             | /* empty */         {;}                       
            ;
 
-argList    : argList ',' exp  {;}                     {/* addSibling*/}
+argList    : argList ',' exp  {;}                     
              | exp      {;}
            ;
 
-constant   : NUMCONST       {;}                            {/* newExpNode:  also set type and attr.string*/}
-             | CHARCONST    {;}                               {/* newExpNode;  also set type and attr.string*/}
-             | STRINGCONST  {;}                               {/* newExpNode; $$->size = $1->nvalue + 1; $$->isArray = true; also set type and attr.string*/}
-             | BOOLCONST    {;}                               {/* newExpNode;  also set type and attr.string*/}
+constant   : NUMCONST       {;}                           
+             | CHARCONST    {;}                             
+             | STRINGCONST  {;}                              
+             | BOOLCONST    {;}                              
            ;
 %%
 

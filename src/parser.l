@@ -29,10 +29,12 @@ int setValue(int linenum, int tokenClass, char *svalue) {
     switch (tokenClass) {
 
     case NUMCONST:
+         yylval.tokenData->nvalue;
          // yylval.tinfo.nvalue = hmmmm ..... I don't need this yet, but
          break;
 
     case OP:
+         yylval.tokenData->cvalue;
          // yylval.tinfo.cvalue = hmmm..... What should I set it to?
          break;
     }
