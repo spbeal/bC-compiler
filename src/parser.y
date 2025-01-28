@@ -133,7 +133,7 @@ decl : varDecl  {$$=$1;}
     ;
 varDecl : typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
     ;
-scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $2; setType($3, $2, true); yyerrok;}
+scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true); yyerrok;}
     | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
     ;
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
