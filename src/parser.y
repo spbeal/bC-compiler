@@ -177,7 +177,7 @@ matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2,
     | returnStmt { $$ = $1;}
     | breakStmt { $$ = $1;}
     ;
-iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $1, $3);}
+iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $2, $1, $3);}
     | simpleExp TO simpleExp BY simpleExp {$$ = NULL;}
     ;
 unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $4);}        
