@@ -51,7 +51,7 @@ TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *tok
 TreeNode *newDeclNode(DeclKind kind, ExpType type, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
    TreeNode *newNode = initalizeNode(c0,c1,c2,token);
-   
+
    newNode->nodeNum++;
    newNode->nodekind = DeclK;
    newNode->kind.decl = kind;
@@ -115,10 +115,10 @@ void printTreeNode(FILE *listing,
 {
    for (int i = 0; i < 3; i++)
    {
-      if (newNode->child[i] != NULL)
+      if (tree->child[i] != NULL)
       {
-         fprintf(listing, "Child: %d", i);
-         fprintf(listing, tree->child[i]);
+         fprintf(listing, "Child: %d %s", i, tree->child[i].type);
+         //fprintf(listing);
       }
    }
 

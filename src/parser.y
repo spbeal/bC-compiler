@@ -359,7 +359,6 @@ void yyerror (const char *msg)
 int main(int argc, char **argv) {
    int option, index;
    char *file = NULL;
-   initTokenStrings();
    extern FILE *yyin;
    while ((option = getopt (argc, argv, "")) != -1)
       switch (option)
@@ -377,6 +376,7 @@ int main(int argc, char **argv) {
 
    if(numErrors == 0){
       //printDotTree(astDot,syntaxTree, false, false);
+      initTokenStrings();
       printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
    return 0;
