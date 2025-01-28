@@ -117,7 +117,7 @@ void printTreeNode(FILE *listing,
    {
       if (tree->child[i] != NULL)
       {
-         fprintf(listing, "Child: %d %s", i, tree->child[i].type);
+         fprintf(listing, "Child: %d %s", i, tree->child[i]->type);
          //fprintf(listing);
       }
    }
