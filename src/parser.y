@@ -91,54 +91,71 @@ TreeNode *syntaxTree;
 %%
 program : precomList declList {syntaxTree = $2;}
     ;
+
 precomList : precomList PRECOMPILER {$$ = NULL;}
     | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
     | /* empty */                   {$$=NULL;}
     ;
+
 declList : declList decl {$$ = addSibling($1, $2);}
     | decl      {$$ = $1;}
     ;
+
 decl : varDecl  {$$=$1;}
     | funDecl   {$$=$1;}
     ;
-varDecl : typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
+
+varDecl : typeSpec varDeclList ';' {$$ = $2; setType($1, $2, false); yyerrok;}
     ;
-scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true); yyerrok;}
-    | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
+
+scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($2, $3, true); yyerrok;}
+    | typeSpec varDeclList ';' {$$ = $2; setType($1, $2, false); yyerrok;}
     ;
+
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
     | varDeclInit {$$ = $1;}
     ;
+
 varDeclInit : varDeclId { $$ = $1;}
     | varDeclId ':' simpleExp {$$ = $1; if ($$ != NULL) $$->child[0] = $3;}
     ;
+
 varDeclId : ID {newDeclNode(VarK, UndefinedType, $1);}
     | ID '[' NUMCONST ']' {$$->isArray = true; $$ = newDeclNode(VarK, Integer, $1);}
     ;
+
 typeSpec : INT {$$ = Integer;}
     | BOOL {$$ = Boolean;}
     | CHAR {$$ = Char;}
     ;
+
 funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
     | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
     ;
+
 parms : parmList {$$ = $1;}
     |  {$$ = NULL;}
     ;
+
 parmList : parmList ';' parmTypeList {$$ = addSibling($1, $3);}
     | parmTypeList {$$ = $1;}
     ;
+
 parmTypeList : typeSpec parmIdList {setType($2, $1, false); $$ = $2;}
     ;
+
 parmIdList: parmIdList ',' parmId {$$ = addSibling($1, $3);}
     | parmId {$$ = $1;}
     ;
+
 parmId: ID {$$ = newDeclNode(ParamK, UndefinedType, $1);}
     | ID '[' ']' {$$->isArray = true; $$ = newDeclNode(ParamK, UndefinedType, $1);}
     ;
+
 stmt : matched {$$ = $1;}
     | unmatched {$$ = $1;}
     ;
+
 matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2, $4, $6);}
     | WHILE simpleExp DO matched { $$ = newStmtNode(WhileK, $1, $2, $4);}
     | FOR ID '=' iterRange DO matched { $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
@@ -147,28 +164,36 @@ matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2,
     | returnStmt { $$ = $1;}
     | breakStmt { $$ = $1;}
     ;
+
 iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $2, $1, $3);}
     | simpleExp TO simpleExp BY simpleExp {$$ = NULL;}
     ;
+
 unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $4);}        
              | IF simpleExp THEN matched ELSE unmatched {$$ = newStmtNode(IfK, $1, $2, $4, $6);} 
              | WHILE simpleExp DO unmatched     {$$ = newStmtNode(WhileK, $1, $2, $4);}          
              | FOR ID '=' iterRange DO unmatched {$$ = newStmtNode(ForK, $1, NULL, $4, $6); newDeclNode(VarK, Integer, $2);}      
            ;
+
 expStmt    : exp ';'  {$$ = NULL;}
              | ';'    {$$ = NULL;}                                   
            ;
+
 compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
     ;
+
 localDecls : localDecls scopedVarDecl    {;}         
              | /* empty */      {;}                        
              ;
+
 stmtList : stmtList stmt    {$$ = ($2==NULL ? $1 : addSibling($1, $2)); }
     |           {;}
     ;
+
 returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}                           
              | RETURN exp ';'    {$$ = newStmtNode(ReturnK, $1, $2);}                            
            ;
+           
 breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
