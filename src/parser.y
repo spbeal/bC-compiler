@@ -172,21 +172,21 @@ stmt : matched {$$ = $1;}
 matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2, $4, $6);}
     | WHILE simpleExp DO matched { $$ = newStmtNode(WhileK, $1, $2, $4);}
     | FOR ID '=' iterRange DO matched { $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
-    | expStmt { $$ = NULL;}
-    | compoundStmt {;}
-    | returnStmt {;}
-    | breakStmt {;}
+    | expStmt { $$ = $1;}
+    | compoundStmt { $$ = $1;}
+    | returnStmt { $$ = $1;}
+    | breakStmt { $$ = $1;}
     ;
-iterRange : simpleExp TO simpleExp {;}
-    | simpleExp TO simpleExp BY simpleExp {;}
+iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $1, $3);}
+    | simpleExp TO simpleExp BY simpleExp {$$ = newStmtNode(RangeK, $1, $3, $5);}
     ;
 unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $4);}        
              | IF simpleExp THEN matched ELSE unmatched {$$ = newStmtNode(IfK, $1, $2, $4, $6);} 
              | WHILE simpleExp DO unmatched     {$$ = newStmtNode(WhileK, $1, $2, $4);}          
              | FOR ID '=' iterRange DO unmatched {$$ = newStmtNode(ForK, $1, NULL, $4, $6); newDeclNode(VarK, Integer, $2);}      
            ;
-expStmt    : exp ';'  {;}
-             | ';'    {;}                                   
+expStmt    : exp ';'  {$$ = 1;}
+             | ';'    {$$ = NULL;}                                   
            ;
 compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
     ;
@@ -196,16 +196,16 @@ localDecls : localDecls scopedVarDecl    {;}
 stmtList : stmtList stmt    {$$ = ($2==NULL ? $1 : addSibling($1, $2)); }
     |           {;}
     ;
-returnStmt : RETURN ';'      {;}                        
-             | RETURN exp ';'    {;}                        
+returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}                           
+             | RETURN exp ';'    {$$ = newStmtNode(ReturnK, $1, $2);}                            
            ;
-breakStmt  : BREAK ';'              {;}             
+breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
-exp        : mutable assignop exp     {;}        
-             | mutable INC            {;}               
-             | mutable DEC            {;}              
-             | simpleExp              {;}
+exp        : mutable assignop exp     {$$ = newExpNode(AssignK, $2, $1, $3);}                  
+             | mutable INC            {$$ = newExpNode(AssignK, $2, $1);}                 
+             | mutable DEC            {$$ = newExpNode(AssignK, $2, $1);}              
+             | simpleExp              {$$ = $1;}
            ;
 
 assignop  : '=' {;}
@@ -215,20 +215,20 @@ assignop  : '=' {;}
             | DIVASS {;}
           ;
 
-simpleExp  : simpleExp OR andExp {;}            
-             | andExp {;}
+simpleExp  : simpleExp OR andExp {$$ = newExpNode(Opk, $2, $1, $3);}            
+             | andExp {$$ = $1;}
            ;
 
-andExp     : andExp AND unaryRelExp  {;}          
-             | unaryRelExp          {;}
+andExp     : andExp AND unaryRelExp  {$$ = newExpNode(Opk, $2, $1, $3);}                      
+             | unaryRelExp          {$$ = $1;}
            ;
 
-unaryRelExp : NOT unaryRelExp     {;}             
-              | relExp              {;}
+unaryRelExp : NOT unaryRelExp     {$$ = newExpNode(Opk, $1, $2);}                        
+              | relExp              {$$ = $1;}
             ;
 
-relExp     : minmaxExp relop minmaxExp    {;}  
-             | minmaxExp                    {;}
+relExp     : minmaxExp relop minmaxExp    {$$ = newExpNode(Opk, $2, $1, $3);}            
+             | minmaxExp                    {$$ = $1;}
            ;
 
 relop      : LEQ {;}
@@ -290,18 +290,18 @@ immutable  : '(' exp ')'    {;}
 call       : ID '(' args ')'    {;}                   
            ;
 
-args       : argList  {;}
-             | /* empty */         {;}                       
+args       : argList  {$$ = $1;}
+             | /* empty */         {$$ = NULL;}                       
            ;
 
-argList    : argList ',' exp  {;}                     
-             | exp      {;}
+argList    : argList ',' exp  {$$ = $1; addSibling($1, $3); }                     
+             | exp      {$$ = $1;}
            ;
 
-constant   : NUMCONST       {;}                           
-             | CHARCONST    {;}                             
-             | STRINGCONST  {;}                              
-             | BOOLCONST    {;}                              
+constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1);}                         
+             | CHARCONST    {$$ = newExpNode(ConstantK, $1);}                       
+             | STRINGCONST  {$$ = newExpNode(ConstantK, $1);}                               
+             | BOOLCONST    {$$ = newExpNode(ConstantK, $1);}                              
            ;
 %%
 
