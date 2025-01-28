@@ -91,7 +91,7 @@ TreeNode *syntaxTree;
 %%
 program : precomList declList {syntaxTree = $2;}
     ;
-
+    
 precomList : precomList PRECOMPILER {$$ = NULL;}
     | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
     | /* empty */                   {$$=NULL;}
@@ -105,11 +105,11 @@ decl : varDecl  {$$=$1;}
     | funDecl   {$$=$1;}
     ;
 
-varDecl : typeSpec varDeclList ';' {$$ = $2; setType($1, $2, false); yyerrok;}
+varDecl : typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
     ;
 
-scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($2, $3, true); yyerrok;}
-    | typeSpec varDeclList ';' {$$ = $2; setType($1, $2, false); yyerrok;}
+scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true); yyerrok;}
+    | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
     ;
 
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
