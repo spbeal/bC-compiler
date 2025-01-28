@@ -178,14 +178,14 @@ matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2,
     | breakStmt { $$ = $1;}
     ;
 iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $1, $3);}
-    | simpleExp TO simpleExp BY simpleExp {$$ = newStmtNode(RangeK, $1, $3, $5);}
+    | simpleExp TO simpleExp BY simpleExp {$$ = NULL;}
     ;
 unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $4);}        
              | IF simpleExp THEN matched ELSE unmatched {$$ = newStmtNode(IfK, $1, $2, $4, $6);} 
              | WHILE simpleExp DO unmatched     {$$ = newStmtNode(WhileK, $1, $2, $4);}          
              | FOR ID '=' iterRange DO unmatched {$$ = newStmtNode(ForK, $1, NULL, $4, $6); newDeclNode(VarK, Integer, $2);}      
            ;
-expStmt    : exp ';'  {$$ = 1;}
+expStmt    : exp ';'  {$$ = NULL;}
              | ';'    {$$ = NULL;}                                   
            ;
 compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
@@ -215,15 +215,15 @@ assignop  : '=' {;}
             | DIVASS {;}
           ;
 
-simpleExp  : simpleExp OR andExp {$$ = newExpNode(Opk, $2, $1, $3);}            
+simpleExp  : simpleExp OR andExp {$$ = newExpNode(OpK, $2, $1, $3);}            
              | andExp {$$ = $1;}
            ;
 
-andExp     : andExp AND unaryRelExp  {$$ = newExpNode(Opk, $2, $1, $3);}                      
+andExp     : andExp AND unaryRelExp  {$$ = newExpNode(OpK, $2, $1, $3);}                      
              | unaryRelExp          {$$ = $1;}
            ;
 
-unaryRelExp : NOT unaryRelExp     {$$ = newExpNode(Opk, $1, $2);}                        
+unaryRelExp : NOT unaryRelExp     {$$ = newExpNode(OpK, $1, $2);}                        
               | relExp              {$$ = $1;}
             ;
 
