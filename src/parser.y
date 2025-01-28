@@ -32,33 +32,6 @@ int numErrors;
 int numWarnings;
 extern int line;
 
-TreeNode *addSibling(TreeNode *t, TreeNode *s)
-{
-   if (s == NULL) exit(0);
-   if (t == NULL) return s;
-   // make sure s is not null. If it is this s a major error. Exit the program!
-   // Make sure t is not null. If it is, just return s
-   // look down t’s sibling list until you fin with with sibblin = null (the end o f the lsit) and add s there.
-   TreeNode * curr = t;
-   while (curr->sibling != NULL)
-   {
-      curr = t->sibling;
-   }
-   curr->sibling = s;
-   return s;
-}
-// pass the static and type attribute down the sibling list
-void setType(TreeNode *t, ExpType type, bool isStatic)
-{
-  TreeNode * curr = t;
-   while (curr != NULL) {
-      curr->type = type;
-      curr->isStatic = isStatic;
-      curr = curr->sibling;
-   // set t->type and t->isStatic
-   // t = t->sibling;
-   }
-}
 TreeNode *syntaxTree;
 
 %}
@@ -305,51 +278,6 @@ constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1);}
            ;
 %%
 
-char * largerTokens[LASTTERM+1];
-void initTokenStrings()
-{ 
-   for (int x = 0; x < LASTTERM+1; x++)
-   {
-      largerTokens[x] = (char *)"Undefined largerToken";
-   }
-   largerTokens[ADDASS] = (char *)"+=";
-   largerTokens[AND] = (char *)"and";
-   largerTokens[BOOL] = (char *)"bool";
-   largerTokens[BOOLCONST] = (char *)"boolconst";
-   largerTokens[BREAK] = (char *)"break";
-   largerTokens[BY] = (char *)"by";
-   largerTokens[CHAR] = (char *)"char";
-   largerTokens[CHARCONST] = (char *)"charconst";
-   largerTokens[CHSIGN] = (char *)"chsign";
-   largerTokens[DEC] = (char *)"--";
-   largerTokens[DIVASS] = (char *)"/=";
-   largerTokens[DO] = (char *)"do";
-   largerTokens[ELSE] = (char *)"else";
-   largerTokens[EQ] = (char *)"==";
-   largerTokens[FOR] = (char *)"for";
-   largerTokens[GEQ] = (char *)">=";
-   largerTokens[ID] = (char *)"id";
-   largerTokens[IF] = (char *)"if";
-   largerTokens[INC] = (char *)"++";
-   largerTokens[INT] = (char *)"int";
-   largerTokens[LEQ] = (char *)"<=";
-   largerTokens[MAX] = (char *)":>:";
-   largerTokens[MIN] = (char *)":<:";
-   largerTokens[MULASS] = (char *)"*=";
-   largerTokens[NEQ] = (char *)"!=";
-   largerTokens[NOT] = (char *)"not";
-   largerTokens[NUMCONST] = (char *)"numconst";
-   largerTokens[OR] = (char *)"or";
-   largerTokens[RETURN] = (char *)"return";
-   largerTokens[SIZEOF] = (char *)"sizeof";
-   largerTokens[STATIC] = (char *)"static";
-   largerTokens[STRINGCONST] = (char *)"stringconst";
-   largerTokens[SUBASS] = (char *)"-=";
-   largerTokens[THEN] = (char *)"then";
-   largerTokens[TO] = (char *)"to";
-   largerTokens[WHILE] = (char *)"while";
-   largerTokens[LASTTERM] = (char *)"lastterm";
-}
 
 void yyerror (const char *msg)
 { 
@@ -376,7 +304,6 @@ int main(int argc, char **argv) {
 
    if(numErrors == 0){
       //printDotTree(astDot,syntaxTree, false, false);
-      initTokenStrings();
       printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
    return 0;
