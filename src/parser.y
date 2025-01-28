@@ -359,6 +359,7 @@ void yyerror (const char *msg)
 int main(int argc, char **argv) {
    int option, index;
    char *file = NULL;
+   initTokenStrings();
    extern FILE *yyin;
    while ((option = getopt (argc, argv, "")) != -1)
       switch (option)
