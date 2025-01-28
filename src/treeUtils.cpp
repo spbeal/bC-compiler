@@ -113,7 +113,7 @@ static void printSpaces(FILE *listing, int depth)
 void printTreeNode(FILE *listing,
                    TreeNode *tree, bool a, bool b)
 {
-   fprintf(listing, "TREE: %s" tree->type);
+   fprintf(listing, "TREE: %s", tree->type);
    for (int i = 0; i < 3; i++)
    {
       if (tree->child[i] != NULL)
