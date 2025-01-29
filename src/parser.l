@@ -4,14 +4,13 @@
 #include "scanType.h"
 #include "parser.tab.h" // This has to be the last include
 
-
 using namespace std;
 
 #define YY_DECL extern "C" int yylex()
 #define YYSTYPE int
 
 int line=1;
-char *lastToken=(char *)"";
+char *lastToken=(char *);
 //extern int numErrors;
 
 int setValue(int linenum, int tokenClass, char *svalue) {
@@ -27,14 +26,19 @@ int setValue(int linenum, int tokenClass, char *svalue) {
 
 
     switch (tokenClass) {
+     case BOOLCONST:
+          break;
 
-    case NUMCONST:
-         yylval.tokenData->nvalue;
+     case STRINGCONST: 
+          break;
+
+     case NUMCONST:
+         yylval.tokenData->nvalue = atoi(svalue);
          // yylval.tinfo.nvalue = hmmmm ..... I don't need this yet, but
          break;
 
-    case OP:
-         yylval.tokenData->cvalue;
+     case OP:
+         yylval.tokenData->cvalue = svalue[0];
          // yylval.tinfo.cvalue = hmmm..... What should I set it to?
          break;
     }

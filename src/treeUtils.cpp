@@ -5,8 +5,6 @@
 
 
 char * largerTokens[LASTTERM+1];
-
-
 TreeNode *addSibling(TreeNode *t, TreeNode *s)
 {
    if (s == NULL) exit(0);
@@ -15,7 +13,7 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
    // Make sure t is not null. If it is, just return s
    // look down t’s sibling list until you fin with with sibblin = null (the end o f the lsit) and add s there.
    TreeNode * curr = t;
-   while (curr != NULL)
+   while (curr->sibling != NULL)
    {
       curr = t->sibling;
    }
@@ -97,15 +95,6 @@ TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *tok
       newNode->attr.cvalue = token->cvalue;
       newNode->attr.name = token->tokenstr;
       newNode->attr.string = token->svalue;
-      /*
-    yylval.tokenData = new TokenData;
-    yylval.tokenData->tokenclass = tokenClass;
-    yylval.tokenData->linenum = linenum;
-    yylval.tokenData->tokenstr = strdup(svalue);
-    yylval.tokenData->cvalue = svalue[0];
-    yylval.tokenData->nvalue = atoi(svalue);
-    yylval.tokenData->svalue = strdup(svalue);
-      */
    }
    /*
     bool isStatic;                         // is staticly allocated?
