@@ -15,7 +15,7 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
    // Make sure t is not null. If it is, just return s
    // look down t’s sibling list until you fin with with sibblin = null (the end o f the lsit) and add s there.
    TreeNode * curr = t;
-   while (curr->sibling != NULL)
+   while (curr != NULL)
    {
       curr = t->sibling;
    }
@@ -191,15 +191,6 @@ static void printSpaces(FILE *listing, int depth)
 void printTreeNode(FILE *listing,
                    TreeNode *tree, bool a, bool b)
 {
-   // fprintf(listing, "TREE: %s", tree->type);
-   // for (int i = 0; i < 3; i++)
-   // {
-   //    if (tree->child[i] != NULL)
-   //    {
-   //       fprintf(listing, "Child: %d %s", i, tree->child[i]->type);
-   //       //fprintf(listing);
-   //    }
-   // }
 
    switch (tree->nodekind)
    {

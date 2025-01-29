@@ -3,8 +3,6 @@
 #include "treeNodes.h"
 #include "treeUtils.h"
 
-
-
 using namespace std;
 
 extern "C" int yylex();
@@ -23,13 +21,20 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
      cout << " Token: " << myData.cvalue;
    cout << endl;
 }
+TreeNode *syntaxTree;
+
+void initTree()
+{
+  syntaxTree = NULL;
+}
 
 // the syntax tree goes here
 int numErrors;
 int numWarnings;
 extern int line;
 
-TreeNode *syntaxTree;
+
+
 
 %}
 
@@ -310,7 +315,7 @@ int main(int argc, char **argv) {
    int option, index;
    char *file = NULL;
    extern FILE *yyin;
-
+  initTree();
   initTokenStrings();
 
    while ((option = getopt (argc, argv, "")) != -1)
