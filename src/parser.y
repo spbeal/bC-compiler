@@ -25,7 +25,7 @@ TreeNode *syntaxTree;
 
 void initTree()
 {
-  syntaxTree = NULL;
+  //syntaxTree = NULL;
 }
 
 // the syntax tree goes here
