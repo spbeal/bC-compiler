@@ -193,7 +193,7 @@ stmtList : stmtList stmt    {$$ = ($2==NULL ? $1 : addSibling($1, $2)); }
 returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}                           
              | RETURN exp ';'    {$$ = newStmtNode(ReturnK, $1, $2);}                            
            ;
-           
+
 breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
@@ -310,6 +310,9 @@ int main(int argc, char **argv) {
    int option, index;
    char *file = NULL;
    extern FILE *yyin;
+
+  initTokenStrings();
+
    while ((option = getopt (argc, argv, "")) != -1)
       switch (option)
       {
