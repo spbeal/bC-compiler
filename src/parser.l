@@ -10,7 +10,7 @@ using namespace std;
 #define YYSTYPE int
 
 int line=1;
-char *lastToken=(char *);
+char *lastToken=(char *)"";
 //extern int numErrors;
 
 int setValue(int linenum, int tokenClass, char *svalue) {
