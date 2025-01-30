@@ -1,0 +1,5 @@
+#DRBC This is a multiline precompiler
+#DRBC Make sure your parse.y file prints out all the lines
+#DRBC If not, look at your precomList production in your parser.y
+main() {
+}

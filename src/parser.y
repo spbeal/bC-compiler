@@ -110,7 +110,7 @@ decl : varDecl  {$$=$1;}
     | funDecl   {$$=$1;}
     ;
 
-varDecl : typeSpec varDeclList ';' {setType($2, $1, false); $$ = $2; ;}
+varDecl : typeSpec varDeclList ';' {setType($2, $1, false); $$ = $2; }
     ;
 
 scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true);}

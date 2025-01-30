@@ -1,0 +1,20 @@
+#DRBC Tests the char slash n
+
+main()
+{
+    char s[5]:"bob";
+    int i;
+
+    i = -1;
+    while true do {
+        char c;
+
+        c = inputc();
+        if i<*s then  {
+           i++;           
+           s[i] = c;
+        }
+        if c=='\n' then break;
+    }
+}
+

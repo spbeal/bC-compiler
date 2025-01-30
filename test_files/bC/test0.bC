@@ -1,0 +1,5 @@
+#DRBC simple test case
+main() {
+   int x;
+   x = 3;
+}

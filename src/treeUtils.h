@@ -27,7 +27,7 @@ TreeNode *newExpNode(ExpKind kind,
                      TreeNode *c2=NULL);
 char *tokenToStr(int type);
 char *expTypeToStr(ExpType type, bool isArray=false, bool isStatic=false);
-void printTreeNode(FILE *out, TreeNode *syntaxTree, bool a, bool b);
+void printTreeNode(FILE *out, TreeNode *syntaxTree);
 void printTree(FILE *out, TreeNode *syntaxTree);
 void printTreeRec(FILE *listing, int depth, int siblingCnt, TreeNode *tree);
 

@@ -19,7 +19,7 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
       curr = curr->sibling;
    }
    curr->sibling = s;
-   return curr->sibling;
+   return s;
 }
 // pass the static and type attribute down the sibling list
 void setType(TreeNode *t, ExpType type, bool isStatic)
@@ -83,7 +83,7 @@ TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *to
 {
    static int node_count = 0;
    TreeNode* newNode = new TreeNode;
-   newNode->nodeNum = node_count++;
+   newNode->nodeNum = ++node_count;
 
    newNode->child[0] = c0;
    newNode->child[1] = c1;
@@ -181,9 +181,8 @@ static void printSpaces(FILE *listing, int depth)
 }
 
 void printTreeNode(FILE *listing,
-                   TreeNode *tree, bool a, bool b)
+                   TreeNode *tree)
 {
-
    switch (tree->nodekind)
    {
       case DeclK:
@@ -206,6 +205,14 @@ void printTreeNode(FILE *listing,
                break;
             case ForK: fprintf(listing, "ForStmt"); 
                break;
+            case CompoundK: fprintf(listing, "CompoundStmt"); 
+               break;
+            case ReturnK: fprintf(listing, "ReturnStmt"); 
+               break;
+            case BreakK: fprintf(listing, "BreakStmt"); 
+               break;
+            case RangeK: fprintf(listing, "RangeStmt"); 
+               break;
             default: fprintf(listing, "invalid"); 
                break;
          }
@@ -215,6 +222,12 @@ void printTreeNode(FILE *listing,
             case AssignK: fprintf(listing, "AssignExp"); 
                break;
             case OpK: fprintf(listing, "OpExp"); 
+               break;
+            case CallK: fprintf(listing, "CallExp"); 
+               break;
+            case ConstantK: fprintf(listing, "ConstantExp"); 
+               break;
+            case IdK: fprintf(listing, "IdExp"); 
                break;
             default: fprintf(listing, "invalid"); 
                break;
@@ -253,7 +266,7 @@ void printTreeRec(FILE *listing, int depth, int siblingCnt, TreeNode *tree)
    if(tree == NULL) return;
    if (tree!=NULL) {
       // print self
-      printTreeNode(listing, tree, true, true);
+      printTreeNode(listing, tree);
       fprintf(listing, "\n");
 
       // print children

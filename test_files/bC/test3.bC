@@ -1,0 +1,93 @@
+#DRBC Full test case to test every production rule
+// precomList program
+
+//arglist args parmID parmList parms parmIDList typeSpec varDecl ScopedVarDecl decl declList
+int x:6, y:2;
+// NUMCONST
+int Tint: 7;
+//BOOLCONST
+bool Tbool: true;
+//CHARCONST
+char Tchar : 'a' ;
+//STRINGCONST
+char Tstring[10] : "random";
+
+int Tarray[10];
+
+//funDecl
+int Tfunc(int a, b; bool c; char d[]; int e; char f; int array[] ){
+   int g;
+   g = a;
+
+   //assignop
+   a += 1;
+   a -= 1;
+   a *= 1;
+   a /= 1;
+   b = 0;
+   a = 9;
+
+   //relop matched exp INC DEC
+   while a >= b do{
+      b++;
+      array[b] = b;
+   }
+   if a <= b then {
+      e = 3;
+   }
+   else{
+      e = 10;
+   }
+   for a=2 to 10 do{
+      e--;
+      a++;
+   }
+
+   //relop unmatched breakstmt
+   if a == b then {
+      e = 4;
+   }
+   if a > b then {
+      e = 6;
+   }
+   if a < b then {
+      e = 5;
+   }
+   while a != b do{
+      a = b;
+   }
+   b = 10;
+   for a=0 to b do {
+      a++;
+      d[a] = f;
+      if a == b then {
+         break;
+      }
+   }
+
+   //simple expr unaryRelExp exp
+   c = not c;
+   c = c or c;
+   c = c and c;
+
+   //unaryOp mulOp sumOp
+   e = a / b;
+   e = a * b;
+   e = a % b;
+   e = a + b;
+   e = a - b;
+   e = a*b*e - (e + e);
+
+   //minmaxop minmaxExp
+   e = a :>: b;
+   e = a :<: b;
+   //return
+   return e;
+}
+
+//main
+int main(){
+   //call
+   Tfunc(x,y,Tbool,Tstring,Tint,Tchar,Tarray);
+   return 0;
+}

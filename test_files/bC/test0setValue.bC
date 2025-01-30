@@ -1,0 +1,13 @@
+#DRBC Test setValue in parser.l. You need a line near the top like:
+#DRBC yylval.tokenData = new TokenData;
+#DRBC if the first line of your outpt is
+#DRBC Var: ] instead of Var: zev
+#DRBC That is likely the issue
+// /\ precomList
+// \/ program
+//test constant
+char zev[10]:"corgis";
+//varDeclList, typeSpec
+int x:42, y:666;
+main() {
+}
