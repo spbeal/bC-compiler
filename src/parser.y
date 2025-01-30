@@ -22,6 +22,7 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << endl;
 }
 TreeNode *syntaxTree;
+char * largerTokens[LASTTERM+1];
 
 void initTree()
 {
