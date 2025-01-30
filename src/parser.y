@@ -91,7 +91,6 @@ extern int line;
 %token   <tokenData>  CHSIGN
 %token <tokenData> LASTOP
 
-
 %token <tokenData> LASTTERM
 
 %%
@@ -269,13 +268,12 @@ unaryExp   : unaryop unaryExp  {$$ = NULL;}
              | factor   {$$ = NULL;}
            ;
 
-unaryop    : '-'        {$$ = NULL;}                                     
-             | '*'  {$$ = NULL;}                                      
-             | '?'  {$$ = NULL;}
+unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = largerTokens[CHSIGN];}                                     
+             | '*'  {$$ = $1; $$->tokenclass = SIZEOF; $$->tokenstr = largerTokens[SIZEOF];}                                      
+             | '?'  {$$ = $1;}
              ;
-
-factor     : immutable {$$ = NULL;}
-             | mutable {$$ = NULL;}
+factor     : immutable {$$ = $1;}
+             | mutable {$$ = $1;}
            ;
 
 mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
