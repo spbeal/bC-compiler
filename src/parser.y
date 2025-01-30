@@ -98,8 +98,8 @@ extern int line;
 program : precomList declList {syntaxTree = $2;}
     ;
     
-precomList : precomList PRECOMPILER {$$ = NULL;}
-    | PRECOMPILER                   {$$=NULL; printf("%s\n", $1->tokenstr);}
+precomList : precomList PRECOMPILER {$$ = NULL; printf("%s\n", yylval.tokenData->tokenstr);}
+    | PRECOMPILER                   {$$=NULL; printf("%s\n", tokenData->tokenstr);}
     | /* empty */                   {$$=NULL;}
     ;
 
@@ -111,11 +111,11 @@ decl : varDecl  {$$=$1;}
     | funDecl   {$$=$1;}
     ;
 
-varDecl : typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
+varDecl : typeSpec varDeclList ';' {setType($2, $1, false); $$ = $2; ;}
     ;
 
-scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true); yyerrok;}
-    | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false); yyerrok;}
+scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true);}
+    | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false) ;}
     ;
 
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
@@ -127,7 +127,7 @@ varDeclInit : varDeclId { $$ = $1;}
     ;
 
 varDeclId : ID {$$ = newDeclNode(VarK, UndefinedType, $1);}
-    | ID '[' NUMCONST ']' {$$ = newDeclNode(VarK, Integer, $1); $$->isArray = true;}
+    | ID '[' NUMCONST ']' {$$ = newDeclNode(VarK, UndefinedType, $1); $$->isArray = true; $$->size = $3->nvalue + 1;}
     ;
 
 typeSpec : INT {$$ = Integer;}
@@ -136,10 +136,10 @@ typeSpec : INT {$$ = Integer;}
     ;
 
 funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
-    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5); printf("%s\n", yylval.tokenData->tokenstr);}
+    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
     ;
 
-parms : parmList {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
+parms : parmList {$$ = $1;}
     |  {$$ = NULL;}
     ;
 
@@ -158,7 +158,7 @@ parmId: ID {$$ = newDeclNode(ParamK, UndefinedType, $1);}
     | ID '[' ']' {$$ = newDeclNode(ParamK, UndefinedType, $1); $$->isArray = true;}
     ;
 
-stmt : matched {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
+stmt : matched {$$ = $1;}
     | unmatched {$$ = $1;}
     ;
 
