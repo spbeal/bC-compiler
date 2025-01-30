@@ -27,10 +27,9 @@ void initTree()
 {
   //syntaxTree = NULL;
 }
-
-// the syntax tree goes here
 int numErrors;
 int numWarnings;
+// the syntax tree goes here
 extern int line;
 
 
@@ -125,8 +124,8 @@ varDeclInit : varDeclId { $$ = $1;}
     | varDeclId ':' simpleExp {$$ = $1; if ($$ != NULL) $$->child[0] = $3;}
     ;
 
-varDeclId : ID {newDeclNode(VarK, UndefinedType, $1);}
-    | ID '[' NUMCONST ']' {$$->isArray = true; $$ = newDeclNode(VarK, Integer, $1);}
+varDeclId : ID {$$ = newDeclNode(VarK, UndefinedType, $1);}
+    | ID '[' NUMCONST ']' {$$ = newDeclNode(VarK, Integer, $1); $$->isArray = true;}
     ;
 
 typeSpec : INT {$$ = Integer; printf("%s\n", yylval.tokenData->tokenstr);}
@@ -154,7 +153,7 @@ parmIdList: parmIdList ',' parmId {$$ = addSibling($1, $3);}
     ;
 
 parmId: ID {$$ = newDeclNode(ParamK, UndefinedType, $1);}
-    | ID '[' ']' {$$->isArray = true; $$ = newDeclNode(ParamK, UndefinedType, $1);}
+    | ID '[' ']' {$$ = newDeclNode(ParamK, UndefinedType, $1); $$->isArray = true;}
     ;
 
 stmt : matched {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
@@ -180,19 +179,19 @@ unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $
              | FOR ID '=' iterRange DO unmatched {$$ = newStmtNode(ForK, $1, NULL, $4, $6); newDeclNode(VarK, Integer, $2);}      
            ;
 
-expStmt    : exp ';'  {$$ = NULL;}
+expStmt    : exp ';'  {$$ = $1;}
              | ';'    {$$ = NULL;}                                   
            ;
 
 compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
     ;
 
-localDecls : localDecls scopedVarDecl    {;}         
-             | /* empty */      {;}                        
+localDecls : localDecls scopedVarDecl    {$$ = NULL;}         
+             | /* empty */      {$$ = NULL;}                        
              ;
 
 stmtList : stmtList stmt    {$$ = ($2==NULL ? $1 : addSibling($1, $2)); }
-    |           {;}
+    |           {$$ = NULL;}
     ;
 
 returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}                           
@@ -202,17 +201,17 @@ returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}
 breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
-exp        : mutable assignop exp     {;}                  
+exp        : mutable assignop exp     {$$ = NULL;}                  
              | mutable INC            {$$ = newExpNode(AssignK, $2, $1);}                 
              | mutable DEC            {$$ = newExpNode(AssignK, $2, $1);}              
              | simpleExp              {$$ = $1;}
            ;
 
-assignop  : '=' {;}
-            | ADDASS {;}
-            | SUBASS {;}
-            | MULASS {;}
-            | DIVASS {;}
+assignop  : '=' {$$ = NULL;}
+            | ADDASS {$$ = NULL;}
+            | SUBASS {$$ = NULL;}
+            | MULASS {$$ = NULL;}
+            | DIVASS {$$ = NULL;}
           ;
 
 simpleExp  : simpleExp OR andExp {$$ = newExpNode(OpK, $2, $1, $3);}            
@@ -231,63 +230,63 @@ relExp     : minmaxExp relop minmaxExp    {$$ = NULL;}
              | minmaxExp                    {$$ = $1;}
            ;
 
-relop      : LEQ {;}
-             | '<' {;}
-             | '>' {;}
-             | GEQ {;}
-             | EQ {;}
-             | NEQ {;}
+relop      : LEQ {$$ = NULL;}
+             | '<' {$$ = NULL;}
+             | '>' {$$ = NULL;}
+             | GEQ {$$ = NULL;}
+             | EQ {$$ = NULL;}
+             | NEQ {$$ = NULL;}
            ;
 
-minmaxExp  : minmaxExp minmaxop sumExp  {;}            
-             | sumExp  {;}
+minmaxExp  : minmaxExp minmaxop sumExp  {$$ = NULL;}            
+             | sumExp  {$$ = NULL;}
            ;
 
-minmaxop   : MAX {;}
-             | MIN {;}
+minmaxop   : MAX {$$ = NULL;}
+             | MIN {$$ = NULL;}
            ;
 
-sumExp     : sumExp sumop mulExp  {;}            
-             | mulExp {;}
+sumExp     : sumExp sumop mulExp  {$$ = NULL;}            
+             | mulExp {$$ = NULL;}
            ;
 
-sumop      : '+' {;}
-             | '-' {;}
+sumop      : '+' {$$ = NULL;}
+             | '-' {$$ = NULL;}
            ;
 
-mulExp     : mulExp mulop unaryExp  {;}         
-             | unaryExp  {;}
+mulExp     : mulExp mulop unaryExp  {$$ = NULL;}         
+             | unaryExp  {$$ = NULL;}
            ;
 
-mulop      : '*' {;}
-             | '/' {;}
-             | '%' {;}
+mulop      : '*' {$$ = NULL;}
+             | '/' {$$ = NULL;}
+             | '%' {$$ = NULL;}
            ;
 
-unaryExp   : unaryop unaryExp  {;}                 
-             | factor   {;}
+unaryExp   : unaryop unaryExp  {$$ = NULL;}                 
+             | factor   {$$ = NULL;}
            ;
 
-unaryop    : '-'        {;}                                     
-             | '*'  {;}                                      
-             | '?'  {;}
+unaryop    : '-'        {$$ = NULL;}                                     
+             | '*'  {$$ = NULL;}                                      
+             | '?'  {$$ = NULL;}
              ;
            ;
 
-factor     : immutable {;}
-             | mutable {;}
+factor     : immutable {$$ = NULL;}
+             | mutable {$$ = NULL;}
            ;
 
 mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
              | ID '[' exp ']'   {$$ = newExpNode(IdK, $1);}                       
            ;
 
-immutable  : '(' exp ')'    {;}                        
-             | call         {;}
-             | constant     {;}
+immutable  : '(' exp ')'    {$$ = NULL;}                        
+             | call         {$$ = $1;}
+             | constant     {$$ = $1;}
            ;
 
-call       : ID '(' args ')'    {;}                   
+call       : ID '(' args ')'    {$$ = NULL;}                   
            ;
 
 args       : argList  {$$ = $1;}
