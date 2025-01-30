@@ -188,25 +188,36 @@ void printTreeNode(FILE *listing,
    {
       case DeclK:
          switch (tree->kind.decl) {
-            case VarK: fprintf(listing, "VarDecl"); break;
-            case FuncK: fprintf(listing, "FuncDecl"); break;
-            case ParamK: fprintf(listing, "ParamDecl"); break;
-            default: fprintf(listing, "Unknown Decl"); break;
+            case VarK: fprintf(listing, "VarDecl"); 
+               break;
+            case FuncK: fprintf(listing, "FuncDecl"); 
+               break;
+            case ParamK: fprintf(listing, "ParamDecl"); 
+               break;
+            default: fprintf(listing, "invalid"); 
+               break;
          }
          break;
       case StmtK:
          switch (tree->kind.stmt) {
-            case IfK: fprintf(listing, "IfStmt"); break;
-            case WhileK: fprintf(listing, "WhileStmt"); break;
-            case ForK: fprintf(listing, "ForStmt"); break;
-            default: fprintf(listing, "Unknown Stmt"); break;
+            case IfK: fprintf(listing, "IfStmt"); 
+               break;
+            case WhileK: fprintf(listing, "WhileStmt"); 
+               break;
+            case ForK: fprintf(listing, "ForStmt"); 
+               break;
+            default: fprintf(listing, "invalid"); 
+               break;
          }
          break;
       case ExpK:
          switch (tree->kind.exp) {
-            case AssignK: fprintf(listing, "AssignExp"); break;
-            case OpK: fprintf(listing, "OpExp"); break;
-            default: fprintf(listing, "Unknown Exp"); break;
+            case AssignK: fprintf(listing, "AssignExp"); 
+               break;
+            case OpK: fprintf(listing, "OpExp"); 
+               break;
+            default: fprintf(listing, "invalid"); 
+               break;
          }
          break;
 
