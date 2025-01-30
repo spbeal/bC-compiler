@@ -27,6 +27,7 @@ void initTree()
 {
   syntaxTree = NULL;
 }
+
 int numErrors = 0;
 int numWarnings = 0;
 // the syntax tree goes here
@@ -313,7 +314,7 @@ int main(int argc, char **argv) {
   char *file = NULL;
   extern FILE *yyin;
   syntaxTree = new TreeNode;
-  initTree();
+  //initTree();
   initTokenStrings();
 
    while ((option = getopt (argc, argv, "")) != -1)
