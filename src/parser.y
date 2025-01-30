@@ -99,7 +99,7 @@ program : precomList declList {syntaxTree = $2;}
     ;
     
 precomList : precomList PRECOMPILER {$$ = NULL; printf("%s\n", yylval.tokenData->tokenstr);}
-    | PRECOMPILER                   {$$=NULL; printf("%s\n", tokenData->tokenstr);}
+    | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
     | /* empty */                   {$$=NULL;}
     ;
 
