@@ -1,5 +1,4 @@
 #include "treeUtils.h"
-#include <string.h>
 #include "parser.tab.h" // This has to be the last include
 //#include "dot.h"
 
@@ -270,7 +269,7 @@ void printTreeNode(FILE *listing,
    }
 
    fprintf(listing, " [line: %d]", tree->lineno);
-   fprintf(listing, " NodeNum: %d", tree->nodeNum);
+   //fprintf(listing, " NodeNum: %d", tree->nodeNum);
    // fprintf(listing, "Decl Node");
    // fprintf(listing, "Exp Node");
 
