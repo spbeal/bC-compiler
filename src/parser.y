@@ -61,7 +61,7 @@ extern int line;
 %type <type> typeSpec
 
 %token <tokenData> FIRSTOP
-%token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':'
+%token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':' '?' '<' '>' '=' '-' '+' '*' '/' '%' 
 %token   <tokenData>  OP
 %token   <tokenData>  NEQ AND NOT OR
 %token   <tokenData>  PRECOMPILER
