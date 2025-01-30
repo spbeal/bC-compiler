@@ -59,6 +59,7 @@ extern int line;
 %type   <tree> constant 
 
 %type <type> typeSpec
+%type   <tokenData> assignop relop sumop mulop minmaxop unaryop
 
 %token <tokenData> FIRSTOP
 %token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':' '?' '<' '>' '=' '-' '+' '*' '/' '%' 
@@ -89,6 +90,7 @@ extern int line;
 %token   <tokenData>  CHARCONST STRINGCONST
 %token   <tokenData>  CHSIGN
 %token <tokenData> LASTOP
+
 
 %token <tokenData> LASTTERM
 
