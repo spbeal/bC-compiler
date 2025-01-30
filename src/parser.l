@@ -11,7 +11,7 @@ using namespace std;
 
 int line=1;
 char *lastToken=(char *)"";
-//extern int numErrors;
+extern int numErrors;
 
 int setValue(int linenum, int tokenClass, char *svalue) {
     yylval.tokenData = new TokenData;
