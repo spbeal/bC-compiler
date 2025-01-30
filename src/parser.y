@@ -106,7 +106,7 @@ declList : declList decl {$$ = addSibling($1, $2);}
     | decl      {$$ = $1;}
     ;
 
-decl : varDecl  {$$=$1;}
+decl : varDecl  {$$=$1;  printf("%s\n", yylval.tokenData->tokenstr);}
     | funDecl   {$$=$1;}
     ;
 
@@ -129,16 +129,16 @@ varDeclId : ID {newDeclNode(VarK, UndefinedType, $1);}
     | ID '[' NUMCONST ']' {$$->isArray = true; $$ = newDeclNode(VarK, Integer, $1);}
     ;
 
-typeSpec : INT {$$ = Integer;}
+typeSpec : INT {$$ = Integer; printf("%s\n", yylval.tokenData->tokenstr);}
     | BOOL {$$ = Boolean;}
     | CHAR {$$ = Char;}
     ;
 
 funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
-    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
+    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5); printf("%s\n", yylval.tokenData->tokenstr);}
     ;
 
-parms : parmList {$$ = $1;}
+parms : parmList {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
     |  {$$ = NULL;}
     ;
 
@@ -157,7 +157,7 @@ parmId: ID {$$ = newDeclNode(ParamK, UndefinedType, $1);}
     | ID '[' ']' {$$->isArray = true; $$ = newDeclNode(ParamK, UndefinedType, $1);}
     ;
 
-stmt : matched {$$ = $1;}
+stmt : matched {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
     | unmatched {$$ = $1;}
     ;
 
