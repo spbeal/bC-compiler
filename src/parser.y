@@ -22,7 +22,6 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << endl;
 }
 TreeNode *syntaxTree;
-char * largerTokens[LASTTERM+1];
 
 void initTree()
 {
@@ -269,8 +268,8 @@ unaryExp   : unaryop unaryExp  {$$ = NULL;}
              | factor   {$$ = NULL;}
            ;
 
-unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = largerTokens[CHSIGN];}                                     
-             | '*'  {$$ = $1; $$->tokenclass = SIZEOF; $$->tokenstr = largerTokens[SIZEOF];}                                      
+unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = (char *)"chsign";}                                     
+             | '*'  {$$ = $1; $$->tokenclass = SIZEOF; $$->tokenstr = (char *)"sizeof";}                                      
              | '?'  {$$ = $1;}
              ;
 factor     : immutable {$$ = $1;}
