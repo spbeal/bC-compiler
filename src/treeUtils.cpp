@@ -19,7 +19,7 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
       curr = curr->sibling;
    }
    curr->sibling = s;
-   return s;
+   return curr->sibling;
 }
 // pass the static and type attribute down the sibling list
 void setType(TreeNode *t, ExpType type, bool isStatic)
@@ -83,7 +83,7 @@ TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *to
 {
    static int node_count = 0;
    TreeNode* newNode = new TreeNode;
-   newNode->nodeNum == node_count++;
+   newNode->nodeNum = node_count++;
 
    newNode->child[0] = c0;
    newNode->child[1] = c1;
@@ -142,7 +142,7 @@ TreeNode *newStmtNode(StmtKind kind, TokenData *token, TreeNode *c0, TreeNode *c
    // compound, matched, unmatched, iterRange, returnStmt, breakStmt
    TreeNode *newNode = initializeNode(c0,c1,c2,token);
    //int i = 0;
-   //newNode->nodeNum++;
+   //newNode->nodeNum++ = nodeNum++;
    newNode->nodekind = StmtK;
    newNode->kind.stmt = kind;
    //newNode->type = type;

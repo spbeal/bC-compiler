@@ -1,10 +1,11 @@
 BIN  = bC
 PARSE = parser
-CC   = g++
+CC   = g++ 
 # CFLAGS = -g 
 # CCFLAGS = -DCPLUSPLUS -g  # for use with C++ if file ext is .cc
 CPPFLAGS = -g     # for use with C++ if file ext is .c
 CPPFLAGS = -O3     # for use with C++ if file ext is .c
+#CPPFLAGS = -Wall
 
 SRCS =\
 $(PARSE).y\

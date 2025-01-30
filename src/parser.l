@@ -64,7 +64,6 @@ op    [\-\+\*\/\%]
 whitespace  [\ \t]
 %%
 
-\/\/.*         { return setValue(line, COMMENT, yytext); }
 "=="           { return setValue(line, EQ, yytext); }
 "!="           { return setValue(line, NEQ, yytext); }
 "<="           { return setValue(line, LEQ, yytext); }
@@ -109,7 +108,7 @@ whitespace  [\ \t]
 "do"          { return setValue(line, DO, yytext); }
 "by"          { return setValue(line, BY, yytext); }
 
-
+\/\/.*         { }
 
 "int"          { return setValue(line, INT, yytext); }
 "bool"          { return setValue(line, BOOL, yytext); }

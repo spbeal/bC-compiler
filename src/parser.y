@@ -31,9 +31,7 @@ int numErrors = 0;
 int numWarnings = 0;
 // the syntax tree goes here
 extern int line;
-
-
-
+extern int yylex();
 
 %}
 
@@ -59,7 +57,6 @@ extern int line;
 %type   <tree> constant 
 
 %type <type> typeSpec
-%type   <tokenData> assignop relop sumop mulop minmaxop unaryop
 
 %token <tokenData> FIRSTOP
 %token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':' '?' '<' '>' '=' '-' '+' '*' '/' '%' 
@@ -90,6 +87,8 @@ extern int line;
 %token   <tokenData>  CHARCONST STRINGCONST
 %token   <tokenData>  CHSIGN
 %token <tokenData> LASTOP
+
+%type   <tokenData> assignop relop sumop mulop minmaxop unaryop
 
 %token <tokenData> LASTTERM
 
@@ -310,9 +309,10 @@ void yyerror (const char *msg)
 }
 
 int main(int argc, char **argv) {
-   int option, index;
-   char *file = NULL;
-   extern FILE *yyin;
+  int option, index;
+  char *file = NULL;
+  extern FILE *yyin;
+  syntaxTree = new TreeNode;
   initTree();
   initTokenStrings();
 
