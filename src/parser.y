@@ -335,6 +335,10 @@ int main(int argc, char **argv) {
       //printDotTree(astDot,syntaxTree, false, false);
       printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
+
+   printf("Number of warnings: %d\n", numWarnings);
+   printf("Number of errors: %d\n", numErrors);
+   
    return 0;
 }
 

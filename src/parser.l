@@ -77,6 +77,8 @@ whitespace  [\ \t]
 "--"           { return setValue(line, DEC, yytext); }
 "++"           { return setValue(line, INC, yytext); }
 
+"("            { return setValue(line, OP, yytext); }
+")"            { return setValue(line, OP, yytext); }
 [\(\)]         { return setValue(line, OP, yytext); } // single char tokens
 
 ":"            { return setValue(line, OP, yytext); }
@@ -96,6 +98,7 @@ whitespace  [\ \t]
 "}"            { return setValue(line, OP, yytext); }
 ","            { return setValue(line, OP, yytext); }
 
+
 "return"          { return setValue(line, RETURN, yytext); }
 "break"          { return setValue(line, BREAK, yytext); }
 "then"          { return setValue(line, THEN, yytext); }
@@ -103,22 +106,21 @@ whitespace  [\ \t]
 "for"          { return setValue(line, FOR, yytext); }
 "while"          { return setValue(line, WHILE, yytext); }
 "else"          { return setValue(line, ELSE, yytext); }
-"static"          { return setValue(line, STATIC, yytext); }
 "to"          { return setValue(line, TO, yytext); }
 "do"          { return setValue(line, DO, yytext); }
 "by"          { return setValue(line, BY, yytext); }
-
-\/\/.*         { }
-
-"int"          { return setValue(line, INT, yytext); }
-"bool"          { return setValue(line, BOOL, yytext); }
-"false"          { return setValue(line, BOOLCONST, yytext); }
-"true"          { return setValue(line, BOOLCONST, yytext); }
-
-"char"          { return setValue(line, CHAR, yytext); }
 "and"          { return setValue(line, AND, yytext); }
 "not"          { return setValue(line, NOT, yytext); }
 "or"          { return setValue(line, OR, yytext); }
+"static"          { return setValue(line, STATIC, yytext); }
+
+\/\/.*         { }
+
+"false"          { return setValue(line, BOOLCONST, yytext); }
+"true"          { return setValue(line, BOOLCONST, yytext); }
+"int"          { return setValue(line, INT, yytext); }
+"bool"          { return setValue(line, BOOL, yytext); }
+"char"          { return setValue(line, CHAR, yytext); }
 
 ^"#DRBC ".*    { return setValue(line, PRECOMPILER, yytext); }
 ^"#DRBCRUN ".* { return setValue(line, PRECOMPILER, yytext); }

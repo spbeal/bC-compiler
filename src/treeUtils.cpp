@@ -83,7 +83,7 @@ TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *to
 {
    static int node_count = 0;
    TreeNode* newNode = new TreeNode;
-   newNode->nodeNum = ++node_count;
+   newNode->nodeNum = node_count++;
 
    newNode->child[0] = c0;
    newNode->child[1] = c1;
@@ -184,14 +184,21 @@ void printTreeNode(FILE *listing,
                    TreeNode *tree)
 {
    switch (tree->nodekind)
-   {
+   {      
+
       case DeclK:
          switch (tree->kind.decl) {
-            case VarK: fprintf(listing, "VarDecl"); 
+            case VarK:
+               fprintf(listing, "Var: %s returns type %s", 
+                  tree->attr.name, tree->type); 
                break;
-            case FuncK: fprintf(listing, "FuncDecl"); 
+            case FuncK: 
+               fprintf(listing, "Func: %s returns type %s", 
+                  tree->attr.name, tree->type); 
                break;
-            case ParamK: fprintf(listing, "ParamDecl"); 
+            case ParamK: 
+               fprintf(listing, "Param: %s returns type %s", 
+                  tree->attr.name, tree->type); 
                break;
             default: fprintf(listing, "invalid"); 
                break;
@@ -199,19 +206,33 @@ void printTreeNode(FILE *listing,
          break;
       case StmtK:
          switch (tree->kind.stmt) {
-            case IfK: fprintf(listing, "IfStmt"); 
+            case IfK:
+               fprintf(listing, "If: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case WhileK: fprintf(listing, "WhileStmt"); 
+            case WhileK: 
+               fprintf(listing, "While: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case ForK: fprintf(listing, "ForStmt"); 
+            case ForK: 
+               fprintf(listing, "For: %s returns type %s", 
+                  tree->attr.name, tree->attr.string);                
                break;
-            case CompoundK: fprintf(listing, "CompoundStmt"); 
+            case CompoundK: 
+               fprintf(listing, "Compound: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case ReturnK: fprintf(listing, "ReturnStmt"); 
+            case ReturnK: 
+               fprintf(listing, "Return: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case BreakK: fprintf(listing, "BreakStmt"); 
+            case BreakK:
+               fprintf(listing, "Break: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case RangeK: fprintf(listing, "RangeStmt"); 
+            case RangeK: 
+               fprintf(listing, "Range: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
             default: fprintf(listing, "invalid"); 
                break;
@@ -219,15 +240,25 @@ void printTreeNode(FILE *listing,
          break;
       case ExpK:
          switch (tree->kind.exp) {
-            case AssignK: fprintf(listing, "AssignExp"); 
+            case AssignK: 
+               fprintf(listing, "Assign: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case OpK: fprintf(listing, "OpExp"); 
+            case OpK: 
+               fprintf(listing, "Op: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case CallK: fprintf(listing, "CallExp"); 
+            case CallK: 
+               fprintf(listing, "Call: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case ConstantK: fprintf(listing, "ConstantExp"); 
+            case ConstantK: 
+               fprintf(listing, "Constant: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
-            case IdK: fprintf(listing, "IdExp"); 
+            case IdK: 
+               fprintf(listing, "Id: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
                break;
             default: fprintf(listing, "invalid"); 
                break;
@@ -238,7 +269,8 @@ void printTreeNode(FILE *listing,
          fprintf(listing, "Invalid nodekind");
    }
 
-   fprintf(listing, "[line: %d]", tree->lineno);
+   fprintf(listing, " [line: %d]", tree->lineno);
+   fprintf(listing, " NodeNum: %d", tree->nodeNum);
    // fprintf(listing, "Decl Node");
    // fprintf(listing, "Exp Node");
 
