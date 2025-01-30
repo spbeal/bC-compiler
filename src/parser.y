@@ -10,7 +10,7 @@ extern "C" int yyparse();
 extern "C" FILE *yyin;
 
 void yyerror(const char *msg);
-
+//TreeNode* var = newDeclNode(VarK, UndefinedType, $2);
 void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << "Line: " << myData.linenum << " Type: " << tokenName;
    if(type==0)
@@ -164,7 +164,7 @@ stmt : matched {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
 
 matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2, $4, $6);}
     | WHILE simpleExp DO matched { $$ = newStmtNode(WhileK, $1, $2, $4);}
-    | FOR ID '=' iterRange DO matched {TreeNode* var = newDeclNode(VarK, UndefinedType, $2); $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
+    | FOR ID '=' iterRange DO matched { $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
     | expStmt { $$ = $1;}
     | compoundStmt { $$ = $1;}
     | returnStmt { $$ = $1;}
