@@ -25,7 +25,7 @@ TreeNode *syntaxTree;
 
 void initTree()
 {
-  //syntaxTree = NULL;
+  syntaxTree = NULL;
 }
 int numErrors = 0;
 int numWarnings = 0;
@@ -99,7 +99,7 @@ program : precomList declList {syntaxTree = $2;}
     ;
     
 precomList : precomList PRECOMPILER {$$ = NULL;}
-    | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
+    | PRECOMPILER                   {$$=NULL; printf("%s\n", $1->tokenstr);}
     | /* empty */                   {$$=NULL;}
     ;
 
