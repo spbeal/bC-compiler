@@ -35,5 +35,5 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s);
 void setType(TreeNode *t, ExpType type, bool isStatic);
 
 void initTokenStrings();
-TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *token);
+TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *token);
 #endif

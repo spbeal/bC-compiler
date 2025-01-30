@@ -27,8 +27,8 @@ void initTree()
 {
   //syntaxTree = NULL;
 }
-int numErrors;
-int numWarnings;
+int numErrors = 0;
+int numWarnings = 0;
 // the syntax tree goes here
 extern int line;
 
@@ -164,7 +164,7 @@ stmt : matched {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
 
 matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2, $4, $6);}
     | WHILE simpleExp DO matched { $$ = newStmtNode(WhileK, $1, $2, $4);}
-    | FOR ID '=' iterRange DO matched { $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
+    | FOR ID '=' iterRange DO matched {TreeNode* var = newDeclNode(VarK, UndefinedType, $2); $$ = newStmtNode(ForK, $1, NULL, $4, $6);}
     | expStmt { $$ = $1;}
     | compoundStmt { $$ = $1;}
     | returnStmt { $$ = $1;}
@@ -279,7 +279,7 @@ factor     : immutable {$$ = NULL;}
            ;
 
 mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
-             | ID '[' exp ']'   {$$ = newExpNode(IdK, $1);}                       
+             | ID '[' exp ']'   {$$ = newExpNode(IdK, $1, $3);}                       
            ;
 
 immutable  : '(' exp ')'    {$$ = NULL;}                        

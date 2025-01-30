@@ -9,13 +9,16 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
 {
    if (s == NULL) exit(0);
    if (t == NULL) return s;
+
+   static int node_count = 0;
+   newNode->nodeNum == node_count++;
    // make sure s is not null. If it is this s a major error. Exit the program!
    // Make sure t is not null. If it is, just return s
    // look down t’s sibling list until you fin with with sibblin = null (the end o f the lsit) and add s there.
    TreeNode * curr = t;
    while (curr->sibling != NULL)
    {
-      curr = t->sibling;
+      curr = curr->sibling;
    }
    curr->sibling = s;
    return s;
@@ -78,7 +81,7 @@ void initTokenStrings()
    largerTokens[LASTTERM] = (char *)"lastterm";
 }
 
-TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *token)
+TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *token)
 {
    TreeNode* newNode = new TreeNode;
 
@@ -117,9 +120,9 @@ TreeNode* initalizeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *tok
 
 TreeNode *newDeclNode(DeclKind kind, ExpType type, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
-   TreeNode *newNode = initalizeNode(c0,c1,c2,token);
+   TreeNode *newNode = initializeNode(c0,c1,c2,token);
 
-   newNode->nodeNum++;
+   //newNode->nodeNum = newNode->nodeNum + 1;
    newNode->nodekind = DeclK;
    newNode->kind.decl = kind;
    newNode->type = type;
@@ -137,9 +140,9 @@ TreeNode *newDeclNode(DeclKind kind, ExpType type, TokenData *token, TreeNode *c
 TreeNode *newStmtNode(StmtKind kind, TokenData *token, TreeNode *c0, TreeNode *c1, TreeNode *c2)
 {
    // compound, matched, unmatched, iterRange, returnStmt, breakStmt
-   TreeNode *newNode = initalizeNode(c0,c1,c2,token);
+   TreeNode *newNode = initializeNode(c0,c1,c2,token);
    //int i = 0;
-   newNode->nodeNum++;
+   //newNode->nodeNum++;
    newNode->nodekind = StmtK;
    newNode->kind.stmt = kind;
    //newNode->type = type;
@@ -163,8 +166,8 @@ TreeNode *newExpNode(ExpKind kind, TokenData *token, TreeNode *c0, TreeNode *c1,
    • call
    • constant
    */
-   TreeNode *newNode = initalizeNode(c0,c1,c2,token);
-   newNode->nodeNum++;
+   TreeNode *newNode = initializeNode(c0,c1,c2,token);
+   //newNode->nodeNum++;
    newNode->nodekind = ExpK;
    newNode->kind.exp = kind;
    //newNode->type = type;
@@ -184,33 +187,27 @@ void printTreeNode(FILE *listing,
    switch (tree->nodekind)
    {
       case DeclK:
-         switch(tree->kind.decl)
-         {
-            default:
-               fprintf(listing, "Invalid kind");
-               break;
+         switch (tree->kind.decl) {
+            case VarK: fprintf(listing, "VarDecl"); break;
+            case FuncK: fprintf(listing, "FuncDecl"); break;
+            case ParamK: fprintf(listing, "ParamDecl"); break;
+            default: fprintf(listing, "Unknown Decl"); break;
          }
-
          break;
-
       case StmtK:
-         switch(tree->kind.stmt)
-         {
-            default:
-               fprintf(listing, "Invalid kind");
-               break;
+         switch (tree->kind.stmt) {
+            case IfK: fprintf(listing, "IfStmt"); break;
+            case WhileK: fprintf(listing, "WhileStmt"); break;
+            case ForK: fprintf(listing, "ForStmt"); break;
+            default: fprintf(listing, "Unknown Stmt"); break;
          }
-
          break;
-
       case ExpK:
-         switch(tree->kind.exp)
-         {
-            default:
-               fprintf(listing, "Invalid kind");
-               break;
+         switch (tree->kind.exp) {
+            case AssignK: fprintf(listing, "AssignExp"); break;
+            case OpK: fprintf(listing, "OpExp"); break;
+            default: fprintf(listing, "Unknown Exp"); break;
          }
-
          break;
 
       default:
