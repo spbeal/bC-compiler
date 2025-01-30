@@ -10,8 +10,6 @@ TreeNode *addSibling(TreeNode *t, TreeNode *s)
    if (s == NULL) exit(0);
    if (t == NULL) return s;
 
-   static int node_count = 0;
-   newNode->nodeNum == node_count++;
    // make sure s is not null. If it is this s a major error. Exit the program!
    // Make sure t is not null. If it is, just return s
    // look down t’s sibling list until you fin with with sibblin = null (the end o f the lsit) and add s there.
@@ -83,7 +81,9 @@ void initTokenStrings()
 
 TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *token)
 {
+   static int node_count = 0;
    TreeNode* newNode = new TreeNode;
+   newNode->nodeNum == node_count++;
 
    newNode->child[0] = c0;
    newNode->child[1] = c1;
