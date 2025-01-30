@@ -61,37 +61,37 @@ extern int line;
 
 %type <type> typeSpec
 
-%token <tokenData> FIRSTOP
-%token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':'
-%token   <tokenData>  OP
-%token   <tokenData>  NEQ AND NOT OR
-%token   <tokenData>  PRECOMPILER
-%token   <tokenData>  NUMCONST
-%token   <tokenData>  EQ LEQ GEQ 
-%token   <tokenData>  MAX MIN
-%token   <tokenData>  ADDASS SUBASS MULASS DIVASS
-%token   <tokenData>  DEC INC 
-%token   <tokenData>  SIZEOF
+%type <tokenData> FIRSTOP
+%type <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':'
+%type   <tokenData>  OP
+%type   <tokenData>  NEQ AND NOT OR
+%type   <tokenData>  PRECOMPILER
+%type   <tokenData>  NUMCONST
+%type   <tokenData>  EQ LEQ GEQ 
+%type   <tokenData>  MAX MIN
+%type   <tokenData>  ADDASS SUBASS MULASS DIVASS
+%type   <tokenData>  DEC INC 
+%type   <tokenData>  SIZEOF
 
-%token   <tokenData>  INT 
-%token   <tokenData>  BOOL
-%token   <tokenData>  BOOLCONST
-%token   <tokenData>  CHAR
-%token   <tokenData>  ID
-%token   <tokenData>  RETURN
-%token   <tokenData>  BREAK
-%token   <tokenData>  ERROR 
+%type   <tokenData>  INT 
+%type   <tokenData>  BOOL
+%type   <tokenData>  BOOLCONST
+%type   <tokenData>  CHAR
+%type   <tokenData>  ID
+%type   <tokenData>  RETURN
+%type   <tokenData>  BREAK
+%type   <tokenData>  ERROR 
 
-%token   <tokenData>  THEN IF ELSE
-%token   <tokenData>  FOR BY TO
-%token   <tokenData>  WHILE DO 
-%token   <tokenData>  STATIC
-%token   <tokenData>  COMMENT
-%token   <tokenData>  CHARCONST STRINGCONST
-%token   <tokenData>  CHSIGN
-%token <tokenData> LASTOP
+%type   <tokenData>  THEN IF ELSE
+%type   <tokenData>  FOR BY TO
+%type   <tokenData>  WHILE DO 
+%type   <tokenData>  STATIC
+%type   <tokenData>  COMMENT
+%type   <tokenData>  CHARCONST STRINGCONST
+%type   <tokenData>  CHSIGN
+%type <tokenData> LASTOP
 
-%token <tokenData> LASTTERM
+%type <tokenData> LASTTERM
 
 %%
 program : precomList declList {syntaxTree = $2;}

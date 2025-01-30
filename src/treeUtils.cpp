@@ -7,7 +7,7 @@
 char * largerTokens[LASTTERM+1];
 TreeNode *addSibling(TreeNode *t, TreeNode *s)
 {
-   if (s == NULL) return s;
+   if (s == NULL) exit(0);
    if (t == NULL) return s;
    // make sure s is not null. If it is this s a major error. Exit the program!
    // Make sure t is not null. If it is, just return s
