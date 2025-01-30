@@ -107,7 +107,7 @@ declList : declList decl {$$ = addSibling($1, $2);}
     | decl      {$$ = $1;}
     ;
 
-decl : varDecl  {$$=$1;  printf("%s\n", yylval.tokenData->tokenstr);}
+decl : varDecl  {$$=$1;}
     | funDecl   {$$=$1;}
     ;
 
@@ -130,7 +130,7 @@ varDeclId : ID {$$ = newDeclNode(VarK, UndefinedType, $1);}
     | ID '[' NUMCONST ']' {$$ = newDeclNode(VarK, Integer, $1); $$->isArray = true;}
     ;
 
-typeSpec : INT {$$ = Integer; printf("%s\n", yylval.tokenData->tokenstr);}
+typeSpec : INT {$$ = Integer;}
     | BOOL {$$ = Boolean;}
     | CHAR {$$ = Char;}
     ;
@@ -273,7 +273,6 @@ unaryop    : '-'        {$$ = NULL;}
              | '*'  {$$ = NULL;}                                      
              | '?'  {$$ = NULL;}
              ;
-           ;
 
 factor     : immutable {$$ = NULL;}
              | mutable {$$ = NULL;}
