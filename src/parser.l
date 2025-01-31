@@ -15,6 +15,10 @@ extern int numErrors;
 
 int setValue(int linenum, int tokenClass, char *svalue) {
     yylval.tokenData = new TokenData;
+    if (!svalue) {
+     fprintf(stderr, "ERROR: Null token string at line %d\n", linenum);
+     exit(1);
+    }
     yylval.tokenData->tokenclass = tokenClass;
     yylval.tokenData->linenum = linenum;
     yylval.tokenData->tokenstr = strdup(svalue);
@@ -46,7 +50,7 @@ int setValue(int linenum, int tokenClass, char *svalue) {
 
     return tokenClass;
 }
-
+// [\(\)]         { return setValue(line, OP, yytext); } // single char tokens
 %}
 
 %option noyywrap
@@ -77,26 +81,25 @@ whitespace  [\ \t]
 "--"           { return setValue(line, DEC, yytext); }
 "++"           { return setValue(line, INC, yytext); }
 
-"("            { return setValue(line, OP, yytext); }
-")"            { return setValue(line, OP, yytext); }
-[\(\)]         { return setValue(line, OP, yytext); } // single char tokens
 
-":"            { return setValue(line, OP, yytext); }
-"<"            { return setValue(line, OP, yytext); }
-">"            { return setValue(line, OP, yytext); }
-"="            { return setValue(line, OP, yytext); }
-"*"            { return setValue(line, OP, yytext); }
-"-"            { return setValue(line, OP, yytext); }
-"+"            { return setValue(line, OP, yytext); }
-"?"            { return setValue(line, OP, yytext); }
-"/"            { return setValue(line, OP, yytext); }
-"%"            { return setValue(line, OP, yytext); }
-"["            { return setValue(line, OP, yytext); }
-"]"            { return setValue(line, OP, yytext); }
-";"            { return setValue(line, OP, yytext); }
-"{"            { return setValue(line, OP, yytext); }
-"}"            { return setValue(line, OP, yytext); }
-","            { return setValue(line, OP, yytext); }
+"("            { return setValue(line, '(', yytext); }
+":"            { return setValue(line, ':', yytext); }
+")"            { return setValue(line, ')', yytext); }
+"<"            { return setValue(line, '<', yytext); }
+">"            { return setValue(line, '>', yytext); }
+"="            { return setValue(line, '=', yytext); }
+"*"            { return setValue(line, '*', yytext); }
+"-"            { return setValue(line, '-', yytext); }
+"+"            { return setValue(line, '+', yytext); }
+"?"            { return setValue(line, '?', yytext); }
+"/"            { return setValue(line, '/', yytext); }
+"%"            { return setValue(line, '%', yytext); }
+"["            { return setValue(line, '[', yytext); }
+"]"            { return setValue(line, ']', yytext); }
+";"            { return setValue(line, ';', yytext); }
+"{"            { return setValue(line, '{', yytext); }
+"}"            { return setValue(line, '}', yytext); }
+","            { return setValue(line, ',', yytext); }
 
 
 "return"          { return setValue(line, RETURN, yytext); }

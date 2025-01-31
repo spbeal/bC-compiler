@@ -25,7 +25,7 @@ TreeNode *syntaxTree;
 
 void initTree()
 {
-  syntaxTree = NULL;
+  syntaxTree = initializeNode(NULL, NULL, NULL, NULL);
 }
 
 int numErrors = 0;
@@ -62,10 +62,9 @@ extern int yylex();
 %token <tokenData> FIRSTOP
 %token <tokenData> '(' ')' ',' ';' '[' '{' '}' ']' ':' '?' '<' '>' '=' '-' '+' '*' '/' '%' 
 %token   <tokenData>  OP
-%token   <tokenData>  NEQ AND NOT OR
+%token   <tokenData>  AND NOT OR
 %token   <tokenData>  PRECOMPILER
-%token   <tokenData>  NUMCONST
-%token   <tokenData>  EQ LEQ GEQ 
+%token   <tokenData>  EQ LEQ GEQ NEQ
 %token   <tokenData>  MAX MIN
 %token   <tokenData>  ADDASS SUBASS MULASS DIVASS
 %token   <tokenData>  DEC INC 
@@ -73,7 +72,9 @@ extern int yylex();
 
 %token   <tokenData>  INT 
 %token   <tokenData>  BOOL
-%token   <tokenData>  BOOLCONST
+%token   <tokenData>  BOOLCONST NUMCONST
+%token   <tokenData>  CHARCONST STRINGCONST
+
 %token   <tokenData>  CHAR
 %token   <tokenData>  ID
 %token   <tokenData>  RETURN
@@ -84,8 +85,7 @@ extern int yylex();
 %token   <tokenData>  FOR BY TO
 %token   <tokenData>  WHILE DO 
 %token   <tokenData>  STATIC
-%token   <tokenData>  COMMENT
-%token   <tokenData>  CHARCONST STRINGCONST
+// %token   <tokenData>  COMMENT
 %token   <tokenData>  CHSIGN
 %token <tokenData> LASTOP
 
@@ -97,7 +97,7 @@ extern int yylex();
 program : precomList declList {syntaxTree = $2;}
     ;
     
-precomList : precomList PRECOMPILER {$$ = NULL; printf("%s\n", yylval.tokenData->tokenstr);}
+precomList : precomList PRECOMPILER {$$ = $1;}
     | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
     | /* empty */                   {$$=NULL;}
     ;
@@ -171,7 +171,7 @@ matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2,
     ;
 
 iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $2, $1, $3);}
-    | simpleExp TO simpleExp BY simpleExp {$$ = NULL;}
+    | simpleExp TO simpleExp BY simpleExp {$$ = newStmtNode(RangeK, $2, $1, $3, $5);}
     ;
 
 unmatched  : IF simpleExp THEN stmt             {$$ = newStmtNode(IfK, $1, $2, $4);}        
@@ -184,10 +184,10 @@ expStmt    : exp ';'  {$$ = $1;}
              | ';'    {$$ = NULL;}                                   
            ;
 
-compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3); yyerrok;}
+compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3);}
     ;
 
-localDecls : localDecls scopedVarDecl    {$$ = NULL;}         
+localDecls : localDecls scopedVarDecl    {$$ = addSibling($1, $2);}         
              | /* empty */      {$$ = NULL;}                        
              ;
 
@@ -202,17 +202,17 @@ returnStmt : RETURN ';'      {$$ = newStmtNode(ReturnK, $1);}
 breakStmt  : BREAK ';'               {$$ = newStmtNode(BreakK, $1);}           
            ;
 
-exp        : mutable assignop exp     {$$ = NULL;}                  
+exp        : mutable assignop exp     {$$ = newExpNode(AssignK, $2, $1, $3);}                  
              | mutable INC            {$$ = newExpNode(AssignK, $2, $1);}                 
              | mutable DEC            {$$ = newExpNode(AssignK, $2, $1);}              
              | simpleExp              {$$ = $1;}
            ;
 
-assignop  : '=' {$$ = NULL;}
-            | ADDASS {$$ = NULL;}
-            | SUBASS {$$ = NULL;}
-            | MULASS {$$ = NULL;}
-            | DIVASS {$$ = NULL;}
+assignop  : '=' {$$ = $1;}
+            | ADDASS {$$ = $1;}
+            | SUBASS {$$ = $1;}
+            | MULASS {$$ = $1;}
+            | DIVASS {$$ = $1;}
           ;
 
 simpleExp  : simpleExp OR andExp {$$ = newExpNode(OpK, $2, $1, $3);}            
@@ -227,49 +227,49 @@ unaryRelExp : NOT unaryRelExp     {$$ = newExpNode(OpK, $1, $2);}
               | relExp              {$$ = $1;}
             ;
 
-relExp     : minmaxExp relop minmaxExp    {$$ = NULL;}            
+relExp     : minmaxExp relop minmaxExp    {$$ = newExpNode(OpK, $2, $1, $3);}            
              | minmaxExp                    {$$ = $1;}
            ;
 
-relop      : LEQ {$$ = NULL;}
-             | '<' {$$ = NULL;}
-             | '>' {$$ = NULL;}
-             | GEQ {$$ = NULL;}
-             | EQ {$$ = NULL;}
-             | NEQ {$$ = NULL;}
+relop      : LEQ {$$ = $1;}
+             | '<' {$$ = $1;}
+             | '>' {$$ = $1;}
+             | GEQ {$$ = $1;}
+             | EQ {$$ = $1;}
+             | NEQ {$$ = $1;}
            ;
 
-minmaxExp  : minmaxExp minmaxop sumExp  {$$ = NULL;}            
-             | sumExp  {$$ = NULL;}
+minmaxExp  : minmaxExp minmaxop sumExp  {$$ = newExpNode(OpK, $2, $1, $3);}            
+             | sumExp  {$$ = $1;}
            ;
 
-minmaxop   : MAX {$$ = NULL;}
-             | MIN {$$ = NULL;}
+minmaxop   : MAX {$$ = $1;}
+             | MIN {$$ = $1;}
            ;
 
-sumExp     : sumExp sumop mulExp  {$$ = NULL;}            
-             | mulExp {$$ = NULL;}
+sumExp     : sumExp sumop mulExp  {$$ = newExpNode(OpK, $2, $1, $3);}            
+             | mulExp {$$ = $1;}
            ;
 
-sumop      : '+' {$$ = NULL;}
-             | '-' {$$ = NULL;}
+sumop      : '+' {$$ = $1;}
+             | '-' {$$ = $1;}
            ;
 
-mulExp     : mulExp mulop unaryExp  {$$ = NULL;}         
-             | unaryExp  {$$ = NULL;}
+mulExp     : mulExp mulop unaryExp  {$$ = newExpNode(OpK, $2, $1, $3);}         
+             | unaryExp  {$$ = $1;}
            ;
 
-mulop      : '*' {$$ = NULL;}
-             | '/' {$$ = NULL;}
-             | '%' {$$ = NULL;}
+mulop      : '*' {$$ = $1;}
+             | '/' {$$ = $1;}
+             | '%' {$$ = $1;}
            ;
 
-unaryExp   : unaryop unaryExp  {$$ = NULL;}                 
-             | factor   {$$ = NULL;}
+unaryExp   : unaryop unaryExp  {$$ = newExpNode(OpK, $1, $2);}                 
+             | factor   {$$ = $1;}
            ;
 
-unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = (char *)"chsign";}                                     
-             | '*'  {$$ = $1; $$->tokenclass = SIZEOF; $$->tokenstr = (char *)"sizeof";}                                      
+unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = strdup("chsign");}                                     
+             | '*'  {$$ = $1; $$->tokenclass = SIZEOF; $$->tokenstr = strdup("sizeof");}                                      
              | '?'  {$$ = $1;}
              ;
 factor     : immutable {$$ = $1;}
@@ -277,15 +277,15 @@ factor     : immutable {$$ = $1;}
            ;
 
 mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
-             | ID '[' exp ']'   {$$ = newExpNode(IdK, $1, $3);}                       
+             | ID '[' exp ']'   {$$ = newExpNode(IdK, $1, $3); $$->isArray = true;}                       
            ;
 
-immutable  : '(' exp ')'    {$$ = NULL;}                        
+immutable  : '(' exp ')'    {$$ = $2;}                        
              | call         {$$ = $1;}
              | constant     {$$ = $1;}
            ;
 
-call       : ID '(' args ')'    {$$ = NULL;}                   
+call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3);}                   
            ;
 
 args       : argList  {$$ = $1;}
@@ -313,8 +313,8 @@ int main(int argc, char **argv) {
   int option, index;
   char *file = NULL;
   extern FILE *yyin;
-  syntaxTree = new TreeNode;
-  //initTree();
+  //syntaxTree = new TreeNode;
+  initTree();
   initTokenStrings();
 
    while ((option = getopt (argc, argv, "")) != -1)
