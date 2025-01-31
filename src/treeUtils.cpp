@@ -2,7 +2,6 @@
 #include "parser.tab.h" // This has to be the last include
 //#include "dot.h"
 
-extern TreeNode *syntaxTree;
 char * largerTokens[LASTTERM+1];
 TreeNode *addSibling(TreeNode *t, TreeNode *s)
 {
@@ -183,6 +182,17 @@ static void printSpaces(FILE *listing, int depth)
     for (int i=0; i<depth; i++) fprintf(listing, ".   ");
 }
 
+const char* type_str(ExpType type) {
+   switch(type) {
+      case Integer: return "int";
+      case Boolean: return "bool";
+      case Char:    return "char";
+      case Void:    return "Void";
+      case UndefinedType: return "Undefined Type";
+      default:      return "invalid";
+   }
+}
+
 void printTreeNode(FILE *listing,
                    TreeNode *tree)
 {
@@ -193,76 +203,76 @@ void printTreeNode(FILE *listing,
          switch (tree->kind.decl) {
             case VarK:
                fprintf(listing, "Var: %s returns type %s", 
-                  tree->attr.name, tree->type); 
+                  tree->attr.name, type_str(tree->type)); 
                break;
             case FuncK: 
                fprintf(listing, "Func: %s returns type %s", 
-                  tree->attr.name, tree->type); 
+                  tree->attr.name, type_str(tree->type)); 
                break;
-            // case ParamK: 
-            //    fprintf(listing, "Param: %s returns type %s", 
-            //       tree->attr.name, tree->type); 
-            //    break;
+            case ParamK: 
+               fprintf(listing, "Param: %s returns type %s", 
+                  tree->attr.name, type_str(tree->type)); 
+               break;
             default: fprintf(listing, "invalid"); 
                break;
          }
          break;
       case StmtK:
          switch (tree->kind.stmt) {
-            // case IfK:
-            //    fprintf(listing, "If: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case WhileK: 
-            //    fprintf(listing, "While: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case ForK: 
-            //    fprintf(listing, "For: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string);                
-            //    break;
-            // case CompoundK: 
-            //    fprintf(listing, "Compound: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case ReturnK: 
-            //    fprintf(listing, "Return: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case BreakK:
-            //    fprintf(listing, "Break: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case RangeK: 
-            //    fprintf(listing, "Range: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
+            case IfK:
+               fprintf(listing, "If: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case WhileK: 
+               fprintf(listing, "While: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case ForK: 
+               fprintf(listing, "For: %s returns type %s", 
+                  tree->attr.name, tree->attr.string);                
+               break;
+            case CompoundK: 
+               fprintf(listing, "Compound: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case ReturnK: 
+               fprintf(listing, "Return: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case BreakK:
+               fprintf(listing, "Break: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case RangeK: 
+               fprintf(listing, "Range: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
             default: fprintf(listing, "invalid"); 
                break;
          }
          break;
       case ExpK:
          switch (tree->kind.exp) {
-            // case AssignK: 
-            //    fprintf(listing, "Assign: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case OpK: 
-            //    fprintf(listing, "Op: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case CallK: 
-            //    fprintf(listing, "Call: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case ConstantK: 
-            //    fprintf(listing, "Constant: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
-            // case IdK: 
-            //    fprintf(listing, "Id: %s returns type %s", 
-            //       tree->attr.name, tree->attr.string); 
-            //    break;
+            case AssignK: 
+               fprintf(listing, "Assign: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case OpK: 
+               fprintf(listing, "Op: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case CallK: 
+               fprintf(listing, "Call: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case ConstantK: 
+               fprintf(listing, "Constant: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
+            case IdK: 
+               fprintf(listing, "Id: %s returns type %s", 
+                  tree->attr.name, tree->attr.string); 
+               break;
             default: fprintf(listing, "invalid"); 
                break;
          }
