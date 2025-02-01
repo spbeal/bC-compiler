@@ -272,7 +272,7 @@ void printTreeNode(FILE *listing, TreeNode *tree)
                //char * str;
                //strcat(str, "'\n'");
                //strcmp()
-               if (strcmp(tree->attr.name, "\n")) {
+               if (strcmp(tree->attr.name, "\n") == 0) {
                //if (tree->attr.name == str) {
                   //fprintf(listing, "Const ");
                   //fprintf(listing, "\n");
