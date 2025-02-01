@@ -182,14 +182,18 @@ static void printSpaces(FILE *listing, int depth)
     for (int i=0; i<depth; i++) fprintf(listing, ".   ");
 }
 
-const char* type_str(ExpType type) {
+const char* type_str(ExpType type, bool isStatic, bool isArray) {
+   char * return_str = "";
+   if (isStatic) return_str += "static ";
+   if (isArray) return_str += "array of ";
+
    switch(type) {
-      case Integer: return "int";
-      case Boolean: return "bool";
-      case Char:    return "char";
-      case Void:    return "void";
-      case UndefinedType: return "Undefined Type";
-      default:      return "invalid";
+      case Integer: return_str += "type int";
+      case Boolean: return_str += "type bool";
+      case Char:    return_str += "type char";
+      case Void:    return_str += "type void";
+      case UndefinedType: return_str += "type UndefinedType";
+      default:      return_str += "invalid";
    }
 }
 
@@ -198,21 +202,20 @@ void printTreeNode(FILE *listing,
 {
    switch (tree->nodekind)
    {      
-
       case DeclK:
          switch (tree->kind.decl) {
             case VarK:
-               fprintf(listing, "Var: %s of type %s", 
-                  tree->attr.name, type_str(tree->type)); 
+               fprintf(listing, "Var: %s of %s", 
+                  tree->attr.name, type_str(tree->type, tree->isStatic, tree->isArray)); 
                break;
             case FuncK: 
-               fprintf(listing, "Func: %s returns type %s", 
-                  tree->attr.name, type_str(tree->type)); 
+               fprintf(listing, "Func: %s returns %s", 
+                  tree->attr.name, type_str(tree->type, tree->isStatic, tree->isArray)); 
                break;
             case ParamK: 
                // check for arrays
-               fprintf(listing, "Parm: %s of type %s", 
-                  tree->attr.name, type_str(tree->type)); 
+               fprintf(listing, "Parm: %s of %s", 
+                  tree->attr.name, type_str(tree->type, tree->isStatic, tree->isArray)); 
                break;
             default: fprintf(listing, "invalid"); 
                break;
@@ -256,6 +259,7 @@ void printTreeNode(FILE *listing,
             case OpK: 
                fprintf(listing, "Op: %s", 
                   tree->attr.name); 
+                  // tree->isStatic, tree->isArray
                break;
             case CallK: 
                fprintf(listing, "Call: %s", 
