@@ -262,7 +262,7 @@ void printTreeNode(FILE *listing,
                   tree->attr.name); 
                break;
             case ConstantK: 
-               fprintf(listing, "Const: %s", 
+               fprintf(listing, "Const %s", 
                   tree->attr.name); 
                break;
             case IdK: 
