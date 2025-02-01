@@ -201,8 +201,7 @@ const char* type_str(ExpType type, bool isStatic, bool isArray) {
    return return_str;
 }
 
-void printTreeNode(FILE *listing,
-                   TreeNode *tree)
+void printTreeNode(FILE *listing, TreeNode *tree)
 {
    switch (tree->nodekind)
    {      
@@ -298,25 +297,6 @@ void printTreeNode(FILE *listing,
    }
 
    fprintf(listing, " [line: %d]", tree->lineno);
-   //fprintf(listing, " NodeNum: %d", tree->nodeNum);
-   // fprintf(listing, "Decl Node");
-   // fprintf(listing, "Exp Node");
-
-   /*
-      newNode->child[0] = c0;
-   newNode->child[1] = c1;
-   newNode->child[2] = c2;
-   newNode->sibling = NULL;
-
-   if (token != NULL)
-   {
-      newNode->lineno = token->linenum; 
-      newNode->attr.op = token->tokenclass;
-      newNode->attr.value = token->nvalue;
-      newNode->attr.cvalue = token->cvalue;
-      newNode->attr.name = token->tokenstr;
-      newNode->attr.string = token->svalue;
-   */
 }
 
 
