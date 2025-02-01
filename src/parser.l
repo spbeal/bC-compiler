@@ -130,7 +130,7 @@ whitespace  [\ \t]
 ^"#DRBC ".*    { return setValue(line, PRECOMPILER, yytext); }
 ^"#DRBCRUN ".* { return setValue(line, PRECOMPILER, yytext); }
 
-\n             {  line++; }
+\n             {  line++;}
 
 {charcon} { return setValue(line, CHARCONST, yytext); }
 {stringcon}   { return setValue(line, STRINGCONST, yytext); }

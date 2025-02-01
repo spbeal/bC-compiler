@@ -97,7 +97,7 @@ extern int yylex();
 program : precomList declList {syntaxTree = $2;}
     ;
     
-precomList : precomList PRECOMPILER {$$ = $1;}
+precomList : precomList PRECOMPILER {$$ = $1; printf("%s\n", yylval.tokenData->tokenstr);}
     | PRECOMPILER                   {$$=NULL; printf("%s\n", yylval.tokenData->tokenstr);}
     | /* empty */                   {$$=NULL;}
     ;
