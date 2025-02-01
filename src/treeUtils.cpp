@@ -183,18 +183,22 @@ static void printSpaces(FILE *listing, int depth)
 }
 
 const char* type_str(ExpType type, bool isStatic, bool isArray) {
-   char * return_str = "";
-   if (isStatic) return_str += "static ";
-   if (isArray) return_str += "array of ";
+   //char * return_str = "";
+   static char return_str[50];
+   return_str[0] = '\0';
+   if (isStatic) strcat(return_str, "static ");
+   if (isArray) strcat(return_str, "array of ");
 
    switch(type) {
-      case Integer: return_str += "type int";
-      case Boolean: return_str += "type bool";
-      case Char:    return_str += "type char";
-      case Void:    return_str += "type void";
-      case UndefinedType: return_str += "type UndefinedType";
-      default:      return_str += "invalid";
+      case Integer: strcat(return_str, "type int"); break;
+      case Boolean: strcat(return_str, "type bool"); break;
+      case Char:    strcat(return_str, "type char"); break;
+      case Void:    strcat(return_str, "type void"); break;
+      case UndefinedType: strcat(return_str, "type UndefinedType"); break;
+      default:      strcat(return_str, "invalid"); break;
    }
+
+   return return_str;
 }
 
 void printTreeNode(FILE *listing,
