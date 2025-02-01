@@ -277,7 +277,11 @@ factor     : immutable {$$ = $1;}
            ;
 
 mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
-             | ID '[' exp ']'   {$$ = newExpNode(IdK, $1, $3); $$->isArray = true;}                       
+             | ID '[' exp ']'   {
+                                 TreeNode * id = newExpNode(IdK, $1);
+                                 $$ = newExpNode(OpK, $2, id, $3); 
+                                 $$->isArray = true;
+                                }                       
            ;
 
 immutable  : '(' exp ')'    {$$ = $2;}                        
