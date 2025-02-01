@@ -187,7 +187,7 @@ const char* type_str(ExpType type) {
       case Integer: return "int";
       case Boolean: return "bool";
       case Char:    return "char";
-      case Void:    return "Void";
+      case Void:    return "void";
       case UndefinedType: return "Undefined Type";
       default:      return "invalid";
    }
