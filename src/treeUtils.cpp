@@ -184,6 +184,48 @@ static void printSpaces(FILE *listing, int depth)
     for (int i=0; i<depth; i++) fprintf(listing, ".   ");
 }
 
+char * variable_kind_str(TreeNode * tree)
+{
+   static char return_str[50];
+   return_str[0] = '\0';
+
+   switch (tree->varKind)
+   {
+      // None, Local, Parameter, Global, LocalStatic
+      case None: strcat(return_str, "None");
+         break;
+
+      case Local: strcat(return_str, "Local");
+         break;
+
+      case Global: strcat(return_str, "Global");
+         break;
+
+      case Parameter: strcat(return_str, "Parameter");
+         break;
+
+      case LocalStatic: strcat(return_str, "LocalStatic");
+         break;
+
+      default: strcat(return_str, "Invalid_varKind");
+         break;
+   }
+   return return_str;
+}
+
+
+void print_memory(FILE * listing, TreeNode * tree)
+{
+   /*
+    // extra stuff inferred about the node
+    VarKind varKind;                       // global, local, localStatic, parameter
+    int offset;                            // offset for address of object
+    int size;                              // used for size of array
+   */
+
+   fprintf(listing, "[mem: %s loc: %d size: %d]", variable_kind_str(tree), tree->offset, tree->size);
+}
+
 char* type_str(ExpType type, bool isStatic, bool isArray) {
    //char * return_str = "";
    static char return_str[50];
@@ -214,15 +256,18 @@ void printTreeNode(FILE *listing, TreeNode *tree)
             case VarK:
                fprintf(listing, "Var: %s of %s", 
                   tree->attr.name, print_str); 
+               print_memory(listing, tree);
                break;
             case FuncK: 
                fprintf(listing, "Func: %s returns %s", 
                   tree->attr.name, print_str); 
+               print_memory(listing, tree);
                break;
             case ParamK: 
                // check for arrays
                fprintf(listing, "Parm: %s of %s", 
                   tree->attr.name,print_str); 
+               print_memory(listing, tree);
                break;
             default: fprintf(listing, "invalid"); 
                break;
@@ -239,10 +284,12 @@ void printTreeNode(FILE *listing, TreeNode *tree)
             case ForK: 
                // fix var: i of type int
                // range as a child
-               fprintf(listing, "For");                
+               fprintf(listing, "For");   
+               print_memory(listing, tree);             
                break;
             case CompoundK: 
                fprintf(listing, "Compound"); 
+               print_memory(listing, tree);
                break;
             case ReturnK: 
                fprintf(listing, "Return"); 
@@ -273,14 +320,6 @@ void printTreeNode(FILE *listing, TreeNode *tree)
                   tree->attr.name, print_str); 
                break;
             case ConstantK: {
-               // char * str = "'\n'";
-               // //strcat(str, "'\n'");
-               // if (strcmp(str, tree->attr.name) == 0) valid = true;
-               // int i = 0;
-               // bool valid = false;
-               // if (tree->attr.name[1] == '\\') i++;
-               // if (tree->attr.name[2] == 'n') i++;
-               // if (i == 2) valid = true;
                if (tree->type == Char)
                {
                   //fprintf(listing, "this is it precisely:\"%s\"", tree->attr.name);
@@ -293,6 +332,7 @@ void printTreeNode(FILE *listing, TreeNode *tree)
                   str[4] = '\0';
                   if (tree->isArray) {
                      fprintf(listing, "Const %s of %s", tree->attr.name, print_str);
+                     print_memory(listing, tree);
                   }
                   else if (strcmp(str, tree->attr.name) == 0) 
                   {
@@ -374,5 +414,4 @@ void printTree(FILE *listing, TreeNode *tree)
    printTreeRec(listing, 1, 1, tree);
    //printDotTree(astDot, syntaxTree, false, false);
 }
-
 
