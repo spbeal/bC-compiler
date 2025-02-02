@@ -12,11 +12,19 @@ $(PARSE).y\
 $(PARSE).l\
 main.cpp\
 treeUtils.cpp\
+symbolTable.cpp\
+#emitcode.cpp\ assignment 5
+#yyerror.cpp\ assignment 6
 
 HDRS =\
 scanType.h\
 treeNodes.h\
 treeUtils.h\
+semantics.h\
+symbolTable.h\
+#codegen.h\ assignment 5
+#emitcode.h\ assignment 5
+#yyerror.h\ assignment 6
 
 OBJS = \
 $(PARSE).tab.o\
