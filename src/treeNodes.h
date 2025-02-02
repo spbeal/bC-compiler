@@ -77,6 +77,7 @@ struct TreeNode
     bool isConst;                          // can be computed at compile time?
     bool isUsed;                           // is this variable used?
     bool isAssigned;                       // has the variable been given a value?
+    // bool isNewLine;
 
     // extra stuff inferred about the node
     VarKind varKind;                       // global, local, localStatic, parameter

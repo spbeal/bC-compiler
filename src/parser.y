@@ -306,10 +306,15 @@ argList    : argList ',' exp  {$$ = $1; addSibling($1, $3); }
              | exp      {$$ = $1;}
            ;
 
-constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1);}                         
-             | CHARCONST    {$$ = newExpNode(ConstantK, $1);}                       
-             | STRINGCONST  {$$ = newExpNode(ConstantK, $1);}                               
-             | BOOLCONST    {$$ = newExpNode(ConstantK, $1);}                              
+constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1); }      
+             | CHARCONST    {$$ = newExpNode(ConstantK, $1); $$->type = Char;}                       
+             | STRINGCONST  {
+                             $$ = newExpNode(ConstantK, $1); 
+                             $$->isArray = true;
+                             $$->type = Char; 
+                             $$->size = 1 + $1->nvalue; 
+                            }                               
+             | BOOLCONST    {$$ = newExpNode(ConstantK, $1); }                              
            ;
 %%
 

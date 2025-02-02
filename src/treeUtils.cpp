@@ -114,6 +114,8 @@ TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *to
    newNode->isConst = false;
    newNode->isUsed = false;
    newNode->isAssigned = false;
+   //newNode->isNewLine = false;
+   
    // offset
    newNode->size = 1;
 
@@ -268,21 +270,52 @@ void printTreeNode(FILE *listing, TreeNode *tree)
                fprintf(listing, "Call: %s", 
                   tree->attr.name); 
                break;
-            case ConstantK: 
-               //char * str;
-               //strcat(str, "'\n'");
-               //strcmp()
-               if (strcmp(tree->attr.name, "\n") == 0) {
-               //if (tree->attr.name == str) {
-                  //fprintf(listing, "Const ");
-                  //fprintf(listing, "\n");
-                  //fprintf(listing, "'");
-                  fprintf(listing, "Const '%c'", '\n');
-                  break;
+            case ConstantK: {
+               // char * str = "'\n'";
+               // //strcat(str, "'\n'");
+               // if (strcmp(str, tree->attr.name) == 0) valid = true;
+               // int i = 0;
+               // bool valid = false;
+               // if (tree->attr.name[1] == '\\') i++;
+               // if (tree->attr.name[2] == 'n') i++;
+               // if (i == 2) valid = true;
+               if (tree->type == Char)
+               {
+                  //fprintf(listing, "this is it precisely:\"%s\"", tree->attr.name);
+                  // newline case
+                  char str[5];
+                  str[0] = '\'';
+                  str[1] = '\\';
+                  str[2] = 'n';
+                  str[3] = '\'';
+                  str[4] = '\0';
+                  if (tree->isArray) {
+                     fprintf(listing, "Const %s", tree->attr.name);
+                  }
+                  else if (strcmp(str, tree->attr.name) == 0) 
+                  {
+                     fprintf(listing, "Const '%c'", '\n');  
+                  }
+                  else {
+                     fprintf(listing, "Const '%c'", tree->attr.cvalue);
+                  }
+               } 
+               else
+               {
+                  fprintf(listing, "Const %s", tree->attr.name); 
                }
-               fprintf(listing, "Const %s", 
-                 tree->attr.name); 
+               // }
+               // if (tree->attr.name == ) {
+               // //if (tree->attr.name == str) {
+               //    //fprintf(listing, "Const ");
+               //    //fprintf(listing, "\n");
+               //    //fprintf(listing, "'");
+               //    fprintf(listing, "Const '%c'", '\n');
+               //    break;
+               // }
+               // fprintf(listing, "Const %s", tree->attr.name); 
                break;
+            }
             case IdK: 
                fprintf(listing, "Id: %s", 
                   tree->attr.name); 
