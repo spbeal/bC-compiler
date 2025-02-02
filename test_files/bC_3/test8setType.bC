@@ -1,6 +1,0 @@
-#DRBC test the setType funciton in parser.y
-main()
-{
-   static char x, y;
-}
-

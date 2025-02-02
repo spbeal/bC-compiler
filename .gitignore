@@ -10,3 +10,5 @@ yyerror.h
 codegen.h
 emitcode.cpp
 emitcode.h
+
+test_files/
