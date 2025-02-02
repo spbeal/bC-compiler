@@ -223,7 +223,7 @@ void print_memory(FILE * listing, TreeNode * tree)
     int size;                              // used for size of array
    */
 
-   fprintf(listing, "[mem: %s loc: %d size: %d]", variable_kind_str(tree), tree->offset, tree->size);
+   fprintf(listing, " [mem: %s loc: %d size: %d]", variable_kind_str(tree), tree->offset, tree->size);
 }
 
 char* type_str(ExpType type, bool isStatic, bool isArray) {
