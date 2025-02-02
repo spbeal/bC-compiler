@@ -297,7 +297,7 @@ void printTreeNode(FILE *listing, TreeNode *tree)
                      fprintf(listing, "Const '%c'", '\n');  
                   }
                   else {
-                     fprintf(listing, "Const '%c'", tree->attr.cvalue);
+                     fprintf(listing, "Const %s", tree->attr.name);
                   }
                } 
                else
