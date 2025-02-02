@@ -34,6 +34,9 @@ int setValue(int linenum, int tokenClass, char *svalue) {
           break;
 
      case STRINGCONST: 
+          yylval.tokenData->nvalue = strlen(svalue)-2; // -2 for quotes
+          //yylval.tokenData->tokenstr = strdup()
+
           break;
 
      case NUMCONST:
@@ -42,8 +45,8 @@ int setValue(int linenum, int tokenClass, char *svalue) {
          break;
 
      case CHARCONST:
-         //yylval.tokenData->cvalue = svalue[0];
-         // yylval.tinfo.cvalue = hmmm..... What should I set it to?
+         yylval.tokenData->cvalue = svalue[1];
+         yylval.tokenData->nvalue = 1;
          break;
      case OP:
           break;
