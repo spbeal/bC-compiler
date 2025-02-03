@@ -237,12 +237,12 @@ relExp     : minmaxExp relop minmaxExp    {$$ = newExpNode(OpK, $2, $1, $3);}
              | minmaxExp                    {$$ = $1;}
            ;
 
-relop      : LEQ {$$ = $1; $$->type = Boolean;}
-             | '<' {$$ = $1; $$->type = Boolean;}
-             | '>' {$$ = $1; $$->type = Boolean;}
-             | GEQ {$$ = $1; $$->type = Boolean;}
-             | EQ {$$ = $1; $$->type = Boolean;}
-             | NEQ {$$ = $1; $$->type = Boolean;}
+relop      : LEQ {$$ = $1;}
+             | '<' {$$ = $1;}
+             | '>' {$$ = $1;}
+             | GEQ {$$ = $1;}
+             | EQ {$$ = $1;}
+             | NEQ {$$ = $1;}
            ;
 
 minmaxExp  : minmaxExp minmaxop sumExp  {$$ = newExpNode(OpK, $2, $1, $3);}            

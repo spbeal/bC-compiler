@@ -30,7 +30,24 @@ int setValue(int linenum, int tokenClass, char *svalue) {
 
 
     switch (tokenClass) {
+
+     case '(' || ')' || ',' || ';' || '[' || '{' 
+           || '}' || ']' || ':' || '?' || '<' || '>' 
+           ||'=' || '-' || '+' || '*' || '/' || '%':
+          yylval.tokenData->cvalue = svalue[0];
      case BOOLCONST:
+          if (yylval.tokenData->cvalue == 't') // beginning of true
+          {
+               yylval.tokenData->nvalue = 1;
+               yylval.tokenData->tokenstr = (char*)"true";
+               //yylval.tokenData->svalue =
+          }
+          else
+          {
+               yylval.tokenData->nvalue = 0;
+               yylval.tokenData->tokenstr = (char*)"false";
+               //yylval.tokenData->svalue
+          }
           break;
 
      case STRINGCONST: 
@@ -48,8 +65,6 @@ int setValue(int linenum, int tokenClass, char *svalue) {
          yylval.tokenData->cvalue = svalue[1];
          yylval.tokenData->nvalue = 1;
          break;
-     case OP:
-          break;
     }
 
 
