@@ -20,8 +20,8 @@ HDRS =\
 scanType.h\
 treeNodes.h\
 treeUtils.h\
-semantics.h\
 symbolTable.h\
+semantics.h\
 #codegen.h\ assignment 5
 #emitcode.h\ assignment 5
 #yyerror.h\ assignment 6
@@ -30,6 +30,7 @@ OBJS = \
 $(PARSE).tab.o\
 lex.yy.o\
 treeUtils.o\
+symbolTable.o\
 
 LIBS = -lm 
 

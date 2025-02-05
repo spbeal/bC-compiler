@@ -2,6 +2,8 @@
 #include "treeNodes.h"
 #include "treeUtils.h"
 #include "scanType.h"
+#include "semantics.h"
+
 #include "parser.tab.h" // This has to be the last include
 
 using namespace std;
@@ -40,30 +42,30 @@ int setValue(int linenum, int tokenClass, char *svalue) {
           {
                yylval.tokenData->nvalue = 1;
                yylval.tokenData->tokenstr = (char*)"true";
-               //yylval.tokenData->svalue =
+               yylval.tokenData->svalue = (char*)"true";
           }
           else
           {
                yylval.tokenData->nvalue = 0;
                yylval.tokenData->tokenstr = (char*)"false";
-               //yylval.tokenData->svalue
+               yylval.tokenData->svalue = (char*)"false";
           }
           break;
 
      case STRINGCONST: 
-          yylval.tokenData->nvalue = strlen(svalue)-2; // -2 for quotes
+          //yylval.tokenData->nvalue = strlen(svalue)-2; // -2 for quotes
           //yylval.tokenData->tokenstr = strdup()
 
           break;
 
      case NUMCONST:
-         yylval.tokenData->nvalue = atoi(svalue);
+         //yylval.tokenData->nvalue = atoi(svalue);
          // yylval.tinfo.nvalue = hmmmm ..... I don't need this yet, but
          break;
 
      case CHARCONST:
-         yylval.tokenData->cvalue = svalue[1];
-         yylval.tokenData->nvalue = 1;
+         //yylval.tokenData->cvalue = svalue[1];
+         //yylval.tokenData->nvalue = 1;
          break;
     }
 

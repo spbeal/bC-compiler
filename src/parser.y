@@ -1,7 +1,11 @@
 %{
 #include "scanType.h"
+
 #include "treeNodes.h"
 #include "treeUtils.h"
+
+#include "semantics.h"
+//#include "symbolTable.h"
 
 using namespace std;
 
@@ -22,12 +26,16 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << endl;
 }
 TreeNode *syntaxTree;
-
-void initTree()
+SymbolTable * symbolTable;
+void initAll()
 {
   syntaxTree = initializeNode(NULL, NULL, NULL, NULL);
-}
+  symbolTable = new SymbolTable();
+  symbolTable->debug(false);
 
+  initTokenStrings();
+}
+  
 int numErrors = 0;
 int numWarnings = 0;
 // the syntax tree goes here
@@ -329,8 +337,8 @@ int main(int argc, char **argv) {
   char *file = NULL;
   extern FILE *yyin;
   //syntaxTree = new TreeNode;
-  initTree();
-  initTokenStrings();
+  int globalOffset;
+  initAll();
 
    while ((option = getopt (argc, argv, "")) != -1)
       switch (option)
@@ -348,6 +356,7 @@ int main(int argc, char **argv) {
 
    if(numErrors == 0){
       //printDotTree(astDot,syntaxTree, false, false);
+      //syntaxTree = semanticAnalysis(syntaxTree, symbolTable, globalOffset);
       printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
 
