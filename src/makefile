@@ -13,6 +13,7 @@ $(PARSE).l\
 main.cpp\
 treeUtils.cpp\
 symbolTable.cpp\
+semantics.cpp\
 #emitcode.cpp\ assignment 5
 #yyerror.cpp\ assignment 6
 
@@ -31,6 +32,7 @@ $(PARSE).tab.o\
 lex.yy.o\
 treeUtils.o\
 symbolTable.o\
+semantics.o\
 
 LIBS = -lm 
 

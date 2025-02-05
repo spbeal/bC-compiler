@@ -26,13 +26,11 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << endl;
 }
 TreeNode *syntaxTree;
-SymbolTable * symbolTable;
+// SymbolTable * symbolTable;
+
 void initAll()
 {
   syntaxTree = initializeNode(NULL, NULL, NULL, NULL);
-  symbolTable = new SymbolTable();
-  symbolTable->debug(false);
-
   initTokenStrings();
 }
   
@@ -339,6 +337,10 @@ int main(int argc, char **argv) {
   //syntaxTree = new TreeNode;
   int globalOffset;
   initAll();
+  SymbolTable * symtab;
+  symtab = new SymbolTable();
+  symtab->debug(false);
+
 
    while ((option = getopt (argc, argv, "")) != -1)
       switch (option)
@@ -356,7 +358,7 @@ int main(int argc, char **argv) {
 
    if(numErrors == 0){
       //printDotTree(astDot,syntaxTree, false, false);
-      //syntaxTree = semanticAnalysis(syntaxTree, symbolTable, globalOffset);
+      syntaxTree = semanticAnalysis(syntaxTree, symtab, globalOffset);
       printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
 

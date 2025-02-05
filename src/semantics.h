@@ -9,4 +9,7 @@ TreeNode *semanticAnalysis(TreeNode *syntree,          // pass in and return an 
                            SymbolTable *symtabX,       // pass in and return the symbol table
                            int &globalOffset            // return the offset past the globals
     );
+TreeNode *loadIOLib(TreeNode *syntree);
+void treeTraverse(TreeNode *syntree, SymbolTable *symtab);
+
 #endif
