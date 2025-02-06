@@ -57,6 +57,7 @@ leave scope
 
 TreeNode *loadIOLib(TreeNode *syntree) 
 {
+   // 10 IOLib nodes. 
    TreeNode *input, *output, *param_output;
    TreeNode *inputb, *outputb, *param_outputb;
    TreeNode *inputc, *outputc, *param_outputc;
@@ -70,40 +71,60 @@ TreeNode *loadIOLib(TreeNode *syntree)
 
    // 2
    inputb = newDeclNode(FuncK, Boolean);
+   inputb->lineno = -1; // all are -1
+   inputb->attr.name = strdup("inputb"); //We named the variables well
+   inputb->type = Boolean;
 
    // 3
    inputc = newDeclNode(FuncK, Boolean);
+   inputc->lineno = -1; // all are -1
+   inputc->attr.name = strdup("inputc"); //We named the variables well
    inputc->type = Char;
 
    // 4
    param_output = newDeclNode(ParamK, Void);
+   param_output->lineno = -1; // all are -1
    param_output->attr.name = strdup("*dummy*");
    param_output->type = Integer;
 
    // 5
    output = newDeclNode(FuncK, Void);
+   output->lineno = -1; // all are -1
+   output->attr.name = strdup("output"); //We named the variables well
+   output->type = Void;
    output->child[0] = param_output;
 
    // 6
    param_outputb = newDeclNode(ParamK, Void);
+   param_outputb->lineno = -1; // all are -1
    param_outputb->attr.name = strdup("*dummy*");
    param_outputb->type = Boolean;
 
    // 7
    outputb = newDeclNode(FuncK, Void);
+   outputb->lineno = -1; // all are -1
+   outputb->attr.name = strdup("outputb"); //We named the variables well
+   outputb->type = Void;
    outputb->child[0] = param_outputb;
 
    // 8
    param_outputc = newDeclNode(ParamK, Void);
+   param_outputc->lineno = -1; // all are -1
    param_outputc->attr.name = strdup("*dummy*");
    param_outputc->type = Char;
 
    // 9
    outputc = newDeclNode(FuncK, Void);
+   outputc->lineno = -1; // all are -1
+   outputc->attr.name = strdup("outputc"); //We named the variables well
+   outputc->type = Void;
    outputc->child[0] = param_outputc;
 
    // 10
    outnl = newDeclNode(FuncK, Void);
+   outnl->lineno = -1; // all are -1
+   outnl->attr.name = strdup("outnl"); //We named the variables well
+   outnl->type = Void;
    outnl->child[0] = NULL;
 
    // link them and prefix the tree we are interested in traversing.
@@ -115,6 +136,7 @@ TreeNode *loadIOLib(TreeNode *syntree)
    inputc->sibling = outputc;
    outputc->sibling = outnl;
    outnl->sibling = syntree; // add in the tree we were given
+
    return input;
 }
 
@@ -122,14 +144,18 @@ void decl_traverse(TreeNode * tree, SymbolTable *symtab) {
 
    switch (tree->kind.decl) {
       case VarK:
-
+         //insert
+         //lookup
          break;
       case FuncK: 
-
+         //insert
+         //lookup
          break;
       case ParamK: 
-
+         //insert
+         //lookup
          break;
+
       default: break;
    }
 }
@@ -141,10 +167,8 @@ void stmt_traverse(TreeNode * tree, SymbolTable *symtab) {
       case WhileK: 
          break;
       case ForK: 
-   
          break;
       case CompoundK: 
-
          break;
       case ReturnK: 
          break;
@@ -152,6 +176,7 @@ void stmt_traverse(TreeNode * tree, SymbolTable *symtab) {
          break;
       case RangeK: 
          break;
+
       default: break;
    }
 }
@@ -159,21 +184,16 @@ void stmt_traverse(TreeNode * tree, SymbolTable *symtab) {
 void exp_traverse(TreeNode * tree, SymbolTable *symtab) {
    switch (tree->kind.exp) {
       case AssignK: 
-
          break;
       case OpK: 
-
          break;
       case CallK: 
-
          break;
-      case ConstantK: {
-         
+      case ConstantK: 
          break;
-      }
       case IdK: 
-
          break;
+         
       default: break;
    }
 }
