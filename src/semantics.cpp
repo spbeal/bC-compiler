@@ -1,4 +1,5 @@
 #include "semantics.h"
+#include "parser.tab.h"
 
 // memory offsets are GLOBAL
 static int goffset; // top of global space
@@ -140,80 +141,267 @@ TreeNode *loadIOLib(TreeNode *syntree)
    return input;
 }
 
-void decl_traverse(TreeNode * tree, SymbolTable *symtab) {
+void decl_traverse(TreeNode * current, SymbolTable *symtab) {
+   TreeNode * tmp;
+   
 
-   switch (tree->kind.decl) {
-      case VarK:
-         //insert
-         //lookup
-         break;
-      case FuncK: 
-         //insert
-         //lookup
-         break;
-      case ParamK: 
-         //insert
-         //lookup
-         break;
+   switch (current->kind.decl) {
+      case VarK: {
+         // current->varKind = Local;
+         // current->varKind = LocalStatic;
+         // current->varKind = Global;
+         if (current->isArray) current->offset--; // pt to array after size
+         // pt to array after size.
 
-      default: break;
-   }
-}
-
-void stmt_traverse(TreeNode * tree, SymbolTable *symtab) {
-   switch (tree->kind.stmt) {
-      case IfK:
-         break;
-      case WhileK: 
-         break;
-      case ForK: 
-         break;
-      case CompoundK: 
-         break;
-      case ReturnK: 
-         break;
-      case BreakK:
-         break;
-      case RangeK: 
-         break;
-
-      default: break;
-   }
-}
-
-void exp_traverse(TreeNode * tree, SymbolTable *symtab) {
-   switch (tree->kind.exp) {
-      case AssignK: 
-         break;
-      case OpK: 
-         break;
-      case CallK: 
-         break;
-      case ConstantK: 
-         break;
-      case IdK: 
-         break;
+         if (symtab->depth()==1) // This is a global variable since it is not in a function
+         // Set the varKind to Global for VarK (Parameter for ParamK)
+         current->offset = goffset;
+         goffset -= current->size;
          
+         // Otherwise, if current->isStatic // This is a static variable
+         // Set varKind to LocalStatic for VarK (Parameter for ParamK)
+         current->offset = goffset;
+         goffset -= current->size;
+         //symtab->insertGlobal with a unique name. (Keep a static int variable and append it to the end of the name)
+         
+         // Otherwise, treat it as normal
+         // Set varKind to Local for VarK (Parameter for ParamK)
+         current->offset = foffset;
+         foffset -= current->size; 
+
+         break;
+      }
+      case ParamK: {
+         current->varKind = Parameter;
+
+         if (symtab->depth()==1) // This is a global variable since it is not in a function
+         // Set the varKind to Global for VarK (Parameter for ParamK)
+         current->offset = goffset;
+         goffset -= current->size;
+         
+         // Otherwise, if current->isStatic // This is a static variable
+         // Set varKind to LocalStatic for VarK (Parameter for ParamK)
+         current->offset = goffset;
+         goffset -= current->size;
+         //symtab->insertGlobal with a unique name. (Keep a static int variable and append it to the end of the name)
+         
+         // Otherwise, treat it as normal
+         // Set varKind to Local for VarK (Parameter for ParamK)
+         current->offset = foffset;
+         foffset -= current->size; 
+         break;
+      }
+      case FuncK: {
+         current->varKind = Global;
+         foffset = -2;
+
+         //Traverse child[0]’s tree (where the parameters are)
+         current->size = foffset;
+         //insert
+         //lookup
+         break;
+      }
       default: break;
    }
 }
 
-void treeTraverse(TreeNode * tree, SymbolTable *symtab)
-{
+void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
+   TreeNode * tmp;
+   switch (current->kind.stmt) {
+      case IfK: {
+         current->varKind = Local;
+         break;
+      }
+      case WhileK: {
+         current->varKind = Local;
+         break;
+      }
+      case ForK: {
+         /*
+         • symtab->enter((char *)"ForStmt");
+         • Remember the current Offset
+         • Traverse child[0]’s tree
+         • foffset-=2; // Make space for the for loop var
+         • current->size = foffset;
+         • Traverse child[1]’s tree
+         • Traverse child[2]’s tree
+         • Restore the current Offset
+         • symtab->leave();
+         */
+         current->varKind = Local;
+         break;
+      }
+      case CompoundK: {
+         /*
+         CompoundK
+         • If newScope
+         • Remember the current Offset
+         • Traverse child[0]’s tree
+         • current->size = foffset;
+         • Traverse child[1]’s tree
+         • Restore the current Offset
+         • Otherwise
+         • Traverse child[0]’s tree
+         • current->size = foffset;
+         • Traverse child[1]’s tree
+         */
+         current->varKind = Local;
+         symtab->enter((char *)"compoundStmt");
+         treeTraverse(current->child[0], symtab); // process declarations
+         // More stuff
+         current->size = foffset;
+         treeTraverse(current->child[1], symtab);
+         // More stuff
+         symtab->leave(); //end of processing of the compound statement
+
+         /*
+         if(isCompound) {
+            char *id = strdup("{");
+            symtab->enter("NewScope from " + (std::string)id);
+         }
+         • child[0]
+         • Current node
+         • child[1]
+         • child[2]
+         if(isCompound) {
+            symtab->leave();
+         }
+         • sibling
+         */
+
+         /*
+         int rememberFoffset;
+         symtab->enter((char *)"compoundStmt");
+         rememberFoffset = foffset;
+         treeTraverse(current->child[0], symtab);
+         current->size = foffset;
+         treeTraverse(current->child[1], symtab);
+         foffset = rememberFoffset;
+         symtab->leave();
+         */
+
+         // IF AFTER FUNCTION TREAT DIFFERENTLY
+         break;
+      }
+      case ReturnK: {
+         current->varKind = Local;
+         break;
+      }
+      case BreakK: {
+         current->varKind = Local;
+         break;
+      }
+      case RangeK: {
+         current->varKind = Local;
+         break;
+      }
+      default: break;
+   }
+}
+
+void exp_traverse(TreeNode * current, SymbolTable *symtab) {
+   TreeNode * tmp;
+
+   switch (current->kind.exp) {
+      case AssignK: {
+         current->varKind = LocalStatic;
+         current->varKind = Local;
+         break;
+      }
+      case OpK: {
+         current->varKind = Local;
+         // Check the children because Ops require children
+         //treeTraverse(tree->child[0], symtab);
+         //treeTraverse(tree->child[1], symtab);
+         //treeTraverse(tree->child[2], symtab);
+         
+         int op = current->attr.op;  
+         if (op == '[') current->isArray = true;
+
+         // Check all operators
+         if (op == GEQ || op == EQ || op == LEQ || op == NEQ || op == '<' || op == '>')
+            current->type = Boolean;
+         else if (op == SIZEOF || op == CHSIGN)
+            current->type = Integer;
+         else 
+         {
+            if (current->child[0] != NULL)
+            {
+               // Returns void * default.
+               tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
+               if (tmp == NULL)
+                  current->type = current->child[0]->type;
+               else 
+                  current->type = tmp->type;
+            }
+            else
+            {
+               printf("Error");
+            }
+         }
+
+         break;
+      }
+      case CallK: {
+         current->varKind = Local;
+         // Similar to IdK, set type and size too
+         if ((tmp = (TreeNode *)(symtab->lookup(current->attr.name)))) {
+            current->type = tmp->type;
+            current->isStatic = tmp->isStatic;
+            current->isArray = tmp->isArray;
+            current->size = tmp->size;
+            current->varKind = tmp->varKind;
+            current->offset = tmp->offset;
+         }
+         break;
+      }
+      case ConstantK: {
+         if (current->type == Char && current->isArray) { // Deal with strings
+            current->varKind = Global;
+            current->offset = goffset - 1;
+            goffset -= current->size;
+         }
+         //current->varKind = Local;
+         break;
+      }
+      case IdK: {
+         //tmp = (TreeNode *)(symtab->lookup(current->attr.name) // Look up in the symbol table
+         // current->offset = tmp->offset;
+         //current->varKind = Local;
+
+         if ((tmp = (TreeNode *)(symtab->lookup(current->attr.name)))) {
+            current->type = tmp->type;
+            current->isStatic = tmp->isStatic;
+            current->isArray = tmp->isArray;
+            current->size = tmp->size;
+            current->varKind = tmp->varKind;
+            current->offset = tmp->offset;
+         }
+
+         break;
+      }
+      default: break;
+   }
+}
+
+void treeTraverse(TreeNode * tree, SymbolTable *symtab) {
    if (tree == NULL) {
       return;
    }
 
    switch(tree->nodekind) {
-      case DeclK:
+      case DeclK: {
          decl_traverse(tree, symtab);
          break;
-      case StmtK:
+      }
+      case StmtK: {
          stmt_traverse(tree, symtab);
          break;
-      case ExpK:
+      }
+      case ExpK: {
          exp_traverse(tree, symtab);
          break;
+      }
       default: break;
    }
 

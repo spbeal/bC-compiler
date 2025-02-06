@@ -280,7 +280,7 @@ unaryExp   : unaryop unaryExp  {$$ = newExpNode(OpK, $1, $2);}
              | factor   {$$ = $1;}
            ;
 
-unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = strdup("chsign");}                                     
+unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = strdup("chsign"); }                                     
              | '*'  {$$ = $1; $$->tokenclass = SIZEOF; $$->tokenstr = strdup("sizeof");}                                      
              | '?'  {$$ = $1;}
              ;
