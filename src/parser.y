@@ -220,7 +220,7 @@ exp        : mutable assignop exp     {$$ = newExpNode(AssignK, $2, $1, $3);}
              | simpleExp              {$$ = $1;}
            ;
 
-assignop  : '=' {$$ = $1; $$->type = }
+assignop  : '=' {$$ = $1; }
             | ADDASS {$$ = $1;}
             | SUBASS {$$ = $1;}
             | MULASS {$$ = $1;}
@@ -271,8 +271,8 @@ mulExp     : mulExp mulop unaryExp  {$$ = newExpNode(OpK, $2, $1, $3);}
              | unaryExp  {$$ = $1;}
            ;
 
-mulop      : '*' {$$ = $1; $$->type = Integer;}
-             | '/' {$$ = $1; $$->type = Integer;}
+mulop      : '*' {$$ = $1; }
+             | '/' {$$ = $1; }
              | '%' {$$ = $1;}
            ;
 
