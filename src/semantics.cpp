@@ -126,11 +126,12 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
    
    switch (current->kind.decl) {
       case VarK: {
-         treeTraverse(current->child[0], symtab);
+         //treeTraverse(current->child[0], symtab);
          
          // Handle VarK in ParamK
       }
       case ParamK: {
+         treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
          // This is a global variable since it is not in a function
@@ -381,7 +382,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             }
             else
             {
-               printf("Error");
+               //printf("Error");
                numErrors++;
             }
          }
@@ -414,7 +415,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            printf("Error");
+            //printf("Error");
             numErrors++;
          }
          
@@ -433,13 +434,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case IdK: {
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
          tmp = (TreeNode *)(symtab->lookup(current->attr.name)); // Look up in the symbol table
 
          if (tmp == NULL) {
-            printf("Error");
+            //printf("Error");
             numErrors++;
          }
          else if (tmp != NULL)
@@ -454,6 +452,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->varKind = tmp->varKind;
             current->offset = tmp->offset;
          }
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
 
          break;
       }
