@@ -37,6 +37,8 @@ int setValue(int linenum, int tokenClass, char *svalue) {
            || '}' || ']' || ':' || '?' || '<' || '>' 
            ||'=' || '-' || '+' || '*' || '/' || '%':
           yylval.tokenData->cvalue = svalue[0];
+          break;
+
      case BOOLCONST:
           if (yylval.tokenData->cvalue == 't') // beginning of true
           {
@@ -53,19 +55,18 @@ int setValue(int linenum, int tokenClass, char *svalue) {
           break;
 
      case STRINGCONST: 
-          //yylval.tokenData->nvalue = strlen(svalue)-2; // -2 for quotes
-          //yylval.tokenData->tokenstr = strdup()
-
+          //yylval.tokenData->tokenstr = strdup(&svalue[1]);
+          //yylval.tokenData->nvalue = strlen(svalue)-2;
+          //yylval.tokenData->tokenstr[yylval.tokenData->nvalue] ='\0';
           break;
 
      case NUMCONST:
-         //yylval.tokenData->nvalue = atoi(svalue);
-         // yylval.tinfo.nvalue = hmmmm ..... I don't need this yet, but
+         yylval.tokenData->nvalue = atoi(svalue);
          break;
 
      case CHARCONST:
-         //yylval.tokenData->cvalue = svalue[1];
-         //yylval.tokenData->nvalue = 1;
+         yylval.tokenData->cvalue = svalue[1];
+         yylval.tokenData->nvalue = 1;
          break;
     }
 
