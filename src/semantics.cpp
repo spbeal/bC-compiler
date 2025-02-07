@@ -329,18 +329,28 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    switch (current->kind.exp) {
       case AssignK: {
          // Just like op
-         if (current->child[0] != NULL)
+         int op = current->attr.op;  
+         if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+             op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+             op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+            current->type = Integer;
+         else if (op == AND || op == NOT || op == OR)
+            current->type = Boolean;
+         else 
          {
-            tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
-            if (tmp == NULL)
+            if (current->child[0] != NULL)
             {
-               current->child[0]->isAssigned = true;
-               current->type = current->child[0]->type;
-            }
-            else 
-            {
-               tmp->isAssigned = true;
-               current->type = tmp->type;
+               tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
+               if (tmp == NULL)
+               {
+                  current->child[0]->isAssigned = true;
+                  current->type = current->child[0]->type;
+               }
+               else 
+               {
+                  tmp->isAssigned = true;
+                  current->type = tmp->type;
+               }
             }
          }
          treeTraverse(current->child[0], symtab);
