@@ -328,10 +328,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
    switch (current->kind.exp) {
       case AssignK: {
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
-
          // Just like op
          if (current->child[0] != NULL)
          {
@@ -347,6 +343,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                current->type = tmp->type;
             }
          }
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
          // else
          // {
 
