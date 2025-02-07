@@ -233,12 +233,6 @@ char * variable_kind_str(TreeNode * tree)
 
 void showAllocation(FILE * listing, TreeNode * tree)
 {
-   /*
-    // extra stuff inferred about the node
-    VarKind varKind;                       // global, local, localStatic, parameter
-    int offset;                            // offset for address of object
-    int size;                              // used for size of array
-   */
    fprintf(listing, " [mem: %s loc: %d size: %d]", varKindToStr(tree->varKind), tree->offset, tree->size);
 }
 
@@ -377,6 +371,7 @@ void printTreeNode(FILE *listing, TreeNode *tree)
             case IdK: 
                fprintf(listing, "Id: %s of %s", 
                   tree->attr.name, print_str); 
+               showAllocation(listing, tree);
                break;
             default: fprintf(listing, "invalid"); 
                break;
