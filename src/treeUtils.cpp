@@ -174,7 +174,7 @@ TreeNode *newExpNode(ExpKind kind, TokenData *token, TreeNode *c0, TreeNode *c1,
    newNode->nodeNum++;
    newNode->nodekind = ExpK;
    newNode->kind.exp = kind;
-   newNode->type = Integer;
+   //newNode->type = Integer;
    //newNode->nodekind = kind;
    return newNode;
 }
