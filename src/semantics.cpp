@@ -332,7 +332,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          int op = current->attr.op;  
          if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
              op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
-             op == '\/' || op == '?' || op == '+' || op == '-' || op == '\*')
+             op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
             current->type = Integer;
          else if (op == AND || op == NOT || op == OR)
             current->type = Boolean;
