@@ -338,9 +338,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->type = Boolean;
          else if (op == '=')
          {
-            if (current->child[0]->type != UndefinedType) 
-               current->type = current->child[0]->type;
-            else current->type = Integer;
+            // if (current->child[0]->type != UndefinedType) 
+            //    current->type = current->child[0]->type;
+            // else current->type = Integer;
          }
          else 
          {
@@ -358,6 +358,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                   current->type = tmp->type;
                }
             }
+            else current->type = Integer;
          }
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
@@ -455,7 +456,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             //printf("Error");
             numErrors++;
          }
-         else if (tmp != NULL)
+
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
+
+         if (tmp != NULL)
          {
             current->isUsed = true;
             tmp->isUsed = true;
@@ -467,10 +473,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->varKind = tmp->varKind;
             current->offset = tmp->offset;
          }
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
-
          break;
       }
       default: break;
