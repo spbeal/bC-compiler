@@ -303,24 +303,24 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case ReturnK: {
-         // treeTraverse(current->child[0], symtab);
-         // treeTraverse(current->child[1], symtab);
-         // treeTraverse(current->child[2], symtab);
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
          //validReturn = true; 
 
          break;
       }
       case BreakK: {
-         // treeTraverse(current->child[0], symtab);
-         // treeTraverse(current->child[1], symtab);
-         // treeTraverse(current->child[2], symtab);
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
 
          break;
       }
       case RangeK: {
-         // treeTraverse(current->child[0], symtab);
-         // treeTraverse(current->child[1], symtab);
-         // treeTraverse(current->child[2], symtab);
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
 
          break;
       }
@@ -435,9 +435,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case CallK: {
-         //current->varKind = Local;
+         current->varKind = Local;
 
-         //treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[0], symtab);
 
          // Similar to IdK, set type and size too
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
@@ -445,13 +445,13 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             // Check if its a function 
             // if not numErrors++;
 
-            //current->isUsed = true;
-            //tmp->isUsed = true;
+            current->isUsed = true;
+            tmp->isUsed = true;
 
             current->type = tmp->type;
-            current->isStatic = tmp->isStatic;
-            current->isArray = tmp->isArray;
-            current->size = tmp->size;
+            //current->isStatic = tmp->isStatic;
+            //current->isArray = tmp->isArray;
+            //current->size = tmp->size;
             //current->varKind = tmp->varKind;
             current->offset = tmp->offset;
 
