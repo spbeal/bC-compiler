@@ -444,14 +444,15 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          if (tmp != NULL) {
             // Check if its a function 
             // if not numErrors++;
-            current->isUsed = true;
-            tmp->isUsed = true;
+
+            //current->isUsed = true;
+            //tmp->isUsed = true;
 
             current->type = tmp->type;
             current->isStatic = tmp->isStatic;
             current->isArray = tmp->isArray;
             current->size = tmp->size;
-            current->varKind = tmp->varKind;
+            //current->varKind = tmp->varKind;
             current->offset = tmp->offset;
 
             // Find all parameters
