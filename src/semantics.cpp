@@ -336,12 +336,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->type = Integer;
          else if (op == AND || op == NOT || op == OR)
             current->type = Boolean;
-         // else if (op == '=')
-         // {
-         //    if (current->child[0]->type != UndefinedType) 
-         //       current->type = current->child[0]->type;
-         //    else current->type = Integer;
-         // }
+         else if (op == '=')
+         {
+            if (current->child[0]->type != UndefinedType) 
+               current->type = current->child[0]->type;
+            else current->type = Integer;
+         }
          else if (current->child[0] != NULL) 
          {
                tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
