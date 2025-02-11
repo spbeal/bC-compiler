@@ -456,15 +456,15 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->offset = tmp->offset;
 
             // Find all parameters
-            TreeNode * params = current->child[0];
-            TreeNode * temporary;
-            while (params) {
-               temporary = params->sibling;
-               params->sibling = NULL;
-               treeTraverse(params, symtab);
-               params->sibling = temporary;
-               params = params->sibling;
-            }
+            // TreeNode * params = current->child[0];
+            // TreeNode * temporary;
+            // while (params) {
+            //    temporary = params->sibling;
+            //    params->sibling = NULL;
+            //    treeTraverse(params, symtab);
+            //    params->sibling = temporary;
+            //    params = params->sibling;
+            // }
          }
          else
          {
