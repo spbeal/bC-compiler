@@ -5,7 +5,7 @@
 #include "treeUtils.h"
 
 #include "semantics.h"
-//#include "symbolTable.h"
+#include "symbolTable.h"
 
 using namespace std;
 
