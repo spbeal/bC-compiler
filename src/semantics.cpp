@@ -126,12 +126,12 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
    
    switch (current->kind.decl) {
       case VarK: {
-         //treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[0], symtab);
          
          // Handle VarK in ParamK
       }
       case ParamK: {
-         treeTraverse(current->child[0], symtab);
+         //treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
          // This is a global variable since it is not in a function
@@ -356,6 +356,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                   current->type = tmp->type;
                }
             //current->type = Integer;
+         }
+         else {
+            numErrors++;
          }
          
          treeTraverse(current->child[0], symtab);
