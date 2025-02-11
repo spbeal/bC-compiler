@@ -378,7 +378,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          treeTraverse(current->child[2], symtab);
          
          int op = current->attr.op;  
-         if (op == '[') current->isArray = true;
+         // if (op == '[') current->isArray = true;
 
          // Check all operators
          if (op == GEQ || op == EQ || op == LEQ || op == NEQ || op == '<' || op == '>')
