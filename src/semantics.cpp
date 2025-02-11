@@ -409,7 +409,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          //current->varKind = Local;
 
          treeTraverse(current->child[0], symtab);
-         
+
          // Similar to IdK, set type and size too
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
          if (tmp != NULL) {
@@ -431,6 +431,39 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             // {
                
             // }
+            TreeNode *params = current->child[0];
+            TreeNode *lookups = lookupNode->child[0];
+            TreeNode *tmp;
+            int i = 1;
+
+            while (params && lookups) {
+               tmp = params->sibling;
+               params->sibling = NULL;
+               treeTraverse(params, symtab);
+
+               params->sibling = tmp;
+
+               if (params->type != lookups->type) {
+                  printf("SEMANTIC ERROR(%d): Expecting %s in parameter %d of call to '%s' declared on line %d but got %s.\n",
+                     current->lineno, expToStr(lookups->type, false, false), i, lookupNode->attr.name, lookupNode->lineno,
+                     expToStr(params->type, false, false));
+                  numErrors++;
+               }
+               if (lookups->isArray && !params->isArray) {
+                  printf("SEMANTIC ERROR(%d): Expecting array in parameter %d of call to '%s' declared on line %d.\n",
+                        current->lineno, i, lookupNode->attr.name, lookupNode->lineno);
+                  numErrors++;
+               } else if (!lookups->isArray && params->isArray && params->attr.op != '[') {
+                  printf("SEMANTIC ERROR(%d): Not expecting array in parameter %d of call to '%s' declared on line %d.\n",
+                        current->lineno, i, lookupNode->attr.name, lookupNode->lineno);
+                  numErrors++;
+               }
+
+               params = params->sibling;
+               lookups = lookups->sibling;
+               i++;
+            }
+
          }
          else
          {
