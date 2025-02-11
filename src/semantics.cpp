@@ -303,24 +303,24 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case ReturnK: {
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         // treeTraverse(current->child[0], symtab);
+         // treeTraverse(current->child[1], symtab);
+         // treeTraverse(current->child[2], symtab);
          //validReturn = true; 
 
          break;
       }
       case BreakK: {
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         // treeTraverse(current->child[0], symtab);
+         // treeTraverse(current->child[1], symtab);
+         // treeTraverse(current->child[2], symtab);
 
          break;
       }
       case RangeK: {
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         // treeTraverse(current->child[0], symtab);
+         // treeTraverse(current->child[1], symtab);
+         // treeTraverse(current->child[2], symtab);
 
          break;
       }
