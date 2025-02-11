@@ -364,7 +364,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                if (current->child[0]->type != UndefinedType) 
                   current->type = current->child[0]->type;
                break;
-            case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
+            case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>': case '==':
                current->type = Boolean;
                break;
             default:
