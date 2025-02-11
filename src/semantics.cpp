@@ -440,7 +440,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          current->varKind = Local;
 
          // Similar to IdK, set type and size too
-         treeTraverse(current->child[0], symtab);
+         //treeTraverse(current->child[0], symtab);
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
          if (tmp != NULL) {
             // Check if its a function 
@@ -469,9 +469,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            current->type = Boolean;
+            //current->type = Boolean;
             //printf("Error");
-            //numErrors++;
+            numErrors++;
          }
          
          break;
