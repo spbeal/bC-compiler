@@ -416,6 +416,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          else if (op == '=' || '[')
             current->type = current->child[0]->type;
             if (op == '[') current->isArray = false;
+         else if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+             op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+             op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+            current->type = Integer;
          else 
          {
             // if (current->child[0] != NULL)
@@ -441,9 +445,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          // Similar to IdK, set type and size too
          treeTraverse(current->child[0], symtab);
-                  treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
-
+         
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
          if (tmp != NULL) {
             // Check if its a function 
