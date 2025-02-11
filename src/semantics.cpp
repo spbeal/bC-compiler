@@ -337,6 +337,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          // Just like op
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
          int op = current->attr.op;  
          // if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
          //     op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
@@ -403,7 +404,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          // Check the children because Ops require children
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
-         //treeTraverse(current->child[2], symtab);
+         treeTraverse(current->child[2], symtab);
          current->type = Integer;
          int op = current->attr.op;  
 
@@ -437,10 +438,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case CallK: {
          current->varKind = Local;
 
-         treeTraverse(current->child[0], symtab);
-
          // Similar to IdK, set type and size too
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
+         treeTraverse(current->child[0], symtab);
          if (tmp != NULL) {
             // Check if its a function 
             // if not numErrors++;
@@ -494,9 +494,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             numErrors++;
          }
 
-         // treeTraverse(current->child[0], symtab);
-         // treeTraverse(current->child[1], symtab);
-         // treeTraverse(current->child[2], symtab);
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
 
          if (tmp != NULL)
          {
