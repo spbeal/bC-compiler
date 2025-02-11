@@ -404,13 +404,13 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          //treeTraverse(current->child[2], symtab);
          current->type = Integer;
          int op = current->attr.op;  
-         //if (op == '[') current->isArray = true;
 
          // Check all operators
          if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>')
             current->type = Boolean;
          else if (op == '=' || '[')
             current->type = current->child[0]->type;
+            if (op == '[') current->isArray = false;
          else 
          {
             // if (current->child[0] != NULL)
