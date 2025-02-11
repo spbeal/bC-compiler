@@ -57,7 +57,7 @@ TreeNode *loadIOLib(TreeNode *syntree)
    inputb->type = Boolean;
 
    // 3
-   inputc = newDeclNode(FuncK, Boolean);
+   inputc = newDeclNode(FuncK, Char);
    inputc->lineno = -1; // all are -1
    inputc->attr.name = strdup("inputc"); //We named the variables well
    inputc->type = Char;
