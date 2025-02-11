@@ -134,8 +134,6 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
       }
       case ParamK: {
          //treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
          // This is a global variable since it is not in a function
          if (insertError(current, symtab))
          {
@@ -184,6 +182,9 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          // Check at end for parameter.
          if (current->kind.decl == ParamK) current->varKind = Parameter;
          else if (current->isArray) current->offset--;
+         
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
 
          break;
       }
@@ -513,9 +514,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       default: 
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         // treeTraverse(current->child[0], symtab);
+         // treeTraverse(current->child[1], symtab);
+         // treeTraverse(current->child[2], symtab);
          break;
    }
 }
