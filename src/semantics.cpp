@@ -382,9 +382,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          // if (op == '[') current->isArray = true;
 
          // Check all operators
-         if (op == GEQ || op == EQ || op == LEQ || op == NEQ || op == '<' || op == '>')
+         if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>')
             current->type = Boolean;
-         else if (op == SIZEOF || op == CHSIGN)
+         else if (op == SIZEOF)
             current->type = Integer;
          else 
          {
