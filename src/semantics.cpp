@@ -409,7 +409,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          // Check all operators
          if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>'
-             || op == AND || op == NOT || op == OR)
+             || op == AND || op == NOT || op == OR || op == '==' || op == EQ)
             current->type = Boolean;
          else if (op == '=' || '[')
             current->type = current->child[0]->type;
@@ -437,7 +437,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case CallK: {
          //current->varKind = Local;
 
-         treeTraverse(current->child[0], symtab);
+         //treeTraverse(current->child[0], symtab);
 
          // Similar to IdK, set type and size too
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
@@ -464,11 +464,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                params->sibling = temporary;
                params = params->sibling;
             }
-            // int i = 0;
-            // while ()
-            // {
-               
-            // }
          }
          else
          {
