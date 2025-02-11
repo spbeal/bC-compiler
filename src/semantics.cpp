@@ -355,8 +355,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          // (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
          //  op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
          //  op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+
          switch (op)
          {
+            case AND: case NOT: case OR: current->type = Boolean;
             case '=': case '[': 
                current->type = current->child[0]->type;
                if (current->child[0]->type != UndefinedType) 
@@ -406,7 +408,8 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          int op = current->attr.op;  
 
          // Check all operators
-         if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>')
+         if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>'
+             || op == AND || op == NOT || op == OR)
             current->type = Boolean;
          else if (op == '=' || '[')
             current->type = current->child[0]->type;
