@@ -329,23 +329,21 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    switch (current->kind.exp) {
       case AssignK: {
          // Just like op
-         int op = current->attr.op;  
-         if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
-             op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
-             op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
-            current->type = Integer;
-         else if (op == AND || op == NOT || op == OR)
-            current->type = Boolean;
-         else if (op == '=')
+         // int op = current->attr.op;  
+         // if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+         //     op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+         //     op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+         //    current->type = Integer;
+         // else if (op == AND || op == NOT || op == OR)
+         //    current->type = Boolean;
+         // else if (op == '=')
+         // {
+         //    // if (current->child[0]->type != UndefinedType) 
+         //    //    current->type = current->child[0]->type;
+         //    // else current->type = Integer;
+         // }
+         if (current->child[0] != NULL) 
          {
-            // if (current->child[0]->type != UndefinedType) 
-            //    current->type = current->child[0]->type;
-            // else current->type = Integer;
-         }
-         else 
-         {
-            if (current->child[0] != NULL)
-            {
                tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
                if (tmp == NULL)
                {
@@ -357,9 +355,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                   tmp->isAssigned = true;
                   current->type = tmp->type;
                }
-            }
-            else current->type = Integer;
+            //current->type = Integer;
          }
+         
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
