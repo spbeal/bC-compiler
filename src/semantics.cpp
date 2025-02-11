@@ -420,6 +420,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
              op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
              op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
             current->type = Integer;
+         else if (op == SIZEOF) current->type = Integer;
          else 
          {
             // if (current->child[0] != NULL)
