@@ -469,9 +469,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            //current->type = current->child[0]->type;
+            current->type = Boolean;
             //printf("Error");
-            numErrors++;
+            //numErrors++;
          }
          
          break;
