@@ -12,6 +12,8 @@ static int newScope = 0; // mark new scope
 static int uniqueVar = 0;
 //static bool validReturn = 0;
 
+bool insertError(TreeNode *current, SymbolTable *symtab);
+
 TreeNode *semanticAnalysis(TreeNode *syntree, SymbolTable *symtabX, int &globalOffset)
 {
    syntree = loadIOLib(syntree);
@@ -135,46 +137,49 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
          // This is a global variable since it is not in a function
-         if (symtab->depth()==1) 
+         if (insertError(current, symtab))
          {
-            // Set the varKind to Global for VarK (Parameter for ParamK)
-            //if (current->kind.decl == VarK) 
-            current->varKind = Global;
-            //else if (current->kind.decl == ParamK) current->type = Parameter;
-            current->offset = goffset;
-            goffset -= current->size;
-         }
-         // Otherwise, if current->isStatic // This is a static variable
-         else if (current->isStatic)
-         {
-            // Set varKind to LocalStatic for VarK (Parameter for ParamK)
-            //if (current->kind.decl == VarK) 
-            current->varKind = LocalStatic;
-            //else if (current->kind.decl == ParamK) current->type = Parameter;
-            current->offset = goffset;
-            goffset -= current->size;
+            if (symtab->depth()==1) 
+            {
+               // Set the varKind to Global for VarK (Parameter for ParamK)
+               //if (current->kind.decl == VarK) 
+               current->varKind = Global;
+               //else if (current->kind.decl == ParamK) current->type = Parameter;
+               current->offset = goffset;
+               goffset -= current->size;
+            }
+            // Otherwise, if current->isStatic // This is a static variable
+            else if (current->isStatic)
+            {
+               // Set varKind to LocalStatic for VarK (Parameter for ParamK)
+               //if (current->kind.decl == VarK) 
+               current->varKind = LocalStatic;
+               //else if (current->kind.decl == ParamK) current->type = Parameter;
+               current->offset = goffset;
+               goffset -= current->size;
 
-            // 1 billion variable max;
-            char * name;
-            char * num_str = new char[12];
-            name = new char[strlen(current->attr.name) + 12];
-            name[0] = '\0';
-            strcat(name, current->attr.name);
-            strcat(name, "_");
-            sprintf(num_str, "%d", uniqueVar++);
-            strcat(name, num_str);
-            symtab->insertGlobal(name, current);
-            delete [] name;
-            delete [] num_str;
-         }
-         else 
-         {
-            // Set varKind to Local for VarK (Parameter for ParamK)
-            //if (current->kind.decl == VarK) 
-            current->varKind = Local;
-            //else if (current->kind.decl == ParamK) current->type = Parameter;
-            current->offset = foffset;
-            foffset -= current->size; 
+               // 1 billion variable max;
+               char * name;
+               char * num_str = new char[12];
+               name = new char[strlen(current->attr.name) + 12];
+               name[0] = '\0';
+               strcat(name, current->attr.name);
+               strcat(name, "_");
+               sprintf(num_str, "%d", uniqueVar++);
+               strcat(name, num_str);
+               symtab->insertGlobal(name, current);
+               delete [] name;
+               delete [] num_str;
+            }
+            else 
+            {
+               // Set varKind to Local for VarK (Parameter for ParamK)
+               //if (current->kind.decl == VarK) 
+               current->varKind = Local;
+               //else if (current->kind.decl == ParamK) current->type = Parameter;
+               current->offset = foffset;
+               foffset -= current->size; 
+            }
          }
          // Check at end for parameter.
          if (current->kind.decl == ParamK) current->varKind = Parameter;
@@ -325,45 +330,64 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
 
 void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    TreeNode * tmp;
+   newScope = 1;
 
    switch (current->kind.exp) {
       case AssignK: {
          // Just like op
-         int op = current->attr.op;  
-         if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
-             op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
-             op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
-            current->type = Integer;
-         else if (op == AND || op == NOT || op == OR)
-            current->type = Boolean;
-         else if (op == '=')
-         {
-            if (current->child[0]->type != UndefinedType) 
-               current->type = current->child[0]->type;
-            else current->type = Integer;
-         }
-         else if (current->child[0] != NULL) 
-         {
-               tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
-               if (tmp == NULL)
-               {
-                  current->child[0]->isAssigned = true;
-                  current->type = current->child[0]->type;
-               }
-               else 
-               {
-                  tmp->isAssigned = true;
-                  current->type = tmp->type;
-               }
-            //current->type = Integer;
-         }
-         else {
-            numErrors++;
-         }
-
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         int op = current->attr.op;  
+         // if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+         //     op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+         //     op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+         //    current->type = Integer;
+         // else if (op == AND || op == NOT || op == OR)
+         //    current->type = Boolean;
+         // else if (op == '=')
+         // {
+            // if (current->child[0]->type != UndefinedType) 
+            //    current->type = current->child[0]->type;
+         //    else current->type = Integer;
+         // }
+
+         current->type = Integer;
+         // (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+         //  op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+         //  op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+         switch (op)
+         {
+            case '=': case '[': 
+               current->type = current->child[0]->type;
+               if (current->child[0]->type != UndefinedType) 
+                  current->type = current->child[0]->type;
+               break;
+            case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
+               current->type = Boolean;
+               break;
+            default:
+               break;
+         }
+         // else if (current->child[0] != NULL) 
+         // {
+         //       tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
+         //       if (tmp == NULL)
+         //       {
+         //          current->child[0]->isAssigned = true;
+         //          current->type = current->child[0]->type;
+         //       }
+         //       else 
+         //       {
+         //          tmp->isAssigned = true;
+         //          current->type = tmp->type;
+         //       }
+         //    //current->type = Integer;
+         // }
+         // else {
+         //    numErrors++;
+         // }
+
+         //treeTraverse(current->child[2], symtab);
       
          // else
          // {
@@ -377,32 +401,32 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          // Check the children because Ops require children
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
-         
+         //treeTraverse(current->child[2], symtab);
+         current->type = Integer;
          int op = current->attr.op;  
-         // if (op == '[') current->isArray = true;
+         //if (op == '[') current->isArray = true;
 
          // Check all operators
          if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>')
             current->type = Boolean;
-         else if (op == SIZEOF)
-            current->type = Integer;
+         else if (op == '=' || '[')
+            current->type = current->child[0]->type;
          else 
          {
-            if (current->child[0] != NULL)
-            {
-               // Returns void * default.
-               tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
-               if (tmp == NULL)
-                  current->type = current->child[0]->type;
-               else 
-                  current->type = tmp->type;
-            }
-            else
-            {
-               //printf("Error");
-               numErrors++;
-            }
+            // if (current->child[0] != NULL)
+            // {
+            //    // Returns void * default.
+            //    tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
+            //    if (tmp == NULL)
+            //       current->type = current->child[0]->type;
+            //    else 
+            //       current->type = tmp->type;
+            // }
+            // else
+            // {
+            //    //printf("Error");
+            //    numErrors++;
+            // }
          }
 
          break;
@@ -428,6 +452,15 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->offset = tmp->offset;
 
             // Find all parameters
+            TreeNode * params = current->child[0];
+            TreeNode * temporary;
+            while (params) {
+               temporary = params->sibling;
+               params->sibling = NULL;
+               treeTraverse(params, symtab);
+               params->sibling = temporary;
+               params = params->sibling;
+            }
             // int i = 0;
             // while ()
             // {
@@ -450,7 +483,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else // not array, not char
          {
-            current->varKind = Global;
+            //current->varKind = Global;
          }
          break;
       }
@@ -462,9 +495,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             numErrors++;
          }
 
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         // treeTraverse(current->child[0], symtab);
+         // treeTraverse(current->child[1], symtab);
+         // treeTraverse(current->child[2], symtab);
 
          if (tmp != NULL)
          {
@@ -480,8 +513,21 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          break;
       }
-      default: break;
+      default: 
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
+         break;
    }
+}
+
+bool insertError(TreeNode *current, SymbolTable *symtab) {
+   if (symtab->insert(current->attr.name, current)) {
+      return true;
+   }
+   // ERROR
+   numErrors++;
+   return false;
 }
 
 void treeTraverse(TreeNode * tree, SymbolTable *symtab) {
