@@ -12,6 +12,19 @@ static int newScope = 0; // mark new scope
 static int uniqueVar = 0;
 //static bool validReturn = 0;
 
+void find_parameters(TreeNode *current, SymbolTable *symtab) {
+   TreeNode *params = current->child[0];
+   TreeNode *temp;
+
+   while (params) {
+      temp = params->sibling;
+      params->sibling = NULL;
+      treeTraverse(params, symtab);
+      params->sibling = temp;
+      params = params->sibling;
+   }
+}
+
 bool insertError(TreeNode *current, SymbolTable *symtab);
 
 TreeNode *semanticAnalysis(TreeNode *syntree, SymbolTable *symtabX, int &globalOffset)
@@ -443,11 +456,16 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case CallK: {
-         //current->varKind = Local;
+         // only ever need a single child for the ID
          //treeTraverse(current->child[0], symtab);
+         if (tmp = (TreeNode *)(symtab->lookup(current->attr.name))) {
+            current->type = tmp->type;
+            current->offset = tmp->offset; // assuming offset is size
+            current->size = tmp->size;
+            find_parameters(current, symtab);
+         }
 
-         //treeTraverse(current->child[1], symtab);
-         //treeTraverse(current->child[2], symtab);
+         //current->varKind = Local;
 
          // if (current->type == Void)
          // {
