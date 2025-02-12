@@ -5,6 +5,8 @@
 #include "treeUtils.h"
 
 #include "semantics.h"
+#include "emitcode.h"
+#include "codegen.h"
 // #include "symbolTable.h"
 
 using namespace std;
