@@ -206,8 +206,8 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          current->varKind = Global;
          foffset = -2;
          newScope = 0; // reset scope
-         insertError(current, symtab);
 
+         insertError(current, symtab);
          symtab->enter(current->attr.name);
          //newScope = 0;
          treeTraverse(current->child[0], symtab);
@@ -473,7 +473,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->type = tmp->type;
             current->offset = tmp->offset; 
             //current->size = tmp->size;
-            find_parameters(current, symtab);
+            //find_parameters(current, symtab);
          }
          else
          {
