@@ -152,14 +152,14 @@ int offsetRegister(VarKind v) {
    }
 }
 
-void codegenStatement(TreeNode * currnode)
+void codegenExpression(TreeNode * currnode)
 {
    // local state to remember stuff
    int skiploc=0, skiploc2=0, currloc=0; // some temporary instuction addresses
    TreeNode *loopindex=NULL; // a pointer to the index variable declaration node
    commentLineNum(currnode);
 
-   switch (currnode->kind.stmt) {
+   switch (currnode->kind.exp) {
    /////////////////Other cases
       case OpK: {
          if (currnode->child[1]) {
@@ -207,6 +207,30 @@ void codegenStatement(TreeNode * currnode)
          }
          break;
       }
+      case ConstantK: 
+      case Char:
+         if (currnode->isArray) {
+         emitStrLit(currnode->offset, currnode->attr.string);
+         emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
+         }
+         else {
+         emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
+         }
+         break;
+      case CallK: {
+         break;
+      }
+      case IdK: {
+         break;
+      }
+      default: 
+         break;
+   }
+}
+
+void codegenStatement(TreeNode * currnode)
+{
+   switch (currnode->kind.stmt) {
       case CompoundK:
       { 
          int savedToffset;
@@ -230,23 +254,19 @@ void codegenStatement(TreeNode * currnode)
       {
          break;
       }
-      default:
+      case IfK: {
          break;
-   }
-}
-
-void codegenExpression(TreeNode * currnode)
-{
-   switch (currnode->kind.exp) {
-      case ConstantK: 
-      case Char:
-         if (currnode->isArray) {
-         emitStrLit(currnode->offset, currnode->attr.string);
-         emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
-         }
-         else {
-         emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
-         }
+      }
+      case ReturnK: {
+         break;
+      }
+      case BreakK: {
+         break;
+      }
+      case RangeK: {
+         break;
+      }
+      default:
          break;
    }
    // end
