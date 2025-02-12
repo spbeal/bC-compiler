@@ -301,14 +301,14 @@ immutable  : '(' exp ')'    {$$ = $2;}
              | constant     {$$ = $1;}
            ;
 
-call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3);}                   
+call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); }                   
            ;
 
 args       : argList  {$$ = $1;}
              | /* empty */         {$$ = NULL;}                       
            ;
 
-argList    : argList ',' exp  {$$ = $1; addSibling($1, $3); }                     
+argList    : argList ',' exp  {/*$$ = $1;*/ $$ = addSibling($1, $3); }                     
              | exp      {$$ = $1;}
            ;
 
