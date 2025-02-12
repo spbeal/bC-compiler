@@ -383,7 +383,7 @@ void codegenGeneral(TreeNode *currnode)
             codegenStatement(currnode);
             break;
          case ExpK:
-            emitComment((char *)"EXPRESSION");
+            //emitComment((char *)"EXPRESSION");
             codegenExpression(currnode);
             break;
          case DeclK:
