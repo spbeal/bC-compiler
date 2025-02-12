@@ -159,11 +159,11 @@ void codegenExpression(TreeNode * currnode)
    int skiploc=0, skiploc2=0, currloc=0; // some temporary instuction addresses
    TreeNode *loopindex=NULL; // a pointer to the index variable declaration node
    commentLineNum(currnode);
-
+   
+   emitComment((char *)"EXPRESSION");
    switch (currnode->kind.exp) {
    /////////////////Other cases
       //emitComment((char *)"TOFF set:", toffset);
-      emitComment((char *)"EXPRESSION");
       case OpK: {
          if (currnode->child[1]) {
             emitRM((char *)"ST", AC, toffset, FP, (char *)"Push left side");
