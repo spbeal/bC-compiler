@@ -484,28 +484,28 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          
          TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
 
-         if (funcNode != NULL) {
-            if (funcNode->kind.decl == FuncK) { // Ensure it's a function
-                  current->isUsed = true;
-                  funcNode->isUsed = true;
+         // if (funcNode != NULL) {
+         //    if (funcNode->kind.decl == FuncK) { // Ensure it's a function
+         //          current->isUsed = true;
+         //          funcNode->isUsed = true;
 
-                  // Set type to function return type
-                  current->type = funcNode->type;
-            } else {
-                  printf("Error: '%s' is not a function at line %d\n", current->attr.name, current->lineno);
-                  numErrors++;
-                  current->type = Void; // Prevent further errors
-            }
-         } else {
-            printf("Error: Function '%s' not declared at line %d\n", current->attr.name, current->lineno);
-            numErrors++;
-            current->type = Void;
-         }
+         //          // Set type to function return type
+         //          current->type = funcNode->type;
+         //    } else {
+         //          printf("Error: '%s' is not a function at line %d\n", current->attr.name, current->lineno);
+         //          numErrors++;
+         //          current->type = Void; // Prevent further errors
+         //    }
+         // } else {
+         //    printf("Error: Function '%s' not declared at line %d\n", current->attr.name, current->lineno);
+         //    numErrors++;
+         //    current->type = Void;
+         // }
 
          // Traverse children (arguments)
          treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         //treeTraverse(current->child[1], symtab);
+         //treeTraverse(current->child[2], symtab);
 
          break;
       }
