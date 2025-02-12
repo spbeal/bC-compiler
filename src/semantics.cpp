@@ -446,41 +446,50 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          current->varKind = Local;
 
          // Similar to IdK, set type and size too
-         treeTraverse(current->child[0], symtab);
          
-         tmp = (TreeNode *)(symtab->lookup(current->attr.name));
-         if (tmp != NULL) {
-            // Check if its a function 
-            // if not numErrors++;
-
-            current->isUsed = true;
-            tmp->isUsed = true;
-
-            current->type = tmp->type;
-            //current->isStatic = tmp->isStatic;
-            //current->isArray = tmp->isArray;
-            //current->size = tmp->size;
-            //current->varKind = tmp->varKind;
-            current->offset = tmp->offset;
-
-            // Find all parameters
-            // TreeNode * params = current->child[0];
-            // TreeNode * temporary;
-            // while (params) {
-            //    temporary = params->sibling;
-            //    params->sibling = NULL;
-            //    treeTraverse(params, symtab);
-            //    params->sibling = temporary;
-            //    params = params->sibling;
-            // }
-         }
-         else
-         {
-            //current->type = Boolean;
-            //printf("Error");
-            numErrors++;
-         }
+         // treeTraverse(current->child[0], symtab);
          
+         // tmp = (TreeNode *)(symtab->lookup(current->attr.name));
+         // if (tmp != NULL) {
+         //    // Check if its a function 
+         //    // if not numErrors++;
+
+         //    current->isUsed = true;
+         //    tmp->isUsed = true;
+
+         //    current->type = tmp->type;
+         //    //current->isStatic = tmp->isStatic;
+         //    //current->isArray = tmp->isArray;
+         //    //current->size = tmp->size;
+         //    //current->varKind = tmp->varKind;
+         //    current->offset = tmp->offset;
+
+         //    // Find all parameters
+         //    // TreeNode * params = current->child[0];
+         //    // TreeNode * temporary;
+         //    // while (params) {
+         //    //    temporary = params->sibling;
+         //    //    params->sibling = NULL;
+         //    //    treeTraverse(params, symtab);
+         //    //    params->sibling = temporary;
+         //    //    params = params->sibling;
+         //    // }
+         // }
+         // else
+         // {
+         //    //current->type = Boolean;
+         //    //printf("Error");
+         //    numErrors++;
+         // }
+         
+         TreeNode *funcDecl = (TreeNode *)symtab->lookup(current->attr.name);
+         if (funcDecl != NULL) {
+               current->type = funcDecl->type; // Assign function return type
+         } else {
+               current->type = Void;
+               printf("Error: Function %s not declared\n", current->attr.name);
+         }
+
          break;
       }
       case ConstantK: {
