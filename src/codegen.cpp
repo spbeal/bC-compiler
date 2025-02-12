@@ -208,15 +208,17 @@ void codegenExpression(TreeNode * currnode)
          break;
       }
       case ConstantK: 
-      case Char:
-         if (currnode->isArray) {
-         emitStrLit(currnode->offset, currnode->attr.string);
-         emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
-         }
-         else {
-         emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
-         }
-         break;
+      {
+         // case Char:
+         //    if (currnode->isArray) {
+         //    emitStrLit(currnode->offset, currnode->attr.string);
+         //    emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
+         //    }
+         //    else {
+         //    emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
+         //    }
+         //    break;
+      }
       case CallK: {
          break;
       }
