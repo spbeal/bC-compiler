@@ -347,28 +347,30 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char *)"END WHILE");
          break;
       }
+
       case IfK: {
          emitComment((char *)"IF");
          codegenGeneral(currnode->child[0]); 
+         emitComment((char*) "THEN");
          codegenGeneral(currnode->child[1]); 
          emitComment((char *)"END IF");
          break;
       }
       case ReturnK: {
-         // > * RETURN
-         // > 2351:    LDC  3,0(6)    Load Boolean constant 
-         // > 2352:    LDA  2,0(3)    Copy result to return register 
-         // > 2353:     LD  3,-1(1)   Load return address 
-         // > 2354:     LD  1,0(1)    Adjust fp 
-         // > 2355:    JMP  7,0(3)    Return 
-         emitRM((char *)"LDC", AC1, currnode->size-1, 6, (char *)"Load", currnode->type, "constant");
-         emitRM((char *)"LDA", FP, 5, GP, (char *)"Copy result to return register");
-         emitRM((char *)"LD", AC1, -1, 1, (char *)"Load return address");
-         emitRM((char *)"LD", AC3, -1, 1, (char *)"Adjust FP");
-         emitRO((char *)"JMP", AC1, AC, AC1, (char *)"Return");
+         if (current->child[0] != NULL) {
+            codegenExpression(current->child[0]);
+            //emitRM((char *)"LDC", AC1, currnode->size-1, 6, (char *)"Load", currnode->type, "constant");
+            emitRM((char *)"LDA", 2, 0, AC, (char *)"Copy result to return register");
+         }
+         emitRM((char *)"LD", AC, -1, FP, (char *)"Load return address");
+         emitRM((char *)"LD", FP, GP, FP, (char *)"Adjust FP");
+         emitRO((char *)"JMP", AC1, GP, AC1, (char *)"Return");
+         // Jmp somewhere
          break;
       }
       case BreakK: {
+         emitComment((char *)"BREAK");
+         // JMP SOMEWHERE ELSE
          break;
       }
       case RangeK: {
