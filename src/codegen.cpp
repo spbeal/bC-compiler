@@ -148,8 +148,8 @@ int offsetRegister(VarKind v) {
       case Global: return GP;
       case LocalStatic: return GP;
       default:
-      printf((char *)"ERROR(codegen): looking up offset register for a variable of type %d\n", v);
-      return 666; // not the devil, intended to be getting a demon as a phone number thing
+         printf((char *)"ERROR(codegen): looking up offset register for a variable of type %d\n", v);
+         return 666; // not the devil, intended to be getting a demon as a phone number thing
    }
 }
 
@@ -160,11 +160,12 @@ void codegenExpression(TreeNode * currnode)
    TreeNode *loopindex=NULL; // a pointer to the index variable declaration node
    commentLineNum(currnode);
    
-   emitComment((char *)"EXPRESSION");
+   // emitComment((char *)"EXPRESSION");
    switch (currnode->kind.exp) {
    /////////////////Other cases
       //emitComment((char *)"TOFF set:", toffset);
       case OpK: {
+         //if (currnode->child[0]) codegenExpression(currnode->child[0]);
          if (currnode->child[1]) {
             emitRM((char *)"ST", AC, toffset, FP, (char *)"Push left side");
             toffset--; emitComment((char *)"TOFF dec:", toffset);
@@ -173,6 +174,28 @@ void codegenExpression(TreeNode * currnode)
             emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
          }
             // More code here
+         switch (currnode->attr.op)
+         {
+            case '+': emitRO((char *)"ADD", AC, AC1, AC, (char*)"Op +");break;
+            case '-': emitRO((char *)"SUB", AC, AC1, AC, (char*)"Op -");break;
+            case '/': emitRO((char *)"DIV", AC, AC1, AC, (char*)"Op /");break;
+            case '*': emitRO((char *)"MUL", AC, AC1, AC, (char*)"Op *");break;
+            case '<': emitRO((char *)"TLT", AC, AC1, AC, (char*)"Op <");break;
+            case '>': emitRO((char *)"TGT", AC, AC1, AC, (char*)"Op >");break;
+            case '?': emitRO((char *)"TLT", AC, AC1, AC, (char*)"Op ?");break;
+            case MIN: emitRO((char *)"MIN", AC, AC1, AC, (char*)"Op :<:");break;
+            case MAX: emitRO((char *)"MAX", AC, AC1, AC, (char*)"Op :>:");break;
+            case SIZEOF: emitRO((char *)"SIZEOF", AC, AC1, AC, (char*)"Op SIZEOF");break;
+            case CHSIGN: emitRO((char *)"CHSIGN", AC, AC1, AC, (char*)"Op CHSIGN");break;
+            case AND: emitRO((char *)"AND", AC, AC1, AC, (char*)"Op AND");break;
+            case NOT: emitRO((char *)"NOT", AC, AC1, AC, (char*)"Op NOT");break;
+            case OR: emitRO((char *)"OR", AC, AC1, AC, (char*)"Op OR");break;
+            case NEQ: emitRO((char *)"NEQ", AC, AC1, AC, (char*)"Op NEQ");break;
+            case GEQ: emitRO((char *)"GEQ", AC, AC1, AC, (char*)"Op GEQ");break;
+            case LEQ: emitRO((char *)"LEQ", AC, AC1, AC, (char*)"Op LEQ");break;
+            case EQ: emitRO((char *)"EQ", AC, AC1, AC, (char*)"Op EQ");break;
+            break;
+         }
          break;
       }
       case AssignK: {
@@ -192,7 +215,46 @@ void codegenExpression(TreeNode * currnode)
                   (char *)"Store variable", lhs->attr.name);
                   break;
                }
+               case MULASS:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"MUL", AC, AC1, AC, (char *)"op *=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case DIVASS:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"DIV", AC, AC1, AC, (char *)"op /=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case SUBASS:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"SUB", AC, AC1, AC, (char *)"op -=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
                break;
+               case '+': emitRO((char *)"ADD", AC, AC1, AC, (char*)"Op +");break;
+               case '-': emitRO((char *)"SUB", AC, AC1, AC, (char*)"Op -");break;
+               case '/': emitRO((char *)"DIV", AC, AC1, AC, (char*)"Op /");break;
+               case '*': emitRO((char *)"MUL", AC, AC1, AC, (char*)"Op *");break;
+               case '<': emitRO((char *)"TLT", AC, AC1, AC, (char*)"Op <");break;
+               case '>': emitRO((char *)"TGT", AC, AC1, AC, (char*)"Op >");break;
+               case '?': emitRO((char *)"TLT", AC, AC1, AC, (char*)"Op ?");break;
+               case MIN: emitRO((char *)"MIN", AC, AC1, AC, (char*)"Op :<:");break;
+               case MAX: emitRO((char *)"MAX", AC, AC1, AC, (char*)"Op :>:");break;
+               case SIZEOF: emitRO((char *)"SIZEOF", AC, AC1, AC, (char*)"Op SIZEOF");break;
+               case CHSIGN: emitRO((char *)"CHSIGN", AC, AC1, AC, (char*)"Op CHSIGN");break;
+               case AND: emitRO((char *)"AND", AC, AC1, AC, (char*)"Op AND");break;
+               case NOT: emitRO((char *)"NOT", AC, AC1, AC, (char*)"Op NOT");break;
+               case OR: emitRO((char *)"OR", AC, AC1, AC, (char*)"Op OR");break;
+               case NEQ: emitRO((char *)"NEQ", AC, AC1, AC, (char*)"Op NEQ");break;
+               case GEQ: emitRO((char *)"GEQ", AC, AC1, AC, (char*)"Op GEQ");break;
+               case LEQ: emitRO((char *)"LEQ", AC, AC1, AC, (char*)"Op LEQ");break;
+               case EQ: emitRO((char *)"EQ", AC, AC1, AC, (char*)"Op EQ");break;
             }
          }
          else
@@ -383,7 +445,7 @@ void codegenGeneral(TreeNode *currnode)
             codegenStatement(currnode);
             break;
          case ExpK:
-            //emitComment((char *)"EXPRESSION");
+            emitComment((char *)"EXPRESSION");
             codegenExpression(currnode);
             break;
          case DeclK:
