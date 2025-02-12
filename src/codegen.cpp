@@ -1,8 +1,13 @@
+#include <stdio.h>
 #include "codegen.h"
+#include "emitcode.h"
+#include "semantics.h"
+#include "scanType.h"
+#include "parser.tab.h"
 
 extern int numErrors;
 extern int numWarnings;
-extern void yyparse();
+// extern void yyparse();
 extern int yydebug;
 extern TreeNode *syntaxTree;
 extern char **largerTokens;
@@ -15,6 +20,12 @@ FILE *code; // shared global code – already included
 static bool linenumFlag; // mark with line numbers
 static int breakloc; // which while to break to
 static SymbolTable *globals; // the global symbol tabl
+
+void codegenExpression(TreeNode *currnode);
+void codegenStatement(TreeNode *currnode);
+void codegenDecl(TreeNode *currnode);
+void codegenGeneral(TreeNode *currnode);
+
 
 // Line Number
 void commentLineNum(TreeNode *currnode)
@@ -114,7 +125,7 @@ void codegenFun(TreeNode *currnode)
    // remember where this function is:
    currnode->offset = emitSkip(0); // offset holds the instruction address!!
    // Store return address
-   emitRM((char *)"ST", AC, RETURNOFFSET, FP, (char *)"Store return address")
+   emitRM((char *)"ST", AC, RETURNOFFSET, FP, (char *)"Store return address");
 
    // Generate code for the statements...
    codegenGeneral(currnode->child[1]);
@@ -159,24 +170,42 @@ void codegenStatement(TreeNode * currnode)
             emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
          }
             // More code here
+         break;
       }
       case AssignK: {
+         TreeNode *lhs = currnode->child[0]; 
+         int offReg;
+         TreeNode *rhs = currnode->child[1];
          if (lhs->attr.op == '[') {
             // stuff
+            switch (currnode->attr.op)
+            {
+               case ADDASS:
+               {
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"ADD", AC, AC1, AC, (char *)"op +=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               }
+               break;
+            }
          }
          else
          {
             int offReg;
             offReg = offsetRegister(lhs->varKind);
             // Lots of cases that use it. Here is a sample:
-            case ADDASS:
-            emitRM((char *)"LD", AC1, lhs->offset, offReg,
-            (char *)"load lhs variable", lhs->attr.name);
-            emitRO((char *)"ADD", AC, AC1, AC, (char *)"op +=");
-            emitRM((char *)"ST", AC, lhs->offset, offReg,
-            (char *)"Store variable", lhs->attr.name);
-            break;
+
+               // emitRM((char *)"LD", AC1, lhs->offset, offReg,
+               // (char *)"load lhs variable", lhs->attr.name);
+               // emitRO((char *)"ADD", AC, AC1, AC, (char *)"op +=");
+               // emitRM((char *)"ST", AC, lhs->offset, offReg,
+               // (char *)"Store variable", lhs->attr.name);
+               // break;
          }
+         break;
       }
       case CompoundK:
       { 
@@ -201,14 +230,6 @@ void codegenStatement(TreeNode * currnode)
       {
          break;
       }
-      case FuncK:
-      {
-         break;
-      }
-      case CallK:
-      {
-         break;
-      }
       default:
          break;
    }
@@ -216,64 +237,19 @@ void codegenStatement(TreeNode * currnode)
 
 void codegenExpression(TreeNode * currnode)
 {
-   case VarK:
-   {
-      if (currnode->isArray) {
-         switch (currnode->varKind) {
-            case Local:
-               emitRM((char *)"LDC", AC, currnode->size-1, 6, (char *)"load size of array", currnode->attr.name);
-               emitRM((char *)"ST", AC, currnode->offset+1, offsetRegister(currnode->varKind),
-               (char *)"save size of array", currnode->attr.name);
-               break;
-            case LocalStatic:
-            case Parameter:
-            case Global:
-            // do nothing here
-               break;
-            case None:
-            // Error Condition
-            }
-            // ARRAY VALUE initialization
-         if (currnode->child[0]) {
-            codegenExpression(currnode->child[0]);
-            emitRM((char *)"LDA", AC1, currnode->offset, offsetRegister(currnode->varKind), (char *)"address of lhs");
-            emitRM((char *)"LD", AC2, 1, AC, (char *)"size of rhs");
-            emitRM((char *)"LD", AC3, 1, AC1, (char *)"size of lhs");
-            emitRO((char *)"SWP", AC2, AC3, 6, (char *)"pick smallest size");
-            emitRO((char *)"MOV", AC1, AC, AC2, (char *)"array op =");
+   switch (currnode->kind.exp) {
+      case ConstantK: 
+      case Char:
+         if (currnode->isArray) {
+         emitStrLit(currnode->offset, currnode->attr.string);
+         emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
          }
-      }
-      else { // !currnode->isArray
-         // SCALAR VALUE initialization
-         if (currnode->child[0]) {
-            switch (currnode->varKind) {
-               case Local:
-                  // compute rhs -> AC;
-                  codegenExpression(currnode->child[0]);
-                  // save it
-                  emitRM((char *)"ST", AC, currnode->offset, FP, (char *)"Store variable", currnode->attr.name);
-               case LocalStatic:
-               case Parameter:
-               case Global:
-               // do nothing here
-               break;
-               case None:
-               ///Error condition!!!
-            }
+         else {
+         emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
          }
-      }
-      break;
+         break;
    }
-   case ConstantK: 
-   case Char:
-      if (currnode->isArray) {
-      emitStrLit(currnode->offset, currnode->attr.string);
-      emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
-      }
-      else {
-      emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
-      }
-      break;
+   // end
 }
 
 void codegenDecl(TreeNode *currnode)
@@ -281,8 +257,55 @@ void codegenDecl(TreeNode *currnode)
    commentLineNum(currnode);
    switch(currnode->kind.decl) {
       case VarK:
-         // You have a LOT to do here!!!!!
+      {
+         if (currnode->isArray) {
+            switch (currnode->varKind) {
+               case Local:
+                  emitRM((char *)"LDC", AC, currnode->size-1, 6, (char *)"load size of array", currnode->attr.name);
+                  emitRM((char *)"ST", AC, currnode->offset+1, offsetRegister(currnode->varKind),
+                  (char *)"save size of array", currnode->attr.name);
+                  break;
+               case LocalStatic:
+               case Parameter:
+               case Global:
+               // do nothing here
+                  break;
+               case None:
+               // Error Condition
+               break;
+            }
+               // ARRAY VALUE initialization
+            }
+            if (currnode->child[0]) {
+               codegenExpression(currnode->child[0]);
+               emitRM((char *)"LDA", AC1, currnode->offset, offsetRegister(currnode->varKind), (char *)"address of lhs");
+               emitRM((char *)"LD", AC2, 1, AC, (char *)"size of rhs");
+               emitRM((char *)"LD", AC3, 1, AC1, (char *)"size of lhs");
+               emitRO((char *)"SWP", AC2, AC3, 6, (char *)"pick smallest size");
+               emitRO((char *)"MOV", AC1, AC, AC2, (char *)"array op =");
+            }
+         else { // !currnode->isArray
+            // SCALAR VALUE initialization
+            if (currnode->child[0]) {
+               switch (currnode->varKind) {
+                  case Local:
+                     // compute rhs -> AC;
+                     codegenExpression(currnode->child[0]);
+                     // save it
+                     emitRM((char *)"ST", AC, currnode->offset, FP, (char *)"Store variable", currnode->attr.name);
+                  case LocalStatic:
+                  case Parameter:
+                  case Global:
+                  // do nothing here
+                  break;
+                  case None:
+                  ///Error condition!!!
+                  break;
+               }
+            }
+         }
          break;
+      }
       case FuncK:
          if (currnode->lineno == -1) { // These are the library functions we just added
             codegenLibraryFun(currnode);
