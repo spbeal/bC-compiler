@@ -357,8 +357,8 @@ void codegenStatement(TreeNode * currnode)
          break;
       }
       case ReturnK: {
-         if (current->child[0] != NULL) {
-            codegenExpression(current->child[0]);
+         if (currnode->child[0] != NULL) {
+            codegenExpression(currnode->child[0]);
             //emitRM((char *)"LDC", AC1, currnode->size-1, 6, (char *)"Load", currnode->type, "constant");
             emitRM((char *)"LDA", 2, 0, AC, (char *)"Copy result to return register");
          }
