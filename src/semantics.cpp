@@ -203,17 +203,16 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case FuncK: {
-         // current->varKind = Global;
+         current->varKind = Global;
          foffset = -2;
-         //newScope = 0; // reset scope
+         newScope = 0; // reset scope
          insertError(current, symtab);
 
          symtab->enter(current->attr.name);
-         newScope = 0;
+         //newScope = 0;
          treeTraverse(current->child[0], symtab);
          current->size = foffset;
          treeTraverse(current->child[1], symtab);
-         current->varKind = Global;
          treeTraverse(current->child[2], symtab);
          symtab->leave();
 
