@@ -289,7 +289,7 @@ factor     : immutable {$$ = $1;}
              | mutable {$$ = $1;}
            ;
 
-mutable    : ID    {$$ = newExpNode(IdK, $1);}                                   
+mutable    : ID    {$$ = newExpNode(IdK, $1); $$->attr.name = $1->svalue;}                                   
              | ID '[' exp ']'   {
                                  TreeNode * id = newExpNode(IdK, $1);
                                  $$ = newExpNode(OpK, $2, id, $3); 
@@ -302,7 +302,7 @@ immutable  : '(' exp ')'    {$$ = $2;}
              | constant     {$$ = $1;}
            ;
 
-call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); $$->type = get_return_type($1->tokenstr, symtab);}                   
+call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); /*$$->type = get_return_type($1->tokenstr, symtab); printf("%s", $1->tokenstr);*/}                   
            ;
 
 args       : argList  {$$ = $1;}
