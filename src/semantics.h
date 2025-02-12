@@ -11,5 +11,6 @@ TreeNode *semanticAnalysis(TreeNode *syntree,          // pass in and return an 
     );
 TreeNode *loadIOLib(TreeNode *syntree);
 void treeTraverse(TreeNode *syntree, SymbolTable *symtab);
+ExpType get_return_type(char * name);
 
 #endif

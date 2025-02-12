@@ -555,6 +555,16 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    }
 }
 
+ExpType get_return_type(char * name)
+{
+   TreeNode *funcNode = (TreeNode *)(symtab->lookup(name));
+
+   if (funcNode != NULL) {
+      return funcNode->type;
+   }
+   return Void;
+}
+
 bool insertError(TreeNode *current, SymbolTable *symtab) {
    if (symtab->insert(current->attr.name, current)) {
       return true;
