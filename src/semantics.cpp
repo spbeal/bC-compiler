@@ -203,15 +203,18 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case FuncK: {
-         current->varKind = Global;
+         // current->varKind = Global;
          foffset = -2;
-         newScope = 0; // reset scope
+         //newScope = 0; // reset scope
+         insertError(current, symtab);
 
          symtab->enter(current->attr.name);
+         newScope = 0;
          treeTraverse(current->child[0], symtab);
          current->size = foffset;
          treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
+         current->varKind = Global;
+         // treeTraverse(current->child[2], symtab);
          symtab->leave();
 
          break;
@@ -452,6 +455,18 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          break;
       }
+      case ConstantK: {
+         if (current->type == Char && current->isArray) { // Deal with strings
+            current->varKind = Global;
+            current->offset = goffset - 1;
+            goffset -= current->size;
+         }
+         else // not array, not char
+         {
+            //current->varKind = Global;
+         }
+         break;
+      }
       case CallK: {
          // only ever need a single child for the ID
          treeTraverse(current->child[0], symtab);
@@ -531,19 +546,22 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          break;
       }
-      case ConstantK: {
-         if (current->type == Char && current->isArray) { // Deal with strings
-            current->varKind = Global;
-            current->offset = goffset - 1;
-            goffset -= current->size;
-         }
-         else // not array, not char
-         {
-            //current->varKind = Global;
-         }
-         break;
-      }
       case IdK: {
+      //    char *id = strdup(current->attr.name);
+      //    TreeNode *temp = (TreeNode*)symtab->lookup(id);
+      //    if (temp == NULL){        
+      //       printf("SEMANTIC ERROR(%d): Symbol \'%s\' is not declared.\n", current->lineno, id);                      //This is an error we have to deal with it later
+      //       numErrors++; 
+      //    }   
+      //    else {
+      //       current->type = temp->type;
+      //       current->isArray = temp->isArray;
+      //       current->isStatic = temp->isStatic;
+      //       current->size = temp->size;
+      //       current->varKind = temp->varKind;
+      //       current->offset = temp->offset;
+      //    }
+      // break;
          tmp = (TreeNode *)(symtab->lookup(current->attr.name)); // Look up in the symbol table
 
          if (tmp == NULL) {
@@ -570,9 +588,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       default: 
-         // treeTraverse(current->child[0], symtab);
-         // treeTraverse(current->child[1], symtab);
-         // treeTraverse(current->child[2], symtab);
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
          break;
    }
 }
