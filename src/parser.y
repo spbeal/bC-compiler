@@ -26,6 +26,7 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << endl;
 }
 TreeNode *syntaxTree;
+SymbolTable * symtab;
 // SymbolTable * symbolTable;
 
 void initAll()
@@ -301,7 +302,7 @@ immutable  : '(' exp ')'    {$$ = $2;}
              | constant     {$$ = $1;}
            ;
 
-call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); }                   
+call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); get_return_type($1->tokenstr, symtab);}                   
            ;
 
 args       : argList  {$$ = $1;}
@@ -337,7 +338,6 @@ int main(int argc, char **argv) {
   //syntaxTree = new TreeNode;
   int globalOffset;
   initAll();
-  SymbolTable * symtab;
   symtab = new SymbolTable();
   symtab->debug(false);
 

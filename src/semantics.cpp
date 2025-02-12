@@ -555,7 +555,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    }
 }
 
-ExpType get_return_type(char * name)
+ExpType get_return_type(char * name, SymbolTable * symtab);
 {
    TreeNode *funcNode = (TreeNode *)(symtab->lookup(name));
 
