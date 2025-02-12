@@ -444,6 +444,15 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       }
       case CallK: {
          current->varKind = Local;
+         treeTraverse(current->child[0], symtab);
+         //treeTraverse(current->child[1], symtab);
+         //treeTraverse(current->child[2], symtab);
+
+         if (current->type == Void)
+         {
+            TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
+            if (funcNode != NULL) current->type = funcNode->type;
+         }
 
          // Similar to IdK, set type and size too
 
@@ -482,7 +491,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          //    numErrors++;
          // }
          
-         TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
+         //TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
 
          // if (funcNode != NULL) {
          //    if (funcNode->kind.decl == FuncK) { // Ensure it's a function
@@ -501,11 +510,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          //    numErrors++;
          //    current->type = Void;
          // }
-
-         // Traverse children (arguments)
-         treeTraverse(current->child[0], symtab);
-         //treeTraverse(current->child[1], symtab);
-         //treeTraverse(current->child[2], symtab);
 
          break;
       }
