@@ -308,7 +308,7 @@ args       : argList  {$$ = $1;}
              | /* empty */         {$$ = NULL;}                       
            ;
 
-argList    : argList ',' exp  {/*$$ = $1;*/ $$ = addSibling($1, $3); }                     
+argList    : argList ',' exp  {$$ = ($3==NULL ? $1 : addSibling($1, $3)); /*$$ = $1; $$ = addSibling($1, $3); */}                     
              | exp      {$$ = $1;}
            ;
 
