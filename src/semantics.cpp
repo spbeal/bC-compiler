@@ -437,20 +437,17 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          else if (op == SIZEOF) current->type = Integer;
          else 
          {
-            if (current->child[0] != NULL)
-            {
-               // Returns void * default.
-               tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
-               if (tmp == NULL)
-                  current->type = current->child[0]->type;
-               else 
-                  current->type = tmp->type;
-            }
-            else
-            {
+            // if (current->child[0] != NULL)
+            // {
+            //    // Returns void * default.
+            //    tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
+            //    if (tmp == NULL)
+            //       current->type = current->child[0]->type;
+            //    else 
+            //       current->type = tmp->type;
+            // }
                //printf("Error");
-               numErrors++;
-            }
+               // numErrors++;
          }
 
          break;
