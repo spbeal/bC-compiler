@@ -362,12 +362,11 @@ void codegenStatement(TreeNode * currnode)
          // > 2354:     LD  1,0(1)    Adjust fp 
          // > 2355:    JMP  7,0(3)    Return 
          emitRM((char *)"LDC", AC1, currnode->size-1, 6, (char *)"Load", currnode->type, "constant");
-         emitRM((char *)"LDA", FP, globalOffset, GP, (char *)"Copy result to return register");
+         emitRM((char *)"LDA", FP, 5, GP, (char *)"Copy result to return register");
          emitRM((char *)"LD", AC1, -1, 1, (char *)"Load return address");
          emitRM((char *)"LD", AC3, -1, 1, (char *)"Adjust FP");
          emitRO((char *)"JMP", AC1, AC, AC1, (char *)"Return");
          break;
-         }
       }
       case BreakK: {
          break;
