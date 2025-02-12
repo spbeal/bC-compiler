@@ -4,11 +4,4 @@ ASN_5
 ASN_5_extras
 ASN_6
 
-yyerror.cpp
-yyerror.h
-
-codegen.h
-emitcode.cpp
-emitcode.h
-
 test_files/

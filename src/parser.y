@@ -359,6 +359,7 @@ int main(int argc, char **argv) {
    if(numErrors == 0){
       //printDotTree(astDot,syntaxTree, false, false);
       syntaxTree = semanticAnalysis(syntaxTree, symtab, globalOffset);
+      codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
       printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
 
