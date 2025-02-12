@@ -363,7 +363,7 @@ int main(int argc, char **argv) {
    }
 
    printf("Number of warnings: %d\n", numWarnings);
-   printf("Number of errors: %d\n", 0);
+   printf("Number of errors: %d\n", numErrors);
    //printf("Number of errors: %d\n", numErrors);
    
    return 0;

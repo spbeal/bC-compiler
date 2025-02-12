@@ -125,6 +125,7 @@ TreeNode *loadIOLib(TreeNode *syntree)
 
 void decl_traverse(TreeNode * current, SymbolTable *symtab) {
    TreeNode * tmp;
+   newScope = 1;
    
    switch (current->kind.decl) {
       case VarK: {
