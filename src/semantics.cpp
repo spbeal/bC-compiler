@@ -443,16 +443,17 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case CallK: {
-         current->varKind = Local;
-         treeTraverse(current->child[0], symtab);
+         //current->varKind = Local;
+         //treeTraverse(current->child[0], symtab);
+
          //treeTraverse(current->child[1], symtab);
          //treeTraverse(current->child[2], symtab);
 
-         if (current->type == Void)
-         {
-            TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
-            if (funcNode != NULL) current->type = funcNode->type;
-         }
+         // if (current->type == Void)
+         // {
+         //    TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
+         //    if (funcNode != NULL) current->type = funcNode->type;
+         // }
 
          // Similar to IdK, set type and size too
 
