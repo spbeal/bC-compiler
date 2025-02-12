@@ -458,7 +458,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case CallK: {
          // only ever need a single child for the ID
          treeTraverse(current->child[0], symtab);
-         if (tmp = (TreeNode *)(symtab->lookup(current->child[0]->attr.name))) {
+         if (tmp = (TreeNode *)(symtab->lookup(current->attr.name))) {
             current->type = tmp->type;
             current->offset = tmp->offset; // assuming offset is size
             current->size = tmp->size;
@@ -476,8 +476,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          //    TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
          //    if (funcNode != NULL) current->type = funcNode->type;
          // }
-
-         // Similar to IdK, set type and size too
 
          // treeTraverse(current->child[0], symtab);
          
