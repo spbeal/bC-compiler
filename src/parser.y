@@ -362,7 +362,7 @@ int main(int argc, char **argv) {
       //printDotTree(astDot,syntaxTree, false, false);
       syntaxTree = semanticAnalysis(syntaxTree, symtab, globalOffset);
       codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
-      printTree(stdout, syntaxTree); // set to true, true for assignment 4
+      //printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
 
    printf("Number of warnings: %d\n", numWarnings);
