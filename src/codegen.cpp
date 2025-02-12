@@ -112,6 +112,7 @@ void codegenLibraryFun(TreeNode *currnode)
 }
 
 // process functions
+// This generates a standard closing and returns.
 void codegenFun(TreeNode *currnode)
 {
    emitComment((char *)"");
@@ -161,6 +162,8 @@ void codegenExpression(TreeNode * currnode)
 
    switch (currnode->kind.exp) {
    /////////////////Other cases
+      //emitComment((char *)"TOFF set:", toffset);
+      emitComment((char *)"EXPRESSION");
       case OpK: {
          if (currnode->child[1]) {
             emitRM((char *)"ST", AC, toffset, FP, (char *)"Push left side");
@@ -220,6 +223,17 @@ void codegenExpression(TreeNode * currnode)
          //    break;
       }
       case CallK: {
+         emitComment((char*)"CALL", currnode->attr.name);
+         if (currnode->child[1]) {
+               // emitComment((char *)"END FUNCTION", currnode->attr.name);
+            emitRM((char *)"ST", AC, toffset, FP, (char *)"Store fp in ghost frame for", currnode->attr.name);
+            toffset--; emitComment((char *)"TOFF dec:", toffset);
+            codegenExpression(currnode->child[1]);
+            toffset++; emitComment((char *)"TOFF inc:", toffset);
+            emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
+         }
+         emitComment((char*)"Call end", currnode->attr.name);
+         emitComment((char *)"TOFF set:", toffset);
          break;
       }
       case IdK: {
@@ -250,13 +264,32 @@ void codegenStatement(TreeNode * currnode)
       }
       case ForK:
       {
+         emitComment((char *)"FOR");
+         codegenGeneral(currnode->child[0]); 
+         codegenGeneral(currnode->child[1]); 
+         emitComment((char *)"END FOR");
          break;
       }
       case WhileK:
       {
+         //int savedToffset;
+         //savedToffset = toffset;
+         //toffset = currnode->size; // recover the end of activation record
+         emitComment((char *)"WHILE");
+         //emitComment((char *)"TOFF set:", toffset);
+         codegenGeneral(currnode->child[0]); // process inits
+         //emitComment((char *)"Compound Body");
+         codegenGeneral(currnode->child[1]); // process body
+         //toffset = savedToffset;
+         //emitComment((char *)"TOFF set:", toffset);
+         emitComment((char *)"END WHILE");
          break;
       }
       case IfK: {
+         emitComment((char *)"IF");
+         codegenGeneral(currnode->child[0]); 
+         codegenGeneral(currnode->child[1]); 
+         emitComment((char *)"END IF");
          break;
       }
       case ReturnK: {
@@ -274,6 +307,7 @@ void codegenStatement(TreeNode * currnode)
    // end
 }
 
+// Complete
 void codegenDecl(TreeNode *currnode)
 { 
    commentLineNum(currnode);
