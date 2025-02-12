@@ -494,12 +494,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             } else {
                   printf("Error: '%s' is not a function at line %d\n", current->attr.name, current->lineno);
                   numErrors++;
-                  current->type = UndefinedType; // Prevent further errors
+                  current->type = Void; // Prevent further errors
             }
          } else {
             printf("Error: Function '%s' not declared at line %d\n", current->attr.name, current->lineno);
             numErrors++;
-            current->type = UndefinedType;
+            current->type = Void;
          }
 
          // Traverse children (arguments)
