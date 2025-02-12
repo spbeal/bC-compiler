@@ -302,7 +302,7 @@ immutable  : '(' exp ')'    {$$ = $2;}
              | constant     {$$ = $1;}
            ;
 
-call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); get_return_type($1->tokenstr, symtab);}                   
+call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); $$->type = get_return_type($1->tokenstr, symtab);}                   
            ;
 
 args       : argList  {$$ = $1;}
