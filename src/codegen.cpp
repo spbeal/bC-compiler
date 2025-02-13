@@ -130,7 +130,7 @@ void codegenExpression(TreeNode * currnode)
    TreeNode *loopindex=NULL; // a pointer to the index variable declaration node
    commentLineNum(currnode);
    
-   // emitComment((char *)"EXPRESSION");
+   // Done
    switch (currnode->kind.exp) {
    /////////////////Other cases
       //emitComment((char *)"TOFF set:", toffset);
@@ -171,6 +171,7 @@ void codegenExpression(TreeNode * currnode)
          }
          break;
       }
+      // Done
       case AssignK: {
          TreeNode *lhs = currnode->child[0]; 
          int offReg;
@@ -373,19 +374,39 @@ void codegenExpression(TreeNode * currnode)
          break;
       }
       case CallK: {
+         int call_loc;
+         int saved_toffset;
+         // Find function location
+         TreeNode * loc = ((TreeNode *)(globals->lookup(currnode->attr.name)));
+         call_loc = loc->offset;
+         saved_toffset = toffset;
+
          emitComment((char*)"CALL", currnode->attr.name);
-         if (currnode->child[1]) {
-               // emitComment((char *)"END FUNCTION", currnode->attr.name);
-            emitRM((char *)"ST", AC, toffset, FP, (char *)"Store fp in ghost frame for", currnode->attr.name);
-            toffset--; emitComment((char *)"TOFF dec:", toffset);
-            codegenExpression(currnode->child[1]);
-            toffset++; emitComment((char *)"TOFF inc:", toffset);
-            emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
-         }
+         emitRM((char *)"ST", FP, toffset, FP, (char *)"Store fp in ghost frame for", currnode->attr.name);
+         emitComment((char *)"TOFF dec:", --toffset);
+         emitComment((char *)"TOFF dec:", --toffset);
+         emitComment((char*)"Param end", currnode->attr.name);
+
+         emitRM((char *)"LDA", FP, saved_toffset, FP, (char *)"Ghost frame becomes new active frame");
+         emitRM((char *)"LDA", AC, FP, 7, (char *)"Return address in ac");
+         // Abs because absolute to relative PC. For JMP
+         emitRMAbs((char *)"JMP", PC, call_loc, (char *)"CALL", currnode->attr.name);
+         emitRM((char *)"LDA", AC, 0, 2, (char *)"Save the result in ac");
+
+         // if (currnode->child[1]) {
+         //       // emitComment((char *)"END FUNCTION", currnode->attr.name);
+         //    emitRM((char *)"ST", AC, toffset, FP, (char *)"Store fp in ghost frame for", currnode->attr.name);
+         //    toffset--; emitComment((char *)"TOFF dec:", toffset);
+         //    codegenExpression(currnode->child[1]);
+         //    toffset++; emitComment((char *)"TOFF inc:", toffset);
+         //    emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
+         // }
+         toffset = saved_toffset;
          emitComment((char*)"Call end", currnode->attr.name);
          emitComment((char *)"TOFF set:", toffset);
          break;
       }
+      // Done
       case IdK: {
          if (currnode->isArray)
          {
