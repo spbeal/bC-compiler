@@ -359,20 +359,20 @@ void codegenExpression(TreeNode * currnode)
             case Char:
                if (currnode->isArray) {
                   emitStrLit(currnode->offset, currnode->attr.string);
-                  emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
+                  emitRM((char *)"LDA", AC, currnode->offset, GP, (char *)"Load address of char array");
                }
                else {
-                  emitRM((char *)"LDC", AC, 1, 6, (char *)"Load char constant");
+                  emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), AC3, (char *)"Load char constant");
                }
                break;
             case Integer:
             {
-               emitRM((char *)"LDC", AC, 1, 6, (char *)"Load integer constant");
+               emitRM((char *)"LDC", AC, currnode->attr.value, AC3, (char *)"Load integer constant");
                break;
             }
             case Boolean:
             {
-               emitRM((char *)"LDC", AC, 1, 6, (char *)"Load boolean constant");
+               emitRM((char *)"LDC", AC, currnode->attr.value, AC3, (char *)"Load boolean constant");
                break;
             }
             break;
@@ -588,9 +588,9 @@ void codegenStatement(TreeNode * currnode)
          else { /*Error*/}
 
          curr_loc = emitSkip(0);
-         emitRM((char *)"LD", AC2, start_val, FP, (char *)"loop index");
+         emitRM((char *)"LD", AC1, start_val, FP, (char *)"loop index");
          emitRM((char *)"LD", AC2, stop_val, FP, (char *)"stop value");
-         emitRM((char *)"LD", AC2, step_val, FP, (char *)"step value");
+         emitRM((char *)"LD", AC, step_val, FP, (char *)"step value");
          emitRO((char *)"SLT", 3, 4, 5, (char *)"Op <"); // whats this for
          emitRM((char *)"JNZ", 3, 1, 7, (char *)"Jump to loop body");
 
