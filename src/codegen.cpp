@@ -598,6 +598,7 @@ void codegenStatement(TreeNode * currnode)
          breakloc = emitSkip(1);
          codegenGeneral(currnode->child[2]); // by
 
+         emitComment((char*)"Bottom of loop increment and jump");
          emitRM((char *)"LD", AC2, start_val, 1, (char *)"Load index"); //start
          emitRM((char *)"LD", AC2, step_val, 1, (char *)"Load step"); // step
          emitRM((char *)"ADD", AC, AC, AC2, (char *)"increment");
