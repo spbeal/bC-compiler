@@ -339,17 +339,17 @@ void codegenExpression(TreeNode * currnode)
                   emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
                }
                else {
-                  emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
+                  emitRM((char *)"LDC", AC, 1, 6, (char *)"Load char constant");
                }
                break;
             case Integer:
             {
-               emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load integer constant");
+               emitRM((char *)"LDC", AC, 1, 6, (char *)"Load integer constant");
                break;
             }
             case Boolean:
             {
-               emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load boolean constant");
+               emitRM((char *)"LDC", AC, 1, 6, (char *)"Load boolean constant");
                break;
             }
             break;
