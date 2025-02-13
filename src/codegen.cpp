@@ -553,10 +553,10 @@ void codegenStatement(TreeNode * currnode)
       }
       case ForK:
       {
+         savedToffset = toffset;
          emitComment((char *)"TOFF set:", toffset);
          emitComment((char *)"FOR");
          // TreeNode * loopindex;
-         int saved_toffset;
          int stop_val, start_val, step_val;
          int break_loc, curr_loc;
 
