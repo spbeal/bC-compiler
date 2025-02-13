@@ -507,7 +507,8 @@ void codegenStatement(TreeNode * currnode)
       // Done
       case IfK: {
          emitComment((char *)"IF");
-         codegenGeneral(currnode->child[0]); 
+         // Not codegenGeneral to skip print statement
+         codegenExpression(currnode->child[0]); 
          skiploc = emitSkip(1); // If we are jumping around if
 
          emitComment((char*) "THEN");
