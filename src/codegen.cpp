@@ -214,7 +214,7 @@ void codegenExpression(TreeNode * currnode)
                   emitRM((char *)"LD", AC2, var->offset, FP, (char *)"Load address of base of array", var->attr.name);
                   break;
             }
-            
+
             if (currnode->attr.op == INC || currnode->attr.op == DEC) {
                emitRO((char *)"SUB", AC2, AC2, AC, (char *)"Compute offset of value");
             } else {
@@ -225,50 +225,51 @@ void codegenExpression(TreeNode * currnode)
             {
                case ADDASS:
                {
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
-                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"ADD", AC, AC1, AC, (char *)"op +=");
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
                }
                case MULASS:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
-                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"MUL", AC, AC1, AC, (char *)"op *=");
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
                case DIVASS:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
-                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"DIV", AC, AC1, AC, (char *)"op /=");
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
                case SUBASS:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
-                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"SUB", AC, AC1, AC, (char *)"op -=");
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
                case DEC:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
-                  (char *)"load lhs variable", lhs->attr.name);
-                  emitRM((char *)"LDA", AC, -1, AC, (char *)"decrement value of", lhs->attr.name);                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  (char *)"load lhs variable", var->attr.name);
+                  emitRM((char *)"LDA", AC, -1, AC, (char *)"decrement value of", var->attr.name);                  
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
                case INC:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
-                  (char *)"load lhs variable", lhs->attr.name);
-                  emitRM((char *)"LDA", AC, 1, AC, (char *)"increment value of", lhs->attr.name);
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  (char *)"load lhs variable", var->attr.name);
+                  emitRM((char *)"LDA", AC, 1, AC, (char *)"increment value of", var->attr.name);
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
-               case '=':
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
-                  (char *)"Store variable", lhs->attr.name);
+               default:
+                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  (char *)"Store variable", var->attr.name);
                   break;
             }
          }
