@@ -193,7 +193,7 @@ void codegenExpression(TreeNode * currnode)
             // if var or loopIndex == NULL
 
             codegenExpression(loopindex);
-
+            
             // Push index, Pop Index of array. codegen the value from index
             if (rhs != NULL) {
                emitRM((char *)"ST", AC, toffset, FP, (char *)"Push index");
@@ -479,7 +479,10 @@ void codegenStatement(TreeNode * currnode)
       {
          emitComment((char *)"WHILE");
          currloc = emitSkip(0); // keep top of loop
-         codegenGeneral(currnode->child[0]); // process inits
+
+         // Not codegenGeneral to skip print statement
+         codegenExpression(currnode->child[0]);
+         //codegenGeneral(currnode->child[0]); // process inits
 
          emitRM((char *)"JNZ", AC, 1, PC, (char *)"Jump to while part");
          emitComment((char *)"DO");
