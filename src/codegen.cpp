@@ -559,6 +559,7 @@ void codegenStatement(TreeNode * currnode)
          int curr_loc;
          int saved_toffset;
          int stop_val, start_val, step_val;
+         int break_loc, curr_loc;
 
          loopindex = currnode->child[0];
          if (loopindex == NULL);// error
