@@ -432,7 +432,7 @@ void codegenStatement(TreeNode * currnode)
          //toffset = currnode->size; // recover the end of activation record
          emitComment((char *)"WHILE");
 
-         currloc = emitSkip(0) // keep top of loop
+         currloc = emitSkip(0); // keep top of loop
          //emitComment((char *)"TOFF set:", toffset);
          codegenGeneral(currnode->child[0]); // process inits
          //emitComment((char *)"Compound Body");
