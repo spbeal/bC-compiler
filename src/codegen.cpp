@@ -556,7 +556,6 @@ void codegenStatement(TreeNode * currnode)
       {
          emitComment((char *)"FOR");
          // TreeNode * loopindex;
-         int curr_loc;
          int saved_toffset;
          int stop_val, start_val, step_val;
          int break_loc, curr_loc;
