@@ -385,7 +385,6 @@ void codegenExpression(TreeNode * currnode)
          emitRM((char *)"ST", FP, toffset, FP, (char *)"Store fp in ghost frame for", currnode->attr.name);
          emitComment((char *)"TOFF dec:", --toffset);
          emitComment((char *)"TOFF dec:", --toffset);
-         emitComment((char*)"Param end", currnode->attr.name);
 
          // Find all parameters
          TreeNode * tmp = currnode->child[0];
@@ -400,7 +399,8 @@ void codegenExpression(TreeNode * currnode)
 
             tmp = tmp->sibling; count++;
          }
-         
+         emitComment((char*)"Param end", currnode->attr.name);
+
          emitRM((char *)"LDA", FP, saved_toffset, FP, (char *)"Ghost frame becomes new active frame");
          emitRM((char *)"LDA", AC, FP, 7, (char *)"Return address in ac");
          // Abs because absolute to relative PC. For JMP
@@ -449,8 +449,10 @@ void codegenStatement(TreeNode * currnode)
    commentLineNum(currnode);
    int savedToffset;
    int currloc = 0, skiploc = 0, skiploc2 = 0;
+   TreeNode *loopindex=NULL; // a pointer to the index variable declaration node
 
    switch (currnode->kind.stmt) {
+      // Done
       case CompoundK:
       { 
          int savedToffset;
@@ -466,14 +468,7 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char *)"END COMPOUND");
          break;
       }
-      case ForK:
-      {
-         emitComment((char *)"FOR");
-         codegenGeneral(currnode->child[0]); 
-         codegenGeneral(currnode->child[1]); 
-         emitComment((char *)"END FOR");
-         break;
-      }
+      // Done
       case WhileK:
       {
          emitComment((char *)"WHILE");
@@ -500,12 +495,25 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char *)"END WHILE");
          break;
       }
-
+      // Done
       case IfK: {
          emitComment((char *)"IF");
          codegenGeneral(currnode->child[0]); 
+         skiploc = emitSkip(1); // If we are jumping around if
+
          emitComment((char*) "THEN");
-         codegenGeneral(currnode->child[1]); 
+         codegenGeneral(currnode->child[1]);
+         skiploc2 = emitSkip(1); // If we are jumping around else
+
+         backPatchAJumpToHere((char *)"JZR", AC, skiploc, (char *)"Jump around the THEN if false [backpatch]"); 
+
+         if (currnode->child[2])
+         {
+            emitComment((char*) "ELSE");
+            codegenGeneral(currnode->child[2]);
+            backPatchAJumpToHere((char *)"JMP", 7, skiploc2, (char *)"Jump around the ELSE [backpatch]");
+         }
+
          emitComment((char *)"END IF");
          break;
       }
@@ -519,7 +527,7 @@ void codegenStatement(TreeNode * currnode)
          emitRM((char *)"LD", AC, -1, FP, (char *)"Load return address");
          emitRM((char *)"LD", FP, GP, FP, (char *)"Adjust FP");
          //emitRO((char *)"JMP", AC1, GP, AC1, (char *)"Return");
-         emitGoto(GP, AC, (char*)"Return");
+         emitGoto(GP, AC, (char*)"Return"); // JMP
          break;
       }
       // Done
@@ -529,7 +537,21 @@ void codegenStatement(TreeNode * currnode)
          emitGotoAbs(breakloc, (char*)"break");
          break;
       }
+      // Done
       case RangeK: {
+         break;
+      }
+      case ForK:
+      {
+         // TreeNode * loopindex;
+         int curr_loc;
+         int saved_toffset;
+
+         emitComment((char *)"FOR");
+         codegenGeneral(currnode->child[0]); // var decl
+         codegenGeneral(currnode->child[1]); // increment
+         codegenGeneral(currnode->child[2]); // by
+         emitComment((char *)"END FOR");
          break;
       }
       default:
