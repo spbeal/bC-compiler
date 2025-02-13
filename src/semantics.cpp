@@ -206,7 +206,8 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          current->varKind = Global;
          foffset = -2;
          newScope = 0; // reset scope
-
+         
+         // Insert into the symbol table
          insertError(current, symtab);
          symtab->enter(current->attr.name);
          //newScope = 0;

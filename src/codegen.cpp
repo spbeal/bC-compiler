@@ -272,17 +272,31 @@ void codegenExpression(TreeNode * currnode)
          }
          break;
       }
+      // DOne
       case ConstantK: 
       {
-         // case Char:
-         //    if (currnode->isArray) {
-         //    emitStrLit(currnode->offset, currnode->attr.string);
-         //    emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
-         //    }
-         //    else {
-         //    emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
-         //    }
-         //    break;
+         switch (currnode->type)
+         {
+            case Char:
+               if (currnode->isArray) {
+                  emitStrLit(currnode->offset, currnode->attr.string);
+                  emitRM((char *)"LDA", AC, currnode->offset, 0, (char *)"Load address of char array");
+               }
+               else {
+                  emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load char constant");
+               }
+               break;
+            case Integer:
+            {
+               emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load integer constant");
+               break;
+            }
+            case Boolean:
+            {
+               emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load boolean constant");
+               break;
+            }
+         }
       }
       case CallK: {
          emitComment((char*)"CALL", currnode->attr.name);
@@ -364,13 +378,14 @@ void codegenStatement(TreeNode * currnode)
          }
          emitRM((char *)"LD", AC, -1, FP, (char *)"Load return address");
          emitRM((char *)"LD", FP, GP, FP, (char *)"Adjust FP");
-         emitRO((char *)"JMP", AC1, GP, AC1, (char *)"Return");
-         // Jmp somewhere
+         //emitRO((char *)"JMP", AC1, GP, AC1, (char *)"Return");
+         emitGoto(GP, AC, (char*)"Return");
          break;
       }
       case BreakK: {
          emitComment((char *)"BREAK");
          // JMP SOMEWHERE ELSE
+         emitGoto(breakloc, (char*)"break");
          break;
       }
       case RangeK: {
