@@ -554,15 +554,58 @@ void codegenStatement(TreeNode * currnode)
       }
       case ForK:
       {
+         emitComment((char *)"FOR");
          // TreeNode * loopindex;
          int curr_loc;
          int saved_toffset;
+         int stop_val, start_val, step_val;
 
-         emitComment((char *)"FOR");
-         codegenGeneral(currnode->child[0]); // var decl
-         codegenGeneral(currnode->child[1]); // increment
+         loopindex = currnode->child[0];
+         if (loopindex == NULL);// error
+
+         start_val = loopindex->offset;
+         stop_val = loopindex->offset-1;
+         step_val = loopindex->offset-2;
+
+         // RANGE
+         if (currnode->child[1])
+         {
+            TreeNode * tmp = currnode->child[1];
+            codegenExpression(tmp->child[0]);
+            emitRM((char *)"ST", AC, start_val, GP, (char *)"save starting value in index variable");
+            codegenExpression(tmp->child[1]);       
+            emitRM((char *)"ST", AC, stop_val, GP, (char *)"save stop value");
+
+            // IF we have a set increment value we set it
+            if (tmp->child[2]) 
+               codegenExpression(tmp->child[2]);
+            // ELSE we set default increment by 1
+            else 
+               emitRM((char *)"LDC", AC, 1, 6, (char *)"default increment by 1");
+
+            emitRM((char *)"ST", AC, step_val, GP, (char *)"save step value");
+         }
+         else { /*Error*/}
+
+         curr_loc = emitSkip(0);
+         emitRM((char *)"LD", AC2, start_val, 1, (char *)"loop index");
+         emitRM((char *)"LD", AC2, stop_val, 1, (char *)"stop value");
+         emitRM((char *)"LD", AC2, step_val, 1, (char *)"step value");
+         emitRO((char *)"SLT", 3, 4, 5, (char *)"Op <"); // whats this for
+         emitRM((char *)"JNZ", AC, 1, PC, (char *)"Jump to loop body");
+
+         // breakloc
+         breakloc = emitSkip(1);
          codegenGeneral(currnode->child[2]); // by
-         emitComment((char *)"END FOR");
+
+         emitRM((char *)"LD", AC2, start_val, 1, (char *)"Load index"); //start
+         emitRM((char *)"LD", AC2, step_val, 1, (char *)"Load step"); // step
+         emitRM((char *)"ADD", AC, AC, AC2, (char *)"increment");
+         emitRM((char *)"ST", AC, start_val, GP, (char *)"store back to index"); //start
+         emitGotoAbs(curr_loc, (char*)"go to beginning of loop");
+         backPatchAJumpToHere(break_loc, (char*)"Jump past loop [backpatch]");
+
+         emitComment((char *)"END LOOP");
          break;
       }
       default:
