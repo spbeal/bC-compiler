@@ -387,14 +387,8 @@ void codegenExpression(TreeNode * currnode)
          emitComment((char *)"TOFF dec:", --toffset);
          emitComment((char*)"Param end", currnode->attr.name);
 
-         emitRM((char *)"LDA", FP, saved_toffset, FP, (char *)"Ghost frame becomes new active frame");
-         emitRM((char *)"LDA", AC, FP, 7, (char *)"Return address in ac");
-         // Abs because absolute to relative PC. For JMP
-         emitRMAbs((char *)"JMP", PC, call_loc, (char *)"CALL", currnode->attr.name);
-         emitRM((char *)"LDA", AC, 0, 2, (char *)"Save the result in ac");
-
          // Find all parameters
-         TreeNode * tmp = currnode;
+         TreeNode * tmp = currnode->child[0];
          int count = 1;
          while (tmp)
          {           
@@ -406,6 +400,13 @@ void codegenExpression(TreeNode * currnode)
 
             tmp = tmp->sibling; count++;
          }
+         
+         emitRM((char *)"LDA", FP, saved_toffset, FP, (char *)"Ghost frame becomes new active frame");
+         emitRM((char *)"LDA", AC, FP, 7, (char *)"Return address in ac");
+         // Abs because absolute to relative PC. For JMP
+         emitRMAbs((char *)"JMP", PC, call_loc, (char *)"CALL", currnode->attr.name);
+         emitRM((char *)"LDA", AC, 0, 2, (char *)"Save the result in ac");
+
          // if (currnode->child[1]) {
             
          //       // emitComment((char *)"END FUNCTION", currnode->attr.name);
