@@ -358,7 +358,9 @@ void codegenExpression(TreeNode * currnode)
                emitRM((char *)"LDC", AC, int(currnode->attr.cvalue), 6, (char *)"Load boolean constant");
                break;
             }
+            break;
          }
+         break;
       }
       case CallK: {
          emitComment((char*)"CALL", currnode->attr.name);
