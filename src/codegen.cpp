@@ -18,7 +18,7 @@ extern void initTokenStrings();
 int toffset; // next available temporary space
 FILE *code; // shared global code – already included
 static bool linenumFlag; // mark with line numbers
-// static int breakloc; // which while to break to
+static int breakloc; // which while to break to
 static SymbolTable *globals; // the global symbol tabl
 
 void codegenExpression(TreeNode *currnode);
@@ -402,7 +402,6 @@ void codegenStatement(TreeNode * currnode)
    commentLineNum(currnode);
    int savedToffset;
    int currloc = 0, skiploc = 0, skiploc2 = 0;
-   static int breakloc = 0;
 
    switch (currnode->kind.stmt) {
       case CompoundK:
