@@ -393,14 +393,29 @@ void codegenExpression(TreeNode * currnode)
          emitRMAbs((char *)"JMP", PC, call_loc, (char *)"CALL", currnode->attr.name);
          emitRM((char *)"LDA", AC, 0, 2, (char *)"Save the result in ac");
 
+         // Find all parameters
+         TreeNode * tmp = currnode;
+         int count = 1;
+         while (tmp)
+         {           
+            emitComment((char*)"Param", count);
+            codegenExpression(tmp);
+            //emitRM((char *)"LD", AC, tmp->offset, offset, (char *)"Load variable", tmp->attr.name);
+            emitRM((char *)"ST", AC, toffset, offset, (char *)"Push parameter");
+            emitComment((char *)"TOFF dec:", --toffset);
+
+            tmp = tmp->sibling; count++;
+         }
          // if (currnode->child[1]) {
+            
          //       // emitComment((char *)"END FUNCTION", currnode->attr.name);
          //    emitRM((char *)"ST", AC, toffset, FP, (char *)"Store fp in ghost frame for", currnode->attr.name);
-         //    toffset--; emitComment((char *)"TOFF dec:", toffset);
+         //    emitComment((char *)"TOFF dec:", --toffset);
          //    codegenExpression(currnode->child[1]);
          //    toffset++; emitComment((char *)"TOFF inc:", toffset);
          //    emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
          // }
+
          toffset = saved_toffset;
          emitComment((char*)"Call end", currnode->attr.name);
          emitComment((char *)"TOFF set:", toffset);
