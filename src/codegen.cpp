@@ -18,7 +18,7 @@ extern void initTokenStrings();
 int toffset; // next available temporary space
 FILE *code; // shared global code – already included
 static bool linenumFlag; // mark with line numbers
-static int breakloc; // which while to break to
+// static int breakloc; // which while to break to
 static SymbolTable *globals; // the global symbol tabl
 
 void codegenExpression(TreeNode *currnode);
@@ -402,6 +402,7 @@ void codegenStatement(TreeNode * currnode)
    commentLineNum(currnode);
    int savedToffset;
    int currloc = 0, skiploc = 0, skiploc2 = 0;
+   static int breakloc = 0;
 
    switch (currnode->kind.stmt) {
       case CompoundK:
@@ -429,20 +430,27 @@ void codegenStatement(TreeNode * currnode)
       }
       case WhileK:
       {
-         //int savedToffset;
-         //savedToffset = toffset;
-         //toffset = currnode->size; // recover the end of activation record
          emitComment((char *)"WHILE");
-
          currloc = emitSkip(0); // keep top of loop
-         //emitComment((char *)"TOFF set:", toffset);
          codegenGeneral(currnode->child[0]); // process inits
-         //emitComment((char *)"Compound Body");
-         codegenGeneral(currnode->child[1]); // process body
-         //toffset = savedToffset;
 
-         breakloc = emitSkip(1);
-         //emitComment((char *)"TOFF set:", toffset);
+         emitRM((char *)"JNZ", AC, 1, PC, (char *)"Jump to while part");
+         emitComment((char *)"DO");
+
+         /*
+         Compound statement happens between these
+         */
+
+         skiploc = breakloc;
+         breakloc = emitSkip(1); // keeps track of location of where the loop ends
+         codegenGeneral(currnode->child[1]); // process body
+         emitGotoAbs(currloc, (char*)"go to beginning of loop"); // JMP
+
+         //backpatch
+         backPatchAJumpToHere(breakloc, (char *)"Jump past loop [backpatch]"); // JMP
+
+         // Keep track of for our break statement if it gets called later. 
+         breakloc = skiploc;
          emitComment((char *)"END WHILE");
          break;
       }
