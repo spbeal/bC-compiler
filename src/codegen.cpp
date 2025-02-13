@@ -165,7 +165,7 @@ void codegenExpression(TreeNode * currnode)
    /////////////////Other cases
       //emitComment((char *)"TOFF set:", toffset);
       case OpK: {
-         //if (currnode->child[0]) codegenExpression(currnode->child[0]);
+         if (currnode->child[0]) codegenExpression(currnode->child[0]);
          if (currnode->child[1]) {
             emitRM((char *)"ST", AC, toffset, FP, (char *)"Push left side");
             toffset--; emitComment((char *)"TOFF dec:", toffset);
