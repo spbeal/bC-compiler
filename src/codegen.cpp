@@ -519,6 +519,7 @@ void codegenStatement(TreeNode * currnode)
       }
       //Done
       case ReturnK: {
+         emitComment((char *)"RETURN");
          if (currnode->child[0] != NULL) {
             codegenExpression(currnode->child[0]);
             //emitRM((char *)"LDC", AC1, currnode->size-1, 6, (char *)"Load", currnode->type, "constant");
