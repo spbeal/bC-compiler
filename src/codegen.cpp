@@ -400,8 +400,8 @@ void codegenExpression(TreeNode * currnode)
          {           
             emitComment((char*)"Param", count);
             codegenExpression(tmp);
-            //emitRM((char *)"LD", AC, tmp->offset, offset, (char *)"Load variable", tmp->attr.name);
-            emitRM((char *)"ST", AC, toffset, offset, (char *)"Push parameter");
+            //emitRM((char *)"LD", AC, tmp->offset, FP, (char *)"Load variable", tmp->attr.name);
+            emitRM((char *)"ST", AC, toffset, FP, (char *)"Push parameter");
             emitComment((char *)"TOFF dec:", --toffset);
 
             tmp = tmp->sibling; count++;
