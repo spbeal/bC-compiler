@@ -385,7 +385,7 @@ void codegenStatement(TreeNode * currnode)
       case BreakK: {
          emitComment((char *)"BREAK");
          // JMP SOMEWHERE ELSE
-         emitGoto(breakloc, (char*)"break");
+         emitGotoAbs(breakloc, (char*)"break");
          break;
       }
       case RangeK: {
