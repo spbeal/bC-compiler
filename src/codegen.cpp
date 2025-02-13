@@ -201,9 +201,24 @@ void codegenExpression(TreeNode * currnode)
                emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop index");
             }
 
-            if (var->varKind == Parameter)
+            switch (var->varKind)
             {
-
+               case Global:
+               case LocalStatic:
+                  emitRM((char *)"LDA", AC2, var->offset, GP, (char *)"Load address of base of array", var->attr.name);
+                  break;
+               case Local:
+                  emitRM((char *)"LDA", AC2, var->offset, FP, (char *)"Load address of base of array", var->attr.name);
+                  break;
+               case Parameter:
+                  emitRM((char *)"LD", AC2, var->offset, FP, (char *)"Load address of base of array", var->attr.name);
+                  break;
+            }
+            
+            if (currnode->attr.op == INC || currnode->attr.op == DEC) {
+               emitRO((char *)"SUB", AC2, AC2, AC, (char *)"Compute offset of value");
+            } else {
+               emitRO((char *)"SUB", AC2, AC2, AC1, (char *)"Compute offset of value");
             }
 
             switch (currnode->attr.op)
