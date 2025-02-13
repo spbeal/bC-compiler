@@ -202,8 +202,15 @@ void codegenExpression(TreeNode * currnode)
          TreeNode *lhs = currnode->child[0]; 
          int offReg;
          TreeNode *rhs = currnode->child[1];
+
          if (lhs->attr.op == '[') {
             // stuff
+            lhs->isArray = true;
+            TreeNode *var = lhs->child[0]; 
+            offReg = offsetRegister(child0->varKind);
+            //TreeNode *child1 = lhs->child[1];
+            // loopIndex
+
             switch (currnode->attr.op)
             {
                case ADDASS:
@@ -236,31 +243,86 @@ void codegenExpression(TreeNode * currnode)
                   emitRM((char *)"ST", AC, lhs->offset, offReg,
                   (char *)"Store variable", lhs->attr.name);
                   break;
-               break;
-               case '+': emitRO((char *)"ADD", AC, AC1, AC, (char*)"Op +");break;
-               case '-': emitRO((char *)"SUB", AC, AC1, AC, (char*)"Op -");break;
-               case '/': emitRO((char *)"DIV", AC, AC1, AC, (char*)"Op /");break;
-               case '*': emitRO((char *)"MUL", AC, AC1, AC, (char*)"Op *");break;
-               case '<': emitRO((char *)"TLT", AC, AC1, AC, (char*)"Op <");break;
-               case '>': emitRO((char *)"TGT", AC, AC1, AC, (char*)"Op >");break;
-               case '?': emitRO((char *)"TLT", AC, AC1, AC, (char*)"Op ?");break;
-               case MIN: emitRO((char *)"MIN", AC, AC1, AC, (char*)"Op :<:");break;
-               case MAX: emitRO((char *)"MAX", AC, AC1, AC, (char*)"Op :>:");break;
-               case SIZEOF: emitRO((char *)"SIZEOF", AC, AC1, AC, (char*)"Op SIZEOF");break;
-               case CHSIGN: emitRO((char *)"CHSIGN", AC, AC1, AC, (char*)"Op CHSIGN");break;
-               case AND: emitRO((char *)"AND", AC, AC1, AC, (char*)"Op AND");break;
-               case NOT: emitRO((char *)"NOT", AC, AC1, AC, (char*)"Op NOT");break;
-               case OR: emitRO((char *)"OR", AC, AC1, AC, (char*)"Op OR");break;
-               case NEQ: emitRO((char *)"NEQ", AC, AC1, AC, (char*)"Op NEQ");break;
-               case GEQ: emitRO((char *)"GEQ", AC, AC1, AC, (char*)"Op GEQ");break;
-               case LEQ: emitRO((char *)"LEQ", AC, AC1, AC, (char*)"Op LEQ");break;
-               case EQ: emitRO((char *)"EQ", AC, AC1, AC, (char*)"Op EQ");break;
+               case DEC:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"DEC", AC, AC1, AC, (char *)"decrement value of");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case INC:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"INC", AC, AC1, AC, (char *)"increment value of");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case '=':
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
             }
          }
          else
          {
             int offReg;
             offReg = offsetRegister(lhs->varKind);
+
+            if (rhs) {
+               codegenExpression(rhs);
+            }
+
+            switch (currnode->attr.op)
+            {
+               case ADDASS:
+               {
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"ADD", AC, AC1, AC, (char *)"op +=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               }
+               case MULASS:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"MUL", AC, AC1, AC, (char *)"op *=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case DIVASS:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"DIV", AC, AC1, AC, (char *)"op /=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case SUBASS:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"SUB", AC, AC1, AC, (char *)"op -=");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case DEC:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"DEC", AC, AC1, AC, (char *)"decrement value of");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case INC:
+                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  (char *)"load lhs variable", lhs->attr.name);
+                  emitRO((char *)"INC", AC, AC1, AC, (char *)"increment value of");
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+               case '=':
+                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  (char *)"Store variable", lhs->attr.name);
+                  break;
+            }
             // Lots of cases that use it. Here is a sample:
 
                // emitRM((char *)"LD", AC1, lhs->offset, offReg,
@@ -313,6 +375,19 @@ void codegenExpression(TreeNode * currnode)
          break;
       }
       case IdK: {
+         if (currnode->isArray)
+         {
+            int offset = offsetRegister(current->varKind);
+            if (currnode->VarKind == Parameter)
+               emitRM((char *)"LD", AC, current->offset, offset, (char *)"Load address of base of array", current->attr.name);
+            else
+               emitRM((char *)"LDA", AC, current->offset, offset, (char *)"Load address of base of array", current->attr.name);
+         }
+         else
+         {
+            int offset = offsetRegister(current->varKind);
+            emitRM((char *)"LD", AC, current->offset, offset, (char *)"Load variable", current->attr.name);
+         }
          break;
       }
       default: 
@@ -322,6 +397,10 @@ void codegenExpression(TreeNode * currnode)
 
 void codegenStatement(TreeNode * currnode)
 {
+   commentLineNum(current);
+   int savedToffset;
+   int currloc = 0, skiploc = 0, skiploc2 = 0;
+   
    switch (currnode->kind.stmt) {
       case CompoundK:
       { 
@@ -352,11 +431,15 @@ void codegenStatement(TreeNode * currnode)
          //savedToffset = toffset;
          //toffset = currnode->size; // recover the end of activation record
          emitComment((char *)"WHILE");
+
+         currloc = emitSkip(0) // keep top of loop
          //emitComment((char *)"TOFF set:", toffset);
          codegenGeneral(currnode->child[0]); // process inits
          //emitComment((char *)"Compound Body");
          codegenGeneral(currnode->child[1]); // process body
          //toffset = savedToffset;
+
+         breakloc = emitSkip(1);
          //emitComment((char *)"TOFF set:", toffset);
          emitComment((char *)"END WHILE");
          break;
@@ -370,6 +453,7 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char *)"END IF");
          break;
       }
+      //Done
       case ReturnK: {
          if (currnode->child[0] != NULL) {
             codegenExpression(currnode->child[0]);
@@ -382,6 +466,7 @@ void codegenStatement(TreeNode * currnode)
          emitGoto(GP, AC, (char*)"Return");
          break;
       }
+      // Done
       case BreakK: {
          emitComment((char *)"BREAK");
          // JMP SOMEWHERE ELSE
@@ -402,6 +487,7 @@ void codegenDecl(TreeNode *currnode)
 { 
    commentLineNum(currnode);
    switch(currnode->kind.decl) {
+      // Done
       case VarK:
       {
          if (currnode->isArray) {
@@ -452,6 +538,7 @@ void codegenDecl(TreeNode *currnode)
          }
          break;
       }
+      // DONE
       case FuncK:
          if (currnode->lineno == -1) { // These are the library functions we just added
             codegenLibraryFun(currnode);
@@ -460,6 +547,7 @@ void codegenDecl(TreeNode *currnode)
             codegenFun(currnode);
          }
          break;
+      // Done
       case ParamK:
          // IMPORTANT: no instructions need to be allocated for parameters here
          break;
