@@ -207,7 +207,7 @@ void codegenExpression(TreeNode * currnode)
             // stuff
             lhs->isArray = true;
             TreeNode *var = lhs->child[0]; 
-            offReg = offsetRegister(child0->varKind);
+            offReg = offsetRegister(var->varKind);
             //TreeNode *child1 = lhs->child[1];
             // loopIndex
 
@@ -377,16 +377,16 @@ void codegenExpression(TreeNode * currnode)
       case IdK: {
          if (currnode->isArray)
          {
-            int offset = offsetRegister(current->varKind);
+            int offset = offsetRegister(currnode->varKind);
             if (currnode->VarKind == Parameter)
-               emitRM((char *)"LD", AC, current->offset, offset, (char *)"Load address of base of array", current->attr.name);
+               emitRM((char *)"LD", AC, currnode->offset, offset, (char *)"Load address of base of array", currnode->attr.name);
             else
-               emitRM((char *)"LDA", AC, current->offset, offset, (char *)"Load address of base of array", current->attr.name);
+               emitRM((char *)"LDA", AC, currnode->offset, offset, (char *)"Load address of base of array", currnode->attr.name);
          }
          else
          {
-            int offset = offsetRegister(current->varKind);
-            emitRM((char *)"LD", AC, current->offset, offset, (char *)"Load variable", current->attr.name);
+            int offset = offsetRegister(currnode->varKind);
+            emitRM((char *)"LD", AC, currnode->offset, offset, (char *)"Load variable", currnode->attr.name);
          }
          break;
       }
@@ -397,10 +397,10 @@ void codegenExpression(TreeNode * currnode)
 
 void codegenStatement(TreeNode * currnode)
 {
-   commentLineNum(current);
+   commentLineNum(currnode);
    int savedToffset;
    int currloc = 0, skiploc = 0, skiploc2 = 0;
-   
+
    switch (currnode->kind.stmt) {
       case CompoundK:
       { 
