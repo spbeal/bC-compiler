@@ -602,7 +602,7 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char*)"Bottom of loop increment and jump");
          emitRM((char *)"LD", AC, start_val, FP, (char *)"Load index"); //start
          emitRM((char *)"LD", AC2, step_val, FP, (char *)"Load step"); // step
-         emitRM((char *)"ADD", AC, AC, AC2, (char *)"increment");
+         emitRO((char *)"ADD", AC, AC, AC2, (char *)"increment");
          emitRM((char *)"ST", AC, start_val, FP, (char *)"store back to index"); //start
          emitGotoAbs(curr_loc, (char*)"go to beginning of loop");
          backPatchAJumpToHere(break_loc, (char*)"Jump past loop [backpatch]");
