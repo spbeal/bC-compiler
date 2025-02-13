@@ -146,7 +146,7 @@ void codegenExpression(TreeNode * currnode)
             // More code here
 
          emitRO((char *)"SUB", AC, AC1, AC, (char *)"compute location from index");
-         emitRM((char *)"LD", AC2, var->offset, FP, (char *)"Load array element", var->attr.name);
+         emitRM((char *)"LD", AC2, currnode->offset, FP, (char *)"Load array element", currnode->attr.name);
 
          switch (currnode->attr.op)
          {
