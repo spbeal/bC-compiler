@@ -572,9 +572,9 @@ void codegenStatement(TreeNode * currnode)
          {
             TreeNode * tmp = currnode->child[1];
             codegenExpression(tmp->child[0]);
-            emitRM((char *)"ST", AC, start_val, GP, (char *)"save starting value in index variable");
+            emitRM((char *)"ST", AC, start_val, FP, (char *)"save starting value in index variable");
             codegenExpression(tmp->child[1]);       
-            emitRM((char *)"ST", AC, stop_val, GP, (char *)"save stop value");
+            emitRM((char *)"ST", AC, stop_val, FP, (char *)"save stop value");
 
             // IF we have a set increment value we set it
             if (tmp->child[2]) 
@@ -583,16 +583,16 @@ void codegenStatement(TreeNode * currnode)
             else 
                emitRM((char *)"LDC", AC, 1, 6, (char *)"default increment by 1");
 
-            emitRM((char *)"ST", AC, step_val, GP, (char *)"save step value");
+            emitRM((char *)"ST", AC, step_val, FP, (char *)"save step value");
          }
          else { /*Error*/}
 
          curr_loc = emitSkip(0);
-         emitRM((char *)"LD", AC2, start_val, 1, (char *)"loop index");
-         emitRM((char *)"LD", AC2, stop_val, 1, (char *)"stop value");
-         emitRM((char *)"LD", AC2, step_val, 1, (char *)"step value");
+         emitRM((char *)"LD", AC2, start_val, FP, (char *)"loop index");
+         emitRM((char *)"LD", AC2, stop_val, FP, (char *)"stop value");
+         emitRM((char *)"LD", AC2, step_val, FP, (char *)"step value");
          emitRO((char *)"SLT", 3, 4, 5, (char *)"Op <"); // whats this for
-         emitRM((char *)"JNZ", AC, 1, PC, (char *)"Jump to loop body");
+         emitRM((char *)"JNZ", 3, 1, 7, (char *)"Jump to loop body");
 
          // breakloc
          //skiploc = break_loc;
