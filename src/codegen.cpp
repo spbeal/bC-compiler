@@ -46,37 +46,7 @@ void codegenLibraryFun(TreeNode *currnode)
    currnode->offset = emitSkip(0);
    // Store return address
    emitRM((char *)"ST", AC, RETURNOFFSET, FP, (char *)"Store return address");
-   // Next slides here
-   // else if (strcmp(currnode->attr.name, (char *)"input")==0) {
-   // emitRO((char *)"IN", RT, RT, RT, (char *)"Grab int input");
-   // }
-   // else if (strcmp(currnode->attr.name, (char *)"inputb")==0) {
-   // emitRO((char *)"INB", RT, RT, RT, (char *)"Grab bool input");
-   // }
-   // else if (strcmp(currnode->attr.name, (char *)"inputc")==0) {
-   // emitRO((char *)"INC", RT, RT, RT, (char *)"Grab char input");
-   // ///////
-   // else if (strcmp(currnode->attr.name, (char *)"input")==0) {
-   // emitRO((char *)"IN", RT, RT, RT, (char *)"Grab int input");
-   // }
-   // else if (strcmp(currnode->attr.name, (char *)"inputb")==0) {
-   // emitRO((char *)"INB", RT, RT, RT, (char *)"Grab bool input");
-   // }
-   // else if (strcmp(currnode->attr.name, (char *)"inputc")==0) {
-   // emitRO((char *)"INC", RT, RT, RT, (char *)"Grab char input");
-   // }
-   // else if (strcmp(currnode->attr.name, (char *)"output")==0) {
-   // emitRM((char *)"LD", AC, -2, FP, (char *)"Load parameter");
-   // emitRO((char *)"OUT", AC, AC, AC, (char *)"Output integer");
-   // }
-   // else if (strcmp(currnode->attr.name, (char *)"outputb")==0) {
-   // emitRM((char *)"LD", AC, -2, FP, (char *)"Load parameter");
-   // emitRO((char *)"OUTB", AC, AC, AC, (char *)"Output bool");
-   // }else if (strcmp(currnode->attr.name, (char *)"outputc")==0) {
-   // emitRM((char *)"LD", AC, -2, FP, (char *)"Load parameter");
-   // emitRO((char *)"OUTC", AC, AC, AC, (char *)"Output char");
-   // }
-   ////
+
    if (strcmp(currnode->attr.name, (char *)"input")==0) {
    emitRO((char *)"IN", RT, RT, RT, (char *)"Grab int input");
    }
@@ -208,8 +178,30 @@ void codegenExpression(TreeNode * currnode)
             lhs->isArray = true;
             TreeNode *var = lhs->child[0]; 
             offReg = offsetRegister(var->varKind);
-            //TreeNode *child1 = lhs->child[1];
-            // loopIndex
+            loopindex = lhs->child[1];
+
+            // if var or loopIndex == NULL
+
+            codegenExpression(loopindex);
+
+            // Push index, Pop Index of array. codegen the value from index
+            if (rhs != NULL) {
+               emitRM((char *)"ST", AC, toffset, FP, (char *)"Push index");
+               toffset--;
+               emitComment((char *)"TOFF dec:", toffset);
+
+               codegenExpression(rhs);
+               // LDC then NEG for example. 
+
+               toffset++;
+               emitComment((char *)"TOFF inc:", toffset);
+               emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop index");
+            }
+
+            if (var->varKind == Parameter)
+            {
+
+            }
 
             switch (currnode->attr.op)
             {
@@ -246,14 +238,13 @@ void codegenExpression(TreeNode * currnode)
                case DEC:
                   emitRM((char *)"LD", AC1, lhs->offset, offReg,
                   (char *)"load lhs variable", lhs->attr.name);
-                  emitRO((char *)"DEC", AC, AC1, AC, (char *)"decrement value of");
-                  emitRM((char *)"ST", AC, lhs->offset, offReg,
+                  emitRM((char *)"LDA", AC, -1, AC, (char *)"decrement value of", lhs->attr.name);                  emitRM((char *)"ST", AC, lhs->offset, offReg,
                   (char *)"Store variable", lhs->attr.name);
                   break;
                case INC:
                   emitRM((char *)"LD", AC1, lhs->offset, offReg,
                   (char *)"load lhs variable", lhs->attr.name);
-                  emitRO((char *)"INC", AC, AC1, AC, (char *)"increment value of");
+                  emitRM((char *)"LDA", AC, 1, AC, (char *)"increment value of", lhs->attr.name);
                   emitRM((char *)"ST", AC, lhs->offset, offReg,
                   (char *)"Store variable", lhs->attr.name);
                   break;
