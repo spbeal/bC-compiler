@@ -461,7 +461,6 @@ void codegenStatement(TreeNode * currnode)
       // Done
       case CompoundK:
       { 
-         int savedToffset;
          savedToffset = toffset;
          toffset = currnode->size; // recover the end of activation record
          emitComment((char *)"COMPOUND");
@@ -596,8 +595,9 @@ void codegenStatement(TreeNode * currnode)
          emitRM((char *)"JNZ", AC, 1, PC, (char *)"Jump to loop body");
 
          // breakloc
-         skiploc = break_loc;
+         //skiploc = break_loc;
          breakloc = emitSkip(1);
+
          codegenGeneral(currnode->child[2]); // by
 
          emitComment((char*)"Bottom of loop increment and jump");
@@ -608,7 +608,7 @@ void codegenStatement(TreeNode * currnode)
          emitGotoAbs(curr_loc, (char*)"go to beginning of loop");
          backPatchAJumpToHere(break_loc, (char*)"Jump past loop [backpatch]");
 
-         break_loc = skiploc;
+         //break_loc = skiploc;
 
          emitComment((char *)"END LOOP");
          break;
