@@ -378,7 +378,7 @@ void codegenExpression(TreeNode * currnode)
          if (currnode->isArray)
          {
             int offset = offsetRegister(currnode->varKind);
-            if (currnode->VarKind == Parameter)
+            if (currnode->varKind == Parameter)
                emitRM((char *)"LD", AC, currnode->offset, offset, (char *)"Load address of base of array", currnode->attr.name);
             else
                emitRM((char *)"LDA", AC, currnode->offset, offset, (char *)"Load address of base of array", currnode->attr.name);
