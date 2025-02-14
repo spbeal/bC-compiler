@@ -67,6 +67,14 @@ int setValue(int linenum, int tokenClass, char *svalue) {
      case CHARCONST:
          yylval.tokenData->cvalue = svalue[1];
          yylval.tokenData->nvalue = 1;
+          
+          if (svalue[1] == '\\') {
+               switch (svalue[2])
+               {
+                    case 'n': yylval.tokenData->cvalue = '\n';
+                    case '0': yylval.tokenData->cvalue = '\0';
+               }
+         }
          break;
     }
 
