@@ -276,7 +276,7 @@ void codegenExpression(TreeNode * currnode)
                   (char *)"Store variable", var->attr.name);
                   break;
                default:
-                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  emitRM((char *)"ST", AC, GP, AC2,
                   (char *)"Store variable", var->attr.name);
                   break;
             }
