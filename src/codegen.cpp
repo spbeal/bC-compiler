@@ -559,7 +559,7 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char *)"FOR");
          // TreeNode * loopindex;
          int stop_val, start_val, step_val;
-         int break_loc, curr_loc;
+         int curr_loc;
 
          loopindex = currnode->child[0];
          if (loopindex == NULL);// error
@@ -607,7 +607,7 @@ void codegenStatement(TreeNode * currnode)
          emitRO((char *)"ADD", AC, AC, AC2, (char *)"increment");
          emitRM((char *)"ST", AC, start_val, FP, (char *)"store back to index"); //start
          emitGotoAbs(curr_loc, (char*)"go to beginning of loop");
-         backPatchAJumpToHere(break_loc, (char*)"Jump past loop [backpatch]");
+         backPatchAJumpToHere(breakloc, (char*)"Jump past loop [backpatch]");
 
          //break_loc = skiploc;
 
