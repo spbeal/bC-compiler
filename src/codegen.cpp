@@ -630,7 +630,7 @@ void codegenDecl(TreeNode *currnode)
       // Done
       case VarK:
       {
-         if (currnode->isArray) {
+         if (currnode->attr.op == '[') {
             switch (currnode->varKind) {
                case Local:
                   emitRM((char *)"LDC", AC, currnode->size-1, 6, (char *)"load size of array", currnode->attr.name);
@@ -647,6 +647,7 @@ void codegenDecl(TreeNode *currnode)
                break;
             }
                // ARRAY VALUE initialization
+
             }
             if (currnode->child[0]) {
                codegenExpression(currnode->child[0]);
