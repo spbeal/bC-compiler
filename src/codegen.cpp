@@ -630,7 +630,7 @@ void codegenDecl(TreeNode *currnode)
       // Done
       case VarK:
       {
-         if (currnode->attr.op == '[') {
+         if (currnode->isArray) {
             switch (currnode->varKind) {
                case Local:
                   emitRM((char *)"LDC", AC, currnode->size-1, 6, (char *)"load size of array", currnode->attr.name);
@@ -647,16 +647,15 @@ void codegenDecl(TreeNode *currnode)
                break;
             }
                // ARRAY VALUE initialization
-
-            }
             if (currnode->child[0]) {
-               codegenExpression(currnode->child[0]);
-               emitRM((char *)"LDA", AC1, currnode->offset, offsetRegister(currnode->varKind), (char *)"address of lhs");
-               emitRM((char *)"LD", AC2, 1, AC, (char *)"size of rhs");
-               emitRM((char *)"LD", AC3, 1, AC1, (char *)"size of lhs");
-               emitRO((char *)"SWP", AC2, AC3, 6, (char *)"pick smallest size");
-               emitRO((char *)"MOV", AC1, AC, AC2, (char *)"array op =");
-            }
+            codegenExpression(currnode->child[0]);
+            emitRM((char *)"LDA", AC1, currnode->offset, offsetRegister(currnode->varKind), (char *)"address of lhs");
+            emitRM((char *)"LD", AC2, 1, AC, (char *)"size of rhs");
+            emitRM((char *)"LD", AC3, 1, AC1, (char *)"size of lhs");
+            emitRO((char *)"SWP", AC2, AC3, 6, (char *)"pick smallest size");
+            emitRO((char *)"MOV", AC1, AC, AC2, (char *)"array op =");
+            } 
+         }
          else { // !currnode->isArray
             // SCALAR VALUE initialization
             if (currnode->child[0]) {
