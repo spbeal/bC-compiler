@@ -16,7 +16,7 @@ symbolTable.cpp\
 semantics.cpp\
 emitcode.cpp\
 codegen.cpp\
-#yyerror.cpp\
+yyerror.cpp\
 
 HDRS =\
 scanType.h\
@@ -26,7 +26,7 @@ symbolTable.h\
 semantics.h\
 codegen.h\
 emitcode.h\
-#yyerror.h\
+yyerror.h\
 
 OBJS = \
 $(PARSE).tab.o\
@@ -36,7 +36,7 @@ symbolTable.o\
 semantics.o\
 emitcode.o\
 codegen.o\
-#yyerror.o\
+yyerror.o\
 
 LIBS = -lm 
 

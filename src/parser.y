@@ -15,7 +15,7 @@ extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE *yyin;
 
-void yyerror(const char *msg);
+extern void yyerror(const char *msg);
 //TreeNode* var = newDeclNode(VarK, UndefinedType, $2);
 void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << "Line: " << myData.linenum << " Type: " << tokenName;
@@ -328,10 +328,10 @@ constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1); $$->type = Integer;
 %%
 
 
-void yyerror (const char *msg)
-{ 
-   cout << "Error: " <<  msg << endl;
-}
+// void yyerror (const char *msg)
+// { 
+//    cout << "Error: " <<  msg << endl;
+// }
 
 int main(int argc, char **argv) {
   int option, index;
