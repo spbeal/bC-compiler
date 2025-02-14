@@ -537,7 +537,7 @@ void codegenStatement(TreeNode * currnode)
             emitRM((char *)"LDA", 2, 0, AC, (char *)"Copy result to return register");
          }
          emitRM((char *)"LD", AC, -1, FP, (char *)"Load return address");
-         emitRM((char *)"LD", FP, GP, FP, (char *)"Adjust FP");
+         emitRM((char *)"LD", FP, GP, FP, (char *)"Adjust fp");
          //emitRO((char *)"JMP", AC1, GP, AC1, (char *)"Return");
          emitGoto(GP, AC, (char*)"Return"); // JMP
          break;
