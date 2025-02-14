@@ -364,7 +364,20 @@ void codegenExpression(TreeNode * currnode)
                   emitRM((char *)"LDA", AC, currnode->offset, GP, (char *)"Load address of char array");
                }
                else {
-                  emitRM((char *)"LDC", AC, (int)(currnode->attr.cvalue), AC3, (char *)"Load char constant");
+                  // if (currnode->attr.name[0] == '\\')
+                  // {
+                  //    char str[5];
+                  //    str[0] = '\'';
+                  //    str[1] = '\\';
+                  //    str[2] = 'n';
+                  //    str[3] = '\'';
+                  //    str[4] = '\0';
+                     
+                  // }
+                  if (currnode->attr.cvalue == '\n')
+                     emitRM((char *)"LDC", AC, 10, AC3, (char *)"Load char constant");
+                  else
+                     emitRM((char *)"LDC", AC, (int)(currnode->attr.cvalue), AC3, (char *)"Load char constant");
                }
                break;
             case Integer:
