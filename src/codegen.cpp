@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "codegen.h"
 #include "emitcode.h"
 #include "semantics.h"
@@ -363,7 +364,7 @@ void codegenExpression(TreeNode * currnode)
                   emitRM((char *)"LDA", AC, currnode->offset, GP, (char *)"Load address of char array");
                }
                else {
-                  emitRM((char *)"LDC", AC, currnode->attr.cvalue, AC3, (char *)"Load char constant");
+                  emitRM((char *)"LDC", AC, atoi(currnode->attr.string), AC3, (char *)"Load char constant");
                }
                break;
             case Integer:
