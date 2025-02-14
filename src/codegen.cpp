@@ -554,6 +554,7 @@ void codegenStatement(TreeNode * currnode)
       case ForK:
       {
          savedToffset = toffset;
+         toffset = currnode->size;
          emitComment((char *)"TOFF set:", toffset);
          emitComment((char *)"FOR");
          // TreeNode * loopindex;
@@ -769,7 +770,7 @@ void codegenInit(int initJump, int globalOffset)
 
 void codegenHeader(char *srcFile)
 {
-   emitComment((char *)"bC compiler version bC-Su23");
+   emitComment((char *)"bC compiler version bC-2025");
    emitComment((char *)"File compiled: ", srcFile);
 }
 
