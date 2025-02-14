@@ -262,7 +262,7 @@ void codegenExpression(TreeNode * currnode)
                   (char *)"Store variable", var->attr.name);
                   break;
                case DEC:
-                  emitRM((char *)"LD", AC1, GP, AC2,
+                  emitRM((char *)"LD", AC, GP, AC2,
                   (char *)"load lhs variable", var->attr.name);
                   emitRM((char *)"LDA", AC, -1, AC, (char *)"decrement value of", var->attr.name);                  
                   emitRM((char *)"ST", AC, GP, AC2,
@@ -323,7 +323,7 @@ void codegenExpression(TreeNode * currnode)
                   (char *)"Store variable", lhs->attr.name);
                   break;
                case DEC:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  emitRM((char *)"LD", AC, lhs->offset, offReg,
                   (char *)"load lhs variable", lhs->attr.name);
                   emitRM((char *)"LDA", AC, -1, AC, (char *)"decrement value of", lhs->attr.name);
                   emitRM((char *)"ST", AC, lhs->offset, offReg,
