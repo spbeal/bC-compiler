@@ -509,11 +509,12 @@ void codegenStatement(TreeNode * currnode)
          emitComment((char *)"IF");
          // Not codegenGeneral to skip print statement
          codegenExpression(currnode->child[0]); 
-         skiploc = emitSkip(0); // If we are jumping around if
+         skiploc = emitSkip(1); // If we are jumping around if
 
          emitComment((char*) "THEN");
          codegenGeneral(currnode->child[1]);
-         skiploc2 = emitSkip(1); // If we are jumping around else
+         if (currnode->child[2])
+            skiploc2 = emitSkip(1); // If we are jumping around else
 
          backPatchAJumpToHere((char *)"JZR", AC, skiploc, (char *)"Jump around the THEN if false [backpatch]"); 
 
