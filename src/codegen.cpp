@@ -163,7 +163,7 @@ void codegenExpression(TreeNode * currnode)
             case '%': emitRO((char *)"MOD", AC, AC1, AC, (char*)"Op %");break;
             case MIN: emitRO((char *)"SWP", AC, AC1, AC, (char*)"Op :<:");break;
             case MAX: emitRO((char *)"SWP", AC1, AC, AC, (char*)"Op :>:");break;
-            case SIZEOF: emitRO((char *)"LD", AC, 1, AC, (char*)"Load array size");break;
+            case SIZEOF: emitRM((char *)"LD", AC, 1, AC, (char*)"Load array size");break;
             case CHSIGN: emitRO((char *)"NEG", AC, AC, AC, (char*)"Op unary -");break;
             case AND: emitRO((char *)"AND", AC, AC1, AC, (char*)"Op AND");break;
             case NOT: 
