@@ -597,7 +597,7 @@ void codegenStatement(TreeNode * currnode)
          emitRM((char *)"JNZ", 3, 1, 7, (char *)"Jump to loop body");
 
          // breakloc
-         //skiploc = break_loc;
+         skiploc = break_loc;
          breakloc = emitSkip(1);
 
          codegenGeneral(currnode->child[2]); // by
@@ -610,7 +610,7 @@ void codegenStatement(TreeNode * currnode)
          emitGotoAbs(curr_loc, (char*)"go to beginning of loop");
          backPatchAJumpToHere(breakloc, (char*)"Jump past loop [backpatch]");
 
-         //break_loc = skiploc;
+         break_loc = skiploc;
 
          emitComment((char *)"END LOOP");
          break;
