@@ -233,32 +233,32 @@ void codegenExpression(TreeNode * currnode)
             {
                case ADDASS:
                {
-                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  emitRM((char *)"LD", AC1, 0, 5,
                   (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"ADD", AC, AC1, AC, (char *)"op +=");
-                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  emitRM((char *)"ST", AC, 0, 5,
                   (char *)"Store variable", var->attr.name);
                   break;
                }
                case MULASS:
-                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  emitRM((char *)"LD", AC1, 0, 5,
                   (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"MUL", AC, AC1, AC, (char *)"op *=");
-                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  emitRM((char *)"ST", AC, 0, 5,
                   (char *)"Store variable", var->attr.name);
                   break;
                case DIVASS:
-                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  emitRM((char *)"LD", AC1, 0, 5,
                   (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"DIV", AC, AC1, AC, (char *)"op /=");
-                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  emitRM((char *)"ST", AC, 0, 5,
                   (char *)"Store variable", var->attr.name);
                   break;
                case SUBASS:
-                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  emitRM((char *)"LD", AC1, 0, 5,
                   (char *)"load lhs variable", var->attr.name);
                   emitRO((char *)"SUB", AC, AC1, AC, (char *)"op -=");
-                  emitRM((char *)"ST", AC, var->offset, offReg,
+                  emitRM((char *)"ST", AC, 0, 5,
                   (char *)"Store variable", var->attr.name);
                   break;
                case DEC:
