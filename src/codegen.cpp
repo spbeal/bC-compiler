@@ -375,8 +375,8 @@ void codegenExpression(TreeNode * currnode)
                   if (strcmp(str, currnode->attr.name) == 0) 
                      emitRM((char *)"LDC", AC, 10, AC3, (char *)"Load char constant");
                   //}
-                  else if (currnode->attr.cvalue == '\n')
-                     emitRM((char *)"LDC", AC, 10, AC3, (char *)"Load char constant");
+                  // else if (currnode->attr.cvalue == '\n')
+                  //    emitRM((char *)"LDC", AC, 10, AC3, (char *)"Load char constant");
                   else
                      emitRM((char *)"LDC", AC, (int)(currnode->attr.cvalue), AC3, (char *)"Load char constant");
                }
