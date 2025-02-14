@@ -264,14 +264,14 @@ void codegenExpression(TreeNode * currnode)
                case DEC:
                   emitRM((char *)"LD", AC1, var->offset, offReg,
                   (char *)"load lhs variable", var->attr.name);
-                  emitRM((char *)"LDA", AC, -1, AC, (char *)"decrement value of", var->attr.name);                  
+                  emitRO((char *)"LDA", AC, -1, AC, (char *)"decrement value of", var->attr.name);                  
                   emitRM((char *)"ST", AC, var->offset, offReg,
                   (char *)"Store variable", var->attr.name);
                   break;
                case INC:
                   emitRM((char *)"LD", AC, var->offset, offReg,
                   (char *)"load lhs variable", var->attr.name);
-                  emitRM((char *)"LDA", AC, 1, AC, (char *)"increment value of", var->attr.name);
+                  emitRO((char *)"LDA", AC, 1, AC, (char *)"increment value of", var->attr.name);
                   emitRM((char *)"ST", AC, var->offset, offReg,
                   (char *)"Store variable", var->attr.name);
                   break;
