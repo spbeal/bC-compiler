@@ -344,10 +344,10 @@ void printTreeNode(FILE *listing, TreeNode *tree)
                      fprintf(listing, "Const %s of %s", tree->attr.name, print_str);
                      showAllocation(listing, tree);
                   }
-                  else if (strcmp(str, tree->attr.name) == 0) 
-                  {
-                     fprintf(listing, "Const '%c' of %s", '\n', print_str);  
-                  }
+                  // else if (strcmp(str, tree->attr.name) == 0) 
+                  // {
+                  //    fprintf(listing, "Const '%c' of %s", '\n', print_str);  
+                  // }
                   else {
                      fprintf(listing, "Const %s of %s", tree->attr.name, print_str);
                   }
