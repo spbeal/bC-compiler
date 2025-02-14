@@ -144,7 +144,8 @@ void codegenExpression(TreeNode * currnode)
             emitRM((char *)"LD", AC1, toffset, FP, (char *)"Pop left into ac1");
          }
             // More code here
-         if (currnode->attr.op == '[')
+         //if (currnode->attr.op == '[')
+         if (currnode->isArray)
          {
             emitRO((char *)"SUB", AC, AC1, AC, (char *)"compute location from index");
             emitRM((char *)"LD", AC, 0, AC, (char *)"Load array element");
