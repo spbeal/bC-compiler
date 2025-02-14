@@ -366,15 +366,16 @@ void codegenExpression(TreeNode * currnode)
                else {
                   // if (currnode->attr.name[0] == '\\')
                   // {
-                  //    char str[5];
-                  //    str[0] = '\'';
-                  //    str[1] = '\\';
-                  //    str[2] = 'n';
-                  //    str[3] = '\'';
-                  //    str[4] = '\0';
-                     
-                  // }
-                  if (currnode->attr.cvalue == '\n')
+                  char str[5];
+                  str[0] = '\'';
+                  str[1] = '\\';
+                  str[2] = 'n';
+                  str[3] = '\'';
+                  str[4] = '\0';
+                  if (strcmp(str, currnode->attr.name) == 0) 
+                     emitRM((char *)"LDC", AC, 10, AC3, (char *)"Load char constant");
+                  //}
+                  else if (currnode->attr.cvalue == '\n')
                      emitRM((char *)"LDC", AC, 10, AC3, (char *)"Load char constant");
                   else
                      emitRM((char *)"LDC", AC, (int)(currnode->attr.cvalue), AC3, (char *)"Load char constant");
