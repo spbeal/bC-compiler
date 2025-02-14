@@ -269,7 +269,7 @@ void codegenExpression(TreeNode * currnode)
                   (char *)"Store variable", var->attr.name);
                   break;
                case INC:
-                  emitRM((char *)"LD", AC1, var->offset, offReg,
+                  emitRM((char *)"LD", AC, var->offset, offReg,
                   (char *)"load lhs variable", var->attr.name);
                   emitRM((char *)"LDA", AC, 1, AC, (char *)"increment value of", var->attr.name);
                   emitRM((char *)"ST", AC, var->offset, offReg,
@@ -325,14 +325,14 @@ void codegenExpression(TreeNode * currnode)
                case DEC:
                   emitRM((char *)"LD", AC1, lhs->offset, offReg,
                   (char *)"load lhs variable", lhs->attr.name);
-                  emitRO((char *)"DEC", AC, AC1, AC, (char *)"decrement value of");
+                  emitRO((char *)"LDA", AC, -1, AC, (char *)"decrement value of", lhs->attr.name);
                   emitRM((char *)"ST", AC, lhs->offset, offReg,
                   (char *)"Store variable", lhs->attr.name);
                   break;
                case INC:
-                  emitRM((char *)"LD", AC1, lhs->offset, offReg,
+                  emitRM((char *)"LD", AC, lhs->offset, offReg,
                   (char *)"load lhs variable", lhs->attr.name);
-                  emitRO((char *)"INC", AC, AC1, AC, (char *)"increment value of");
+                  emitRO((char *)"LDA", AC, 1, AC, (char *)"increment value of", lhs->attr.name);
                   emitRM((char *)"ST", AC, lhs->offset, offReg,
                   (char *)"Store variable", lhs->attr.name);
                   break;
@@ -373,7 +373,7 @@ void codegenExpression(TreeNode * currnode)
             }
             case Boolean:
             {
-               emitRM((char *)"LDC", AC, currnode->attr.value, AC3, (char *)"Load boolean constant");
+               emitRM((char *)"LDC", AC, currnode->attr.value, AC3, (char *)"Load Boolean constant");
                break;
             }
             break;
