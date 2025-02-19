@@ -37,6 +37,7 @@ void initAll()
   initTokenStrings();
 }
   
+extern "C" int tokenErrors;
 int numErrors = 0;
 int numWarnings = 0;
 // the syntax tree goes here
@@ -117,25 +118,35 @@ declList : declList decl {$$ = addSibling($1, $2);}
 
 decl : varDecl  {$$=$1;}
     | funDecl   {$$=$1;}
+    | error   {$$ = NULL;}
     ;
 
 varDecl : typeSpec varDeclList ';' {setType($2, $1, false); $$ = $2; }
+    | error varDeclList {$$ = NULL;}
+    | typeSpec error   {$$ = NULL;}
     ;
 
 scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true);}
     | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false) ;}
+    | typeSpec error   {$$ = NULL;}
     ;
 
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
     | varDeclInit {$$ = $1;}
+    | varDeclList ',' error   {$$ = NULL;}
+    | error   {$$ = NULL;}
     ;
 
 varDeclInit : varDeclId { $$ = $1;}
     | varDeclId ':' simpleExp {$$ = $1; if ($$ != NULL) $$->child[0] = $3;}
+    | error ':' simpleExp  {$$ = NULL;}
+    | varDeclId ':' error   {$$ = NULL;}
     ;
 
 varDeclId : ID {$$ = newDeclNode(VarK, UndefinedType, $1);}
     | ID '[' NUMCONST ']' {$$ = newDeclNode(VarK, UndefinedType, $1); $$->isArray = true; $$->size = $3->nvalue + 1;}
+    | error ']' {$$ = NULL;}
+    | ID '[' error   {$$ = NULL;}
     ;
 
 typeSpec : INT {$$ = Integer;}
@@ -145,6 +156,8 @@ typeSpec : INT {$$ = Integer;}
 
 funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
     | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
+    | typeSpec error   {$$ = NULL;}
+    | typeSpec ID '(' error   {$$ = NULL;}
     ;
 
 parms : parmList {$$ = $1;}

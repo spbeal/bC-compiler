@@ -449,8 +449,8 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             //    else 
             //       current->type = tmp->type;
             // }
-               //printf("Error");
-               // numErrors++;
+            printf("Error 1");
+            numErrors++;
          }
 
          break;
@@ -478,6 +478,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
+            printf("Error 2");
             numErrors++;
          }
 
@@ -565,7 +566,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          tmp = (TreeNode *)(symtab->lookup(current->attr.name)); // Look up in the symbol table
 
          if (tmp == NULL) {
-            //printf("Error");
+            printf("Error 3");
             numErrors++;
          }
 
@@ -610,6 +611,7 @@ bool insertError(TreeNode *current, SymbolTable *symtab) {
       return true;
    }
    // ERROR
+   printf("Error 4");
    numErrors++;
    return false;
 }
