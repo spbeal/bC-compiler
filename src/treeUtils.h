@@ -30,6 +30,7 @@ char *expTypeToStr(ExpType type, bool isArray=false, bool isStatic=false);
 void printTreeNode(FILE *out, TreeNode *syntaxTree);
 void printTree(FILE *out, TreeNode *syntaxTree);
 void printTreeRec(FILE *listing, int depth, int siblingCnt, TreeNode *tree);
+char* type_str(ExpType type, bool isStatic, bool isArray);
 
 TreeNode *addSibling(TreeNode *t, TreeNode *s);
 void setType(TreeNode *t, ExpType type, bool isStatic);
