@@ -12,6 +12,8 @@ static int newScope = 0; // mark new scope
 static int uniqueVar = 0;
 //static bool validReturn = 0;
 
+extern char *largerTokens[LASTTERM+1];
+
 void find_parameters(TreeNode *current, SymbolTable *symtab) {
    TreeNode *params = current->child[0];
    TreeNode *temp;
