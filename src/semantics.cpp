@@ -513,7 +513,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                numErrors++;
             }
          }
-         else if ()
+         //else if ()
          /*
                if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>'
              || op == AND || op == NOT || op == OR  || op == EQ)
