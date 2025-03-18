@@ -47,7 +47,7 @@ lookup (any time you get an id, like x=5, we need to look up x to see if we can
 • put a 5 in it)
 • In x=5 we look up the type of the left and right side to see if they match. (We have no
 • coercion)
-• If they don’t match, we have an error for that.
+• If they don't match, we have an error for that.
 • X=5 the type of an assignment is the type of the left hand side of the assignment in bC
 enter scope
 leave scope
@@ -710,3 +710,78 @@ void treeTraverse(TreeNode * tree, SymbolTable *symtab) {
       treeTraverse(tree->sibling, symtab);
    }
 }
+
+// void insertError(TreeNode *tree, char *message) {
+//     if (tree != NULL) {
+//         tree->isError = true;
+//         if (tree->lineno == 0) {
+//             tree->lineno = tree->child[0]->lineno;
+//         }
+//         if (tree->child[0] != NULL) {
+//             tree->child[0]->isError = true;
+//         }
+//         if (tree->child[1] != NULL) {
+//             tree->child[1]->isError = true;
+//         }
+//         if (tree->child[2] != NULL) {
+//             tree->child[2]->isError = true;
+//         }
+//         if (tree->child[3] != NULL) {
+//             tree->child[3]->isError = true;
+//         }
+//     }
+//     if (message != NULL) {
+//         printf("ERROR(%d): %s\n", tree->lineno, message);
+//         semanticErrors++;
+//     }
+// }
+
+// void undeclaredError(TreeNode *tree, char *message) {
+//     if (tree != NULL) {
+//         tree->isError = true;
+//         if (tree->lineno == 0) {
+//             tree->lineno = tree->child[0]->lineno;
+//         }
+//         if (tree->child[0] != NULL) {
+//             tree->child[0]->isError = true;
+//         }
+//         if (tree->child[1] != NULL) {
+//             tree->child[1]->isError = true;
+//         }
+//         if (tree->child[2] != NULL) {
+//             tree->child[2]->isError = true;
+//         }
+//         if (tree->child[3] != NULL) {
+//             tree->child[3]->isError = true;
+//         }
+//     }
+//     if (message != NULL) {
+//         printf("ERROR(%d): %s\n", tree->lineno, message);
+//         semanticErrors++;
+//     }
+// }
+
+// void typeError(TreeNode *tree, char *message) {
+//     if (tree != NULL) {
+//         tree->isError = true;
+//         if (tree->lineno == 0) {
+//             tree->lineno = tree->child[0]->lineno;
+//         }
+//         if (tree->child[0] != NULL) {
+//             tree->child[0]->isError = true;
+//         }
+//         if (tree->child[1] != NULL) {
+//             tree->child[1]->isError = true;
+//         }
+//         if (tree->child[2] != NULL) {
+//             tree->child[2]->isError = true;
+//         }
+//         if (tree->child[3] != NULL) {
+//             tree->child[3]->isError = true;
+//         }
+//     }
+//     if (message != NULL) {
+//         printf("ERROR(%d): %s\n", tree->lineno, message);
+//         semanticErrors++;
+//     }
+// }
