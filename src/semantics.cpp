@@ -28,6 +28,7 @@ void find_parameters(TreeNode *current, SymbolTable *symtab) {
 }
 
 bool insertError(TreeNode *current, SymbolTable *symtab);
+void semanticError(TreeNode * current, char * message);
 
 TreeNode *semanticAnalysis(TreeNode *syntree, SymbolTable *symtabX, int &globalOffset)
 {
@@ -785,3 +786,9 @@ void treeTraverse(TreeNode * tree, SymbolTable *symtab) {
 //         semanticErrors++;
 //     }
 // }
+
+void semanticError(TreeNode * current, char * message)
+{
+   printf("SEMANTIC ERROR(%d): %s\n", current->lineno, message);
+   numErrors++;
+}
