@@ -116,8 +116,8 @@ declList : declList decl {$$ = addSibling($1, $2);}
     | decl      {$$ = $1;}
     ;
 
-decl : varDecl  {$$=$1;}
-    | funDecl   {$$=$1;}
+decl : varDecl  {$$ = $1;}
+    | funDecl   {$$ = $1;}
     | error   {$$ = NULL; yyerrok;}
     ;
 
