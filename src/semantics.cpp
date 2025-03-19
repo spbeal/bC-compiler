@@ -618,25 +618,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case IdK: {
-      //    char *id = strdup(current->attr.name);
-      //    TreeNode *temp = (TreeNode*)symtab->lookup(id);
-      //    if (temp == NULL){        
-      //       printf("SEMANTIC ERROR(%d): Symbol \'%s\' is not declared.\n", current->lineno, id);                      //This is an error we have to deal with it later
-      //       numErrors++; 
-      //    }   
-      //    else {
-      //       current->type = temp->type;
-      //       current->isArray = temp->isArray;
-      //       current->isStatic = temp->isStatic;
-      //       current->size = temp->size;
-      //       current->varKind = temp->varKind;
-      //       current->offset = temp->offset;
-      //    }
-      // break;
          tmp = (TreeNode *)(symtab->lookup(current->attr.name)); // Look up in the symbol table
 
          if (tmp == NULL) {
-            printf("Error 3");
+            printf("SEMANTIC ERROR(%d): Symbol \'%s\' is not declared.\n", current->lineno, current->attr.name);
             numErrors++;
          }
 
@@ -710,85 +695,4 @@ void treeTraverse(TreeNode * tree, SymbolTable *symtab) {
    if (tree->sibling) {
       treeTraverse(tree->sibling, symtab);
    }
-}
-
-// void insertError(TreeNode *tree, char *message) {
-//     if (tree != NULL) {
-//         tree->isError = true;
-//         if (tree->lineno == 0) {
-//             tree->lineno = tree->child[0]->lineno;
-//         }
-//         if (tree->child[0] != NULL) {
-//             tree->child[0]->isError = true;
-//         }
-//         if (tree->child[1] != NULL) {
-//             tree->child[1]->isError = true;
-//         }
-//         if (tree->child[2] != NULL) {
-//             tree->child[2]->isError = true;
-//         }
-//         if (tree->child[3] != NULL) {
-//             tree->child[3]->isError = true;
-//         }
-//     }
-//     if (message != NULL) {
-//         printf("ERROR(%d): %s\n", tree->lineno, message);
-//         semanticErrors++;
-//     }
-// }
-
-// void undeclaredError(TreeNode *tree, char *message) {
-//     if (tree != NULL) {
-//         tree->isError = true;
-//         if (tree->lineno == 0) {
-//             tree->lineno = tree->child[0]->lineno;
-//         }
-//         if (tree->child[0] != NULL) {
-//             tree->child[0]->isError = true;
-//         }
-//         if (tree->child[1] != NULL) {
-//             tree->child[1]->isError = true;
-//         }
-//         if (tree->child[2] != NULL) {
-//             tree->child[2]->isError = true;
-//         }
-//         if (tree->child[3] != NULL) {
-//             tree->child[3]->isError = true;
-//         }
-//     }
-//     if (message != NULL) {
-//         printf("ERROR(%d): %s\n", tree->lineno, message);
-//         semanticErrors++;
-//     }
-// }
-
-// void typeError(TreeNode *tree, char *message) {
-//     if (tree != NULL) {
-//         tree->isError = true;
-//         if (tree->lineno == 0) {
-//             tree->lineno = tree->child[0]->lineno;
-//         }
-//         if (tree->child[0] != NULL) {
-//             tree->child[0]->isError = true;
-//         }
-//         if (tree->child[1] != NULL) {
-//             tree->child[1]->isError = true;
-//         }
-//         if (tree->child[2] != NULL) {
-//             tree->child[2]->isError = true;
-//         }
-//         if (tree->child[3] != NULL) {
-//             tree->child[3]->isError = true;
-//         }
-//     }
-//     if (message != NULL) {
-//         printf("ERROR(%d): %s\n", tree->lineno, message);
-//         semanticErrors++;
-//     }
-// }
-
-void semanticError(TreeNode * current, char * message)
-{
-   printf("SEMANTIC ERROR(%d): %s\n", current->lineno, message);
-   numErrors++;
 }
