@@ -254,3 +254,11 @@ Names of files you have checked in:
         Sun Jan 12 17:15:35 2025        3271    beal6782.w01_beal6782_044_786956180.bC
         Tue Feb 11 18:43:58 2025        92160   beal6782.w04_beal6782_088_1603443177.tar
         Tue Feb 18 20:17:17 2025        143360  beal6782.w06_beal6782_005_1005901980.tar
+
+
+
+
+        Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrorsSemantics/3_id_2.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrorsSemantics/4_redeclare_func.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrorsSemantics/4_redeclare_param.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrorsSemantics/4_redeclare_var.bC
