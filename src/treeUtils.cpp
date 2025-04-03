@@ -99,7 +99,7 @@ TreeNode* initializeNode(TreeNode* c0, TreeNode* c1, TreeNode* c2, TokenData *to
       newNode->attr.value = token->nvalue;
       newNode->attr.cvalue = token->cvalue;
       newNode->attr.name = token->tokenstr;
-      newNode->attr.string = token->svalue;
+      // newNode->attr.string = token->svalue;
    }
    /*
     bool isStatic;                         // is staticly allocated?
