@@ -240,7 +240,7 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
 
          symtab->applyToAll(used_warnings);
          if (found_return == false && current->lineno != -1 && current->type != Void) {
-            printf("SEMANTIC WARNING(%d): Expecting to return %s but function '%s' has no return statement.\n",current->lineno, expTypeToStr(current->type, false, false), current->attr.name);
+            printf("SEMANTIC WARNING(%d): Expecting to return %s but function '%s' has no return statement.\n",current->lineno, type_str(current->type, false, false), current->attr.name);
             numWarnings++;
          }
          //-------------------------------------
@@ -362,7 +362,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else if (current_function != NULL) // child is null
          {
-            printf("SEMANTIC ERROR(%d): Function '%s' at line %d is expecting to return %s but return has no value.\n",current->lineno, current_function->attr.name, current_function->lineno, expTypeToStr(current_function->type, false, false));
+            printf("SEMANTIC ERROR(%d): Function '%s' at line %d is expecting to return %s but return has no value.\n",current->lineno, current_function->attr.name, current_function->lineno, type_str(current_function->type, false, false));
             numErrors++;
          }
           
