@@ -58,7 +58,7 @@ int setValue(int linenum, int tokenClass, char *svalue) {
           yylval.tokenData->tokenstr = strdup(&svalue[1]);
           yylval.tokenData->nvalue = strlen(svalue)-2;
           yylval.tokenData->tokenstr[yylval.tokenData->nvalue] ='\0';
-          yylval.tokenData->svalue = tokenstr;
+          yylval.tokenData->svalue = yylval.tokenData->tokenstr;
           break;
 
      case NUMCONST:
