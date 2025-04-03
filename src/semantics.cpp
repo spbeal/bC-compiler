@@ -3,9 +3,6 @@
 
 extern int numErrors;
 extern int numWarnings;
-extern char *largerTokens[LASTTERM+1];
-
-// memory offsets are GLOBAL
 static int goffset; // top of global space
 static int foffset; // top of local space
 
@@ -17,6 +14,7 @@ static TreeNode * current_function = NULL; // function inside
 //static bool validReturn = 0;
 
 extern char *largerTokens[LASTTERM+1];
+void used_warnings(std::string str, void * current);
 
 void find_parameters(TreeNode *current, SymbolTable *symtab) {
    TreeNode *params = current->child[0];
@@ -654,8 +652,8 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    }
 }
 
-void used_warnings(std::string str, void * current) {
-   current = (TreeNode *) current;
+void used_warnings(std::string str, void * curr) {
+   TreeNode* current = (TreeNode *) curr;
 
    // isUsed must be false for duplicates
    if (current && current->isUsed == false && current->lineno != -1) {
