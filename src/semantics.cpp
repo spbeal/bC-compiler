@@ -436,7 +436,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                   }
                   if (right->type != Integer)
                   {
-                     printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but lhs is of %s.\n",
+                     printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but rhs is of %s.\n",
                         current->lineno, largerTokens[op], type_str(right->type, false, false));
                      numErrors++;
                   }
