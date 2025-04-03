@@ -365,7 +365,7 @@ constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1); $$->type = Integer;
                              $$ = newExpNode(ConstantK, $1); 
                              $$->isArray = true;
                              $$->type = Char; 
-                             $$->size = $1->nvalue; 
+                             $$->size = 1 + $1->nvalue; 
                             }                               
              | BOOLCONST    {$$ = newExpNode(ConstantK, $1); $$->type = Boolean;}                              
            ;
