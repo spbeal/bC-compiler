@@ -3,13 +3,17 @@
 
 extern int numErrors;
 extern int numWarnings;
-//extern char *largerTokens[LASTTERM+1];
+extern char *largerTokens[LASTTERM+1];
 
 // memory offsets are GLOBAL
 static int goffset; // top of global space
 static int foffset; // top of local space
-static int newScope = 0; // mark new scope
-static int uniqueVar = 0;
+
+static int new_scope = 0; // mark new scope
+static int unique_var = 0; // var counter
+static bool found_return = false; // mark true in ReturnK
+static TreeNode * current_function = NULL; // function inside
+
 //static bool validReturn = 0;
 
 extern char *largerTokens[LASTTERM+1];
@@ -34,6 +38,14 @@ TreeNode *semanticAnalysis(TreeNode *syntree, SymbolTable *symtabX, int &globalO
 {
    syntree = loadIOLib(syntree);
    treeTraverse(syntree, symtabX);
+   symtabX->applyToAll(used_warnings);
+
+   TreeNode * check_main = (TreeNode *)symtabX->lookup("main");
+   if (check_main && check_main->kind.decl == FuncK && check_main->child[0] == NULL);
+   else {
+      printf("LINKER ERROR: A function named 'main' with no parameters must be defined.\n");
+      numErrors++;
+   }
 
    globalOffset = goffset;
 
@@ -141,7 +153,7 @@ TreeNode *loadIOLib(TreeNode *syntree)
 
 void decl_traverse(TreeNode * current, SymbolTable *symtab) {
    TreeNode * tmp;
-   newScope = 1;
+   new_scope = 1;
    
    switch (current->kind.decl) {
       case VarK: {
@@ -180,7 +192,7 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
                name[0] = '\0';
                strcat(name, current->attr.name);
                strcat(name, "_");
-               sprintf(num_str, "%d", uniqueVar++);
+               sprintf(num_str, "%d", unique_var++);
                strcat(name, num_str);
                symtab->insertGlobal(name, current);
                delete [] name;
@@ -208,19 +220,35 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
       case FuncK: {
          current->varKind = Global;
          foffset = -2;
-         newScope = 0; // reset scope
+         new_scope = 0; // reset scope
          
          // Insert into the symbol table
-         bool error = insertError(current, symtab);
-         // Check for main, check for return.
+         bool insert = insertError(current, symtab);
+         if (insert == false)
+         {
+            tmp = (TreeNode *)symtab->lookup(current->attr.name);
+            printf("SEMANTIC ERROR(%d): Symbol '%s' is already declared at line %d.\n", current->lineno, current->attr.name, tmp->lineno);
+            numErrors++;
+         }
 
+         // Check for main, check for return.
          symtab->enter(current->attr.name);
+         current_function = current;
+         //-------------------------------------
          treeTraverse(current->child[0], symtab);
-         current->size = foffset;
+            current->size = foffset;
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
+
+         symtab->applyToAll(used_warnings);
+         if (found_return == false && current->lineno != -1 && current->type != Void) {
+            printf("SEMANTIC WARNING(%d): Expecting to return %s but function '%s' has no return statement.\n",current->lineno, expTypeToStr(current->type, false, false), current->attr.name);
+            numWarnings++;
+         }
+         //-------------------------------------
          symtab->leave();
 
+         found_return = false;
          break;
       }
       default: break;
@@ -228,13 +256,13 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
 }
 
 void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
-   if (current->kind.stmt != CompoundK) newScope = 1;
+   if (current->kind.stmt != CompoundK) new_scope = 1;
 
    TreeNode * tmp;
    int rememberFoffset;
    switch (current->kind.stmt) {
       case IfK: {
-         if (newScope)
+         if (new_scope)
          {
             symtab->enter((char *)"IfStmt");
             rememberFoffset = foffset;
@@ -247,7 +275,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            newScope = 1;
+            new_scope = 1;
             treeTraverse(current->child[0], symtab);
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
@@ -256,7 +284,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case WhileK: {
-         if (newScope)
+         if (new_scope)
          {
             symtab->enter((char *)"WhileStmt");
             rememberFoffset = foffset;
@@ -269,7 +297,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            newScope = 1;
+            new_scope = 1;
             treeTraverse(current->child[0], symtab);
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
@@ -278,7 +306,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case ForK: {
-         if (newScope)
+         if (new_scope)
          {
             symtab->enter((char *)"ForStmt");
             rememberFoffset = foffset;
@@ -292,7 +320,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            newScope = 1;
+            new_scope = 1;
             treeTraverse(current->child[0], symtab);
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
@@ -301,7 +329,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case CompoundK: {
-         if(newScope) 
+         if(new_scope) 
          {
             symtab->enter((char *)"compoundStmt");
             rememberFoffset = foffset;
@@ -314,7 +342,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          else
          {
-            newScope = 1;
+            new_scope = 1;
             treeTraverse(current->child[0], symtab);
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
@@ -325,10 +353,21 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case ReturnK: {
+         found_return = true;
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
-         //validReturn = true; 
+
+         if (current->child[0] != NULL)
+         {
+            tmp = (TreeNode *) symtab->lookup(current->child[0]->attr.name);
+         }
+         else if (current_function != NULL) // child is null
+         {
+            printf("SEMANTIC ERROR(%d): Function '%s' at line %d is expecting to return %s but return has no value.\n",current->lineno, current_function->attr.name, current_function->lineno, expTypeToStr(current_function->type, false, false));
+            numErrors++;
+         }
+          
 
          break;
       }
@@ -352,7 +391,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
 
 void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    TreeNode * tmp;
-   newScope = 1;
+   new_scope = 1;
 
    switch (current->kind.exp) {
       case AssignK: {
@@ -615,42 +654,33 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    }
 }
 
-void checkIsUsed(std::string str, void *node) {
-   TreeNode *tree = (TreeNode *)node;
+void used_warnings(std::string str, void * current) {
+   current = (TreeNode *) current;
 
-   if (tree && !tree->isUsed && tree->lineno != -1) {
-      switch (tree->kind.decl) {
+   // isUsed must be false for duplicates
+   if (current && current->isUsed == false && current->lineno != -1) {
+      switch (current->kind.decl) {
          case VarK: {
-            char *pos = strchr(tree->attr.name, '-');
-            if (pos != NULL) {
-               *pos = '\0';
-            }
-
-            printf("SEMANTIC WARNING(%d): The variable '%s' seems not to be used.\n",
-                  tree->lineno, tree->attr.name);
-            tree->isUsed = true;
-            numWarnings++;
+            char *dash = strchr(current->attr.name, '-');
+            if (dash != NULL) *dash = '\0'; // truncate for expressions
+            printf("SEMANTIC WARNING(%d): The variable '%s' seems not to be used.\n",current->lineno, current->attr.name);
             break;           
          }
          case ParamK:
-            printf("SEMANTIC WARNING(%d): The parameter '%s' seems not to be used.\n",
-                  tree->lineno, tree->attr.name);
-            numWarnings++;
-            tree->isUsed = true;
+            printf("SEMANTIC WARNING(%d): The parameter '%s' seems not to be used.\n",current->lineno, current->attr.name);
             break;
-
          case FuncK:
-            if (strcmp(tree->attr.name, "main") == 0) {
-               break;
+            // If main we ignore
+            if (strcmp(current->attr.name, "main") == 0) {
+               return;
             }
-            
-            printf("SEMANTIC WARNING(%d): The function '%s' seems not to be used.\n",
-                  tree->lineno, tree->attr.name);
-            tree->isUsed = true;
-            numWarnings++;
+            printf("SEMANTIC WARNING(%d): The function '%s' seems not to be used.\n",current->lineno, current->attr.name);
             break;
 
       }
+      current->isUsed = true;
+      numWarnings++;
+      break;
 
    }
 }
