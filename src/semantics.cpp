@@ -678,8 +678,6 @@ void used_warnings(std::string str, void * curr) {
       }
       current->isUsed = true;
       numWarnings++;
-      break;
-
    }
 }
 
