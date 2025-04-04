@@ -129,7 +129,7 @@ varDecl : typeSpec varDeclList ';' {setType($2, $1, false); $$ = $2; }
 scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true);}
     | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false) ;}
     | typeSpec error ';'   {$$ = NULL; yyerrok;}
-    | STATIC typeSpec error ';' {$$ = NULL; yyerrok;}
+    | STATIC typeSpec ';' {$$ = NULL; yyerrok;}
     ;
 
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
@@ -146,8 +146,8 @@ varDeclInit : varDeclId { $$ = $1;}
 
 varDeclId : ID {$$ = newDeclNode(VarK, UndefinedType, $1);}
     | ID '[' NUMCONST ']' {$$ = newDeclNode(VarK, UndefinedType, $1); $$->isArray = true; $$->size = $3->nvalue + 1;}
-    | error ']' {$$ = NULL; yyerrok;}
     | ID '[' error   {$$ = NULL; yyerrok;}
+    | error ']' {$$ = NULL; yyerrok;}
     ;
 
 typeSpec : INT {$$ = Integer;}
@@ -346,14 +346,14 @@ immutable   : '(' exp ')' {$$ = $2;}
             | error '(' {$$ = NULL; yyerrok;}
             ;
 
-call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); $$->attr.name = $1->svalue; /*$$->type = get_return_type($1->tokenstr, symtab); printf("%s", $1->tokenstr);*/}                   
+call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); $$->attr.name = $1->svalue;}                   
            ;
 
 args       : argList  {$$ = $1;}
              | /* empty */         {$$ = NULL;}                       
            ;
 
-argList    : argList ',' exp  {$$ = ($3==NULL ? $1 : addSibling($1, $3)); /*$$ = $1; $$ = addSibling($1, $3); */}                     
+argList    : argList ',' exp  {$$ = ($3==NULL ? $1 : addSibling($1, $3));}                     
              | exp      {$$ = $1;}
            ;
 
@@ -369,17 +369,10 @@ constant   : NUMCONST       {$$ = newExpNode(ConstantK, $1); $$->type = Integer;
            ;
 %%
 
-
-// void yyerror (const char *msg)
-// { 
-//    cout << "Error: " <<  msg << endl;
-// }
-
 int main(int argc, char **argv) {
   int option, index;
   char *file = NULL;
   extern FILE *yyin;
-  //syntaxTree = new TreeNode;
   int globalOffset;
   initAll();
   symtab = new SymbolTable();
