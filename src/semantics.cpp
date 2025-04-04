@@ -149,6 +149,53 @@ TreeNode *loadIOLib(TreeNode *syntree)
    return input;
 }
 
+void call_errors(TreeNode *current, SymbolTable *symtab)
+{
+   TreeNode * tmp = (TreeNode *) symtab->lookup(current->attr.name);
+   TreeNode *parameters = current->child[0];
+   TreeNode *lookups = tmp->child[0];
+   TreeNode * save;
+   int index = 1;
+
+   while (parameters && lookups)
+   {
+      save = parameters->sibling;
+      parameters->sibling = NULL;
+      treeTraverse(parameters, symtab);
+      parameters->sibling = save;
+
+      /////////////////////////
+      if (parameters->type != lookups->type) 
+      {
+         printf("SEMANTIC ERROR(%d): Expecting %s in parameter %d of call to '%s' declared on line %d but got %s.\n",current->lineno, type_str(lookups->type, false, false), index, tmp->attr.name, tmp->lineno,type_str(parameters->type, false, false));
+         numErrors++;
+      }
+      // Arrays
+      if (lookups->isArray && !parameters->isArray) 
+      {
+         printf("SEMANTIC ERROR(%d): Expecting array in parameter %d of call to '%s' declared on line %d.\n",current->lineno, index, tmp->attr.name, tmp->lineno);
+         numErrors++;
+      } 
+      else if (!lookups->isArray && parameters->isArray && parameters->attr.op != '[') 
+      {
+         printf("SEMANTIC ERROR(%d): Not expecting array in parameter %d of call to '%s' declared on line %d.\n",current->lineno, index, tmp->attr.name, tmp->lineno);
+         numErrors++;
+      }
+      /////////////////////////
+
+      parameters = parameters->sibling;
+      lookups = lookups->sibling;
+      index++;
+   }
+   if (parameters && !lookups) {
+      printf("SEMANTIC ERROR(%d): Too many parameters passed for function '%s' declared on line %d.\n",current->lineno, current->attr.name, tmp->lineno);
+      numErrors++;
+   } else if (!parameters && lookups) {
+      printf("SEMANTIC ERROR(%d): Too few parameters passed for function '%s' declared on line %d.\n",current->lineno, current->attr.name, tmp->lineno);
+      numErrors++;
+   }
+}
+
 void operator_errors(TreeNode *current, SymbolTable *symtab)
 {
    int op = current->attr.op;  
@@ -236,30 +283,49 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
    switch (current->kind.decl) {
       case VarK: {
          treeTraverse(current->child[0], symtab);
-         
+         if (current->child[0] != NULL) 
+         {
+            if (current->type != current->child[0]->type) {
+               printf("SEMANTIC ERROR(%d): Initializer for variable '%s' of %s is of %s\n", current->lineno, current->attr.name, type_str(current->type, false, false), type_str(current->child[0]->type, false, false));
+               numErrors++;
+            }
+            if (current->child[0]->kind.exp != ConstantK) 
+            {
+               printf("SEMANTIC ERROR(%d): Initializer for variable '%s' is not a constant expression.\n", current->lineno, current->attr.name);
+               numErrors++;
+            }
+            if (current->isArray)
+            {
+               if (!current->child[0]->isArray)
+               {
+                  printf("SEMANTIC ERROR(%d): Initializer for variable '%s' requires both operands be arrays or not but variable is an array and rhs is not an array.\n",current->lineno, current->attr.name);
+                  numErrors++;
+               }
+            }
+            else
+            {
+               if (current->child[0]->isArray)
+               {
+                  printf("SEMANTIC ERROR(%d): Initializer for variable '%s' requires both operands be arrays or not but variable is not an array and rhs is an array.\n",current->lineno, current->attr.name);
+                  numErrors++;                  
+               }
+            }
+         }
          // Handle VarK in ParamK
-      }
+      } // No break
       case ParamK: {
-         //treeTraverse(current->child[0], symtab);
-         // This is a global variable since it is not in a function
+         if (current->child[0] != NULL) current->isAssigned = true; 
          if (insertError(current, symtab))
          {
             if (symtab->depth()==1) 
             {
-               // Set the varKind to Global for VarK (Parameter for ParamK)
-               //if (current->kind.decl == VarK) 
                current->varKind = Global;
-               //else if (current->kind.decl == ParamK) current->type = Parameter;
                current->offset = goffset;
                goffset -= current->size;
             }
-            // Otherwise, if current->isStatic // This is a static variable
             else if (current->isStatic)
             {
-               // Set varKind to LocalStatic for VarK (Parameter for ParamK)
-               //if (current->kind.decl == VarK) 
                current->varKind = LocalStatic;
-               //else if (current->kind.decl == ParamK) current->type = Parameter;
                current->offset = goffset;
                goffset -= current->size;
 
@@ -278,18 +344,20 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
             }
             else 
             {
-               // Set varKind to Local for VarK (Parameter for ParamK)
-               //if (current->kind.decl == VarK) 
                current->varKind = Local;
-               //else if (current->kind.decl == ParamK) current->type = Parameter;
                current->offset = foffset;
                foffset -= current->size; 
             }
          }
+         else
+         {
+            tmp = (TreeNode *)symtab->lookup(current->attr.name);
+            printf("SEMANTIC ERROR(%d): Symbol '%s' is already declared at line %d.\n", current->lineno, current->attr.name, tmp->lineno);
+            numErrors++;
+         }
          // Check at end for parameter.
          if (current->kind.decl == ParamK) current->varKind = Parameter;
          else if (current->isArray) current->offset--;
-         
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
 
@@ -319,7 +387,8 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
          treeTraverse(current->child[2], symtab);
 
          symtab->applyToAll(used_warnings);
-         if (found_return == false && current->lineno != -1 && current->type != Void) {
+         if (found_return == false && current->lineno != -1 && current->type != Void) 
+         {
             printf("SEMANTIC WARNING(%d): Expecting to return %s but function '%s' has no return statement.\n",current->lineno, type_str(current->type, false, false), current->attr.name);
             numWarnings++;
          }
@@ -542,6 +611,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
+         operator_errors(current, symtab);
          int op = current->attr.op;  
 
          current->type = Integer;
@@ -560,7 +630,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             default:
                break;
          }
-         operator_errors(current, symtab);
 
          break;
       }
@@ -588,14 +657,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          else 
          {
             if (current->child[0] != NULL);
-            // {
-            //    // Returns void * default.
-            //    tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
-            //    if (tmp == NULL)
-            //       current->type = current->child[0]->type;
-            //    else 
-            //       current->type = tmp->type;
-            // }
             else
             {
                printf("ERROR: Op child can not be NULL - semantics.cpp::treeExpTraverse\n");
@@ -603,7 +664,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             }
          }
          operator_errors(current, symtab);
-
          break;
       }
       case ConstantK: {
@@ -621,80 +681,25 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case CallK: {
          // only ever need a single child for the ID
          treeTraverse(current->child[0], symtab);
-         if (tmp = (TreeNode *)(symtab->lookup(current->attr.name))) {
+         tmp = (TreeNode *)(symtab->lookup(current->attr.name))
+         if (tmp) {
+            if (tmp->kind.decl != FuncK)
+            {
+               printf("SEMANTIC ERROR(%d): '%s' is a simple variable and cannot be called.\n",current->lineno, current->attr.name);
+               numErrors++;
+            }
             current->type = tmp->type;
             current->offset = tmp->offset; 
-            //current->size = tmp->size;
-            //find_parameters(current, symtab);
+            current->isUsed = true;
+            tmp->isUsed = true;
+            call_errors(current, symtab);
          }
          else
          {
-            printf("Error 2");
+            printf("SEMANTIC ERROR(%d): Symbol '%s' is not declared.\n", current->lineno, current->attr.name);
+            current->type = UndefinedType;
             numErrors++;
          }
-
-         //current->varKind = Local;
-
-         // if (current->type == Void)
-         // {
-         //    TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
-         //    if (funcNode != NULL) current->type = funcNode->type;
-         // }
-
-         // treeTraverse(current->child[0], symtab);
-         
-         // tmp = (TreeNode *)(symtab->lookup(current->attr.name));
-         // if (tmp != NULL) {
-         //    // Check if its a function 
-         //    // if not numErrors++;
-
-         //    current->isUsed = true;
-         //    tmp->isUsed = true;
-
-         //    current->type = tmp->type;
-         //    //current->isStatic = tmp->isStatic;
-         //    //current->isArray = tmp->isArray;
-         //    //current->size = tmp->size;
-         //    //current->varKind = tmp->varKind;
-         //    current->offset = tmp->offset;
-
-         //    // Find all parameters
-         //    // TreeNode * params = current->child[0];
-         //    // TreeNode * temporary;
-         //    // while (params) {
-         //    //    temporary = params->sibling;
-         //    //    params->sibling = NULL;
-         //    //    treeTraverse(params, symtab);
-         //    //    params->sibling = temporary;
-         //    //    params = params->sibling;
-         //    // }
-         // }
-         // else
-         // {
-         //    //current->type = Boolean;
-         //    //printf("Error");
-         //    numErrors++;
-         // }
-         
-         //TreeNode *funcNode = (TreeNode *)(symtab->lookup(current->attr.name));
-
-         // if (funcNode != NULL) {
-         //    if (funcNode->kind.decl == FuncK) { // Ensure it's a function
-         //          current->isUsed = true;
-         //          funcNode->isUsed = true;
-
-         //          // Set type to function return type
-         //          current->type = funcNode->type;
-         //    } else {
-         //          printf("Error: '%s' is not a function at line %d\n", current->attr.name, current->lineno);
-         //          numErrors++;
-         //          current->type = Void; // Prevent further errors
-         //    }
-         // } else {
-         //    printf("Error: Function '%s' not declared at line %d\n", current->attr.name, current->lineno);
-         //    numErrors++;
-         //    current->type = Void;
-         // }
 
          break;
       }
