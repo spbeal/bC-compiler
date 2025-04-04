@@ -134,8 +134,8 @@ scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true);
 
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
     | varDeclInit {$$ = $1;}
-    | varDeclList ',' error   {$$ = NULL; yyerrok;}
-    | error   {$$ = NULL; yyerrok;}
+    | varDeclList ',' error   {$$ = NULL;}
+    | error   {$$ = NULL;}
     ;
 
 varDeclInit : varDeclId { $$ = $1;}
@@ -157,11 +157,11 @@ typeSpec : INT {$$ = Integer;}
 
 funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
     | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
-    | typeSpec error   {$$ = NULL; yyerrok;}
-    | typeSpec ID '(' error   {$$ = NULL; yyerrok;}
-    | typeSpec ID '(' parms ')' error {$$ = NULL; yyerrok;}
-    | ID '(' error  {$$ = NULL; yyerrok;}
-    | ID '('parms')' error {$$ = NULL; yyerrok;}
+    | typeSpec error   {$$ = NULL; }
+    | typeSpec ID '(' error   {$$ = NULL; }
+    | typeSpec ID '(' parms ')' error {$$ = NULL; }
+    | ID '(' error  {$$ = NULL; }
+    | ID '('parms')' error {$$ = NULL;}
     ;
 
 parms : parmList {$$ = $1;}
@@ -170,11 +170,12 @@ parms : parmList {$$ = $1;}
 
 parmList : parmList ';' parmTypeList {$$ = addSibling($1, $3);}
     | parmTypeList {$$ = $1;}
-    | parmList ';' error {$$ = NULL; yyerrok;}
-    | error {$$ = NULL; yyerrok;}
+    | parmList ';' error {$$ = NULL; }
+    | error {$$ = NULL; }
     ;
 
 parmTypeList : typeSpec parmIdList {setType($2, $1, false); $$ = $2;}
+    | typeSpec error {$$ = NULL; yyerrok;}
     ;
 
 parmIdList: parmIdList ',' parmId {$$ = addSibling($1, $3);}
@@ -192,6 +193,10 @@ stmt : matched {$$ = $1;}
     ;
 
 matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2, $4, $6);}
+    | IF error THEN matched ELSE unmatched { $$ = NULL; yyerrok;}
+    | IF error THEN matched ELSE matched { $$ = NULL; yyerrok;}
+    | IF error { $$ = NULL; yyerrok;}
+    | IF error ELSE matched { $$ = NULL; yyerrok;}
     | WHILE simpleExp DO matched { $$ = newStmtNode(WhileK, $1, $2, $4);}
     | FOR ID '=' iterRange DO matched 
       { $$ = newStmtNode(ForK, $1, NULL, $4, $6); 
@@ -200,11 +205,6 @@ matched : IF simpleExp THEN matched ELSE matched { $$ = newStmtNode(IfK, $1, $2,
     | compoundStmt { $$ = $1;}
     | returnStmt { $$ = $1;}
     | breakStmt { $$ = $1;}
-    | error {$$ = NULL; yyerrok;}
-    | IF error THEN matched ELSE unmatched { $$ = NULL; yyerrok;}
-    | IF error THEN matched ELSE matched { $$ = NULL; yyerrok;}
-    | IF error { $$ = NULL; yyerrok;}
-    | IF error ELSE matched { $$ = NULL; yyerrok;}
     ;
 
 iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $2, $1, $3);}
@@ -212,22 +212,21 @@ iterRange : simpleExp TO simpleExp {$$ = newStmtNode(RangeK, $2, $1, $3);}
     | simpleExp TO simpleExp BY error {$$ = NULL; yyerrok;}
     | simpleExp TO error {$$ = NULL; yyerrok;}
     | error BY error {$$ = NULL; yyerrok;}
-    | error TO error {$$ = NULL; yyerrok;}
     ;
 
 unmatched  : IF simpleExp THEN stmt {$$ = newStmtNode(IfK, $1, $2, $4);}
+    | IF error THEN stmt {$$ = NULL; yyerrok;}
     | IF simpleExp THEN matched ELSE unmatched {$$ = newStmtNode(IfK, $1, $2, $4, $6);}
     | WHILE simpleExp DO unmatched {$$ = newStmtNode(WhileK, $1, $2, $4);}
     | FOR ID '=' iterRange DO unmatched {
         $$ = newStmtNode(ForK, $1, NULL, $4, $6); 
         $$->child[0] = newDeclNode(VarK, Integer, $2);
     }
-    | IF error THEN stmt {$$ = NULL; yyerrok;}
     ;
 
 expStmt    : exp ';'  {$$ = $1;}
-             | ';' {$$ = NULL;}                       
-             | error ';' {$$ = NULL; yyerrok;}            
+            | error ';' {$$ = NULL; yyerrok;}            
+            | ';' {$$ = NULL; yyerrok;}                       
            ;
 
 compoundStmt : '{' localDecls stmtList '}'      {$$ = newStmtNode(CompoundK, $1, $2, $3);}
@@ -277,8 +276,7 @@ andExp     : andExp AND unaryRelExp {$$ = newExpNode(OpK, $2, $1, $3);}
 
 unaryRelExp : NOT unaryRelExp {$$ = newExpNode(OpK, $1, $2);}
     | relExp {$$ = $1;}
-    | NOT error {$$ = NULL; yyerrok;}
-    | error {$$ = NULL; yyerrok;}
+    | NOT error {$$ = NULL;}
     ;
 
 relExp     : minmaxExp relop minmaxExp    {$$ = newExpNode(OpK, $2, $1, $3);}            
@@ -303,6 +301,7 @@ minmaxop   : MAX {$$ = $1;}
 
 sumExp     : sumExp sumop mulExp  {$$ = newExpNode(OpK, $2, $1, $3);}            
              | mulExp {$$ = $1;}
+             | sumExp sumop error {$$ = NULL; yyerrok;}
            ;
 
 sumop      : '+' {$$ = $1;}
@@ -311,6 +310,7 @@ sumop      : '+' {$$ = $1;}
 
 mulExp     : mulExp mulop unaryExp  {$$ = newExpNode(OpK, $2, $1, $3);}         
              | unaryExp  {$$ = $1;}
+             | mulExp mulop error {$$ = NULL; yyerrok;}
            ;
 
 mulop      : '*' {$$ = $1; }
@@ -321,7 +321,6 @@ mulop      : '*' {$$ = $1; }
 unaryExp   : unaryop unaryExp {$$ = newExpNode(OpK, $1, $2);}
     | factor {$$ = $1;}
     | unaryop error {$$ = NULL; yyerrok;}
-    | error {$$ = NULL; yyerrok;}
     ;
 
 unaryop    : '-'        {$$ = $1; $$->tokenclass = CHSIGN; $$->tokenstr = strdup("chsign"); }                                     
@@ -345,8 +344,7 @@ immutable   : '(' exp ')' {$$ = $2;}
             | constant {$$ = $1;}
             | '(' error {$$ = NULL; yyerrok;}
             | error '(' {$$ = NULL; yyerrok;}
-            | error {$$ = NULL; yyerrok;}
-    ;
+            ;
 
 call       : ID '(' args ')'    {$$ = newExpNode(CallK, $1, $3); $$->attr.name = $1->svalue; /*$$->type = get_return_type($1->tokenstr, symtab); printf("%s", $1->tokenstr);*/}                   
            ;
