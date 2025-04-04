@@ -310,16 +310,6 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
                   numErrors++;                  
                }
             }
-            if (current->isArray && !current->child[0]->isArray) {
-               printf("SEMANTIC ERROR(%d): Initializer for variable '%s' requires both operands be arrays or not but variable is an array and rhs is not an array.\n",
-                     current->lineno, current->attr.name);
-               numErrors++;
-            }
-            if (!current->isArray && current->child[0]->isArray) {
-               printf("SEMANTIC ERROR(%d): Initializer for variable '%s' requires both operands be arrays or not but variable is not an array and rhs is an array.\n",
-                     current->lineno, current->attr.name);
-               numErrors++;
-            }
          }
          // Handle VarK in ParamK
       } // No break
