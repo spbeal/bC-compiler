@@ -266,11 +266,50 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       }
    }
    // ------------------------------------------------
-   else if (op == '[') { }
+   else if (op == '[') 
+   { 
+      if (!left->isArray || left->type == UndefinedType) {
+         printf("SEMANTIC ERROR(%d): Cannot index nonarray '%s'.\n", current->lineno, left->attr.name);
+         numErrors++;
+      }
+      else if (right->type != Integer) {
+         printf("SEMANTIC ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", current->lineno, right->attr.name, type_str(right->type, false, false));
+         numErrors++;
+      }
+      if (right->isArray) {
+         printf("SEMANTIC ERROR(%d): Array index is the unindexed array '%s'.\n", current->lineno, right->attr.name);
+         numErrors++;
+      }
+   }
    // ------------------------------------------------
-   else if (op == '?' || op == CHSIGN || op == INC || op == DEC) {}
+   else if ( op == INC || op == DEC || op == '?' || op == CHSIGN) 
+   {
+      if (left->isArray && left->attr.op != '[') {
+         printf("SEMANTIC ERROR(%d): The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
+        numErrors++;
+      } 
+      if (left->type != Integer) {
+         printf("SEMANTIC ERROR(%d): Unary '%s' requires an operand of type int but was given %s.\n",  current->lineno, largerTokens[op], type_str(left->type, false, false));
+         numErrors++;
+      }
+   }
    // ------------------------------------------------
-   else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == GEQ || op == '<' || op == LEQ) {}
+   else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == GEQ || op == '<' || op == LEQ) 
+   {
+      if (left->type != right->type) {
+         printf("SEMANTIC ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n",current->lineno, largerTokens[op], type_str(left->type, false, false), type_str(right->type, false, false));
+         numErrors++;
+      }
+      if (left->isArray && !right->isArray && left->attr.op != '[' ) {
+         printf("SEMANTIC ERROR(%d): '%s' requires both operands be arrays or not but lhs is an array and rhs is not an array.\n", current->lineno, largerTokens[op]);
+         numErrors++;
+      } 
+      else if (!left->isArray && right->isArray && right->attr.op != '[') 
+      {
+         printf("SEMANTIC ERROR(%d): '%s' requires both operands be arrays or not but lhs is not an array and rhs is an array.\n",current->lineno, largerTokens[op]);
+         numErrors++;
+      }      
+   }
    // ------------------------------------------------
    else if (op == SIZEOF) if (!left->isArray) printf("SYNTAX ERROR(%d): The operation 'sizeof' only works with arrays.\n", current->lineno);
    // ------------------------------------------------
@@ -790,9 +829,6 @@ bool insertError(TreeNode *current, SymbolTable *symtab) {
    if (symtab->insert(current->attr.name, current)) {
       return true;
    }
-   // // ERROR
-   // printf("Error 4");
-   // numErrors++;
    return false;
 }
 

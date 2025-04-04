@@ -400,16 +400,18 @@ int main(int argc, char **argv) {
       fclose (yyin);
    }
 
-   if(numErrors == 0){
-      //printDotTree(astDot,syntaxTree, false, false);
+   if(numErrors == 0)
+   {
       syntaxTree = semanticAnalysis(syntaxTree, symtab, globalOffset);
+      //printTree(stdout, syntaxTree); // set to true, true for assignment 4
+   }
+   if(numErrors == 0)
+   {
       codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
-      printTree(stdout, syntaxTree); // set to true, true for assignment 4
    }
 
    printf("Number of warnings: %d\n", numWarnings);
    printf("Number of errors: %d\n", numErrors);
-   //printf("Number of errors: %d\n", numErrors);
    
    return 0;
 }
