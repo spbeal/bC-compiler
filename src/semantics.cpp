@@ -149,6 +149,85 @@ TreeNode *loadIOLib(TreeNode *syntree)
    return input;
 }
 
+void operator_errors(TreeNode *current, SymbolTable *symtab)
+{
+   TreeNode * left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+   TreeNode * right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
+   TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);
+   if (current->child[0] == NULL){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
+   else { 
+      if (current->child[0]->attr.op == '[') 
+      {
+         left = current->child[0];
+      }
+      else 
+      {
+         if (left == NULL){ left = current->child[0]; }
+      }
+      if (left->type == UndefinedType && !left->isArray) return;
+   }
+   if (current->child[1] != NULL && right == NULL) { 
+      right = current->child[1];
+   }
+
+   // ------------------------------------------------
+   // ------------------------------------------------
+   if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+      op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+      op == '/' || op == '+' || op == '-' || op == '*')
+      {
+         if (left->type || right->type != Integer)
+         {
+            if (left->type != Integer)
+            {
+               printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but lhs is of %s.\n",current->lineno, largerTokens[op], type_str(left->type, false, false));
+               numErrors++;
+            }
+            if (right->type != Integer)
+            {
+               printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but rhs is of %s.\n",current->lineno, largerTokens[op], type_str(right->type, false, false));
+               numErrors++;
+            }
+         }
+         if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
+         {
+            printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n",current->lineno, largerTokens[op]);
+            numErrors++;
+         }
+      }
+   // ------------------------------------------------
+   else if ((op == AND || op == OR || op == NOT ))
+   {
+      if (left->type || right->type != Boolean)
+      {
+         if (left->type != Boolean)
+         {
+            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n",current->lineno, largerTokens[op], type_str(left->type, false, false));
+            numErrors++;
+         }
+         if (right->type != Boolean)
+         {
+            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n",current->lineno, largerTokens[op], type_str(right->type, false, false));
+            numErrors++;
+         }
+      }
+      if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
+      {
+         printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n",current->lineno, largerTokens[op]);
+         numErrors++;
+      }
+   }
+   // ------------------------------------------------
+   else if (op == '[') { }
+   // ------------------------------------------------
+   else if (op == '?' || op == CHSIGN || op == INC || op == DEC) {}
+   // ------------------------------------------------
+   else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == GEQ || op == '<' || op == LEQ) {}
+   // ------------------------------------------------
+   else if (op == SIZEOF) if (!left->isArray) printf("SYNTAX ERROR(%d): The operation 'sizeof' only works with arrays.\n", current->lineno);
+   // ------------------------------------------------
+}
+
 void decl_traverse(TreeNode * current, SymbolTable *symtab) {
    TreeNode * tmp;
    new_scope = 1;
@@ -415,6 +494,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             default:
                break;
          }
+         operator_errors(current, symtab);
 
          break;
       }
@@ -431,9 +511,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>'
              || op == AND || op == NOT || op == OR  || op == EQ)
             current->type = Boolean;
-         else if (op == '=' || '[')
+         else if (op == '=' || op == '[')
             current->type = current->child[0]->type;
-            if (op == '[') current->isArray = false;
+            if (op == '[') current->isArray = true;
          else if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
              op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
              op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
@@ -441,7 +521,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          else if (op == SIZEOF) current->type = Integer;
          else 
          {
-            // if (current->child[0] != NULL)
+            if (current->child[0] != NULL);
             // {
             //    // Returns void * default.
             //    tmp = (TreeNode*) symtab->lookup(current->child[0]->attr.name);
@@ -450,70 +530,13 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             //    else 
             //       current->type = tmp->type;
             // }
-            //printf("Error 1");
-            //numErrors++;
-         }
-         //          ERRORS 
-         // ---------------------------
-         TreeNode * left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
-         TreeNode * right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
-         if (!left){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
-         if (left->type == UndefinedType && !left->isArray) return;
-
-         if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
-            op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
-            op == '/' || op == '+' || op == '-' || op == '*')
+            else
             {
-               if (left->type || right->type != Integer)
-               {
-                  if (left->type != Integer)
-                  {
-                     printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but lhs is of %s.\n",
-                        current->lineno, largerTokens[op], type_str(left->type, false, false));
-                     numErrors++;
-                  }
-                  if (right->type != Integer)
-                  {
-                     printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but rhs is of %s.\n",
-                        current->lineno, largerTokens[op], type_str(right->type, false, false));
-                     numErrors++;
-                  }
-               }
-               if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
-               {
-                  printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n",
-                     current->lineno, largerTokens[op]);
-                  numErrors++;
-               }
-            }
-         else if (op == SIZEOF) if (!left->isArray) 
-            printf("SYNTAX ERROR(%d): The operation 'sizeof' only works with arrays.\n", current->lineno);
-         else if ((op == AND || op == OR || op == NOT ))
-         {
-            if (left->type || right->type != Boolean)
-            {
-               if (left->type != Boolean)
-               {
-                  printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n",
-                     current->lineno, largerTokens[op], type_str(left->type, false, false));
-                  numErrors++;
-               }
-               if (right->type != Boolean)
-               {
-                  printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n",
-                     current->lineno, largerTokens[op], type_str(right->type, false, false));
-                  numErrors++;
-               }
-            }
-            if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
-            {
-               printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n",
-                  current->lineno, largerTokens[op]);
+               printf("ERROR: Op child can not be NULL - semantics.cpp::treeExpTraverse\n");
                numErrors++;
             }
          }
-
-         // ---------------------------
+         operator_errors(current, symtab);
 
          break;
       }
