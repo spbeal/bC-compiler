@@ -228,18 +228,18 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
          {
             if (left->type != Integer)
             {
-               printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but lhs is of %s.\n",current->lineno, largerTokens[op], type_str(left->type, false, false));
+               printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but lhs is of %s.\n", current->lineno, largerTokens[op], type_str(left->type, false, false));
                numErrors++;
             }
             if (right->type != Integer)
             {
-               printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but rhs is of %s.\n",current->lineno, largerTokens[op], type_str(right->type, false, false));
+               printf("SEMANTIC ERROR(%d): '%s' requires operands of type int but rhs is of %s.\n", current->lineno, largerTokens[op], type_str(right->type, false, false));
                numErrors++;
             }
          }
          if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
          {
-            printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n",current->lineno, largerTokens[op]);
+            printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
             numErrors++;
          }
       }
@@ -250,18 +250,18 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       {
          if (left->type != Boolean)
          {
-            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n",current->lineno, largerTokens[op], type_str(left->type, false, false));
+            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n", current->lineno, largerTokens[op], type_str(left->type, false, false));
             numErrors++;
          }
          if (right->type != Boolean)
          {
-            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n",current->lineno, largerTokens[op], type_str(right->type, false, false));
+            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n", current->lineno, largerTokens[op], type_str(right->type, false, false));
             numErrors++;
          }
       }
       if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
       {
-         printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n",current->lineno, largerTokens[op]);
+         printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
          numErrors++;
       }
    }
@@ -294,10 +294,10 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       }
    }
    // ------------------------------------------------
-   else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == GEQ || op == '<' || op == LEQ) 
+   else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == '<' || op == GEQ || op == LEQ) 
    {
       if (left->type != right->type) {
-         printf("SEMANTIC ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n",current->lineno, largerTokens[op], type_str(left->type, false, false), type_str(right->type, false, false));
+         printf("SEMANTIC ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n", current->lineno, largerTokens[op], type_str(left->type, false, false), type_str(right->type, false, false));
          numErrors++;
       }
       if (left->isArray && !right->isArray && left->attr.op != '[' ) {
@@ -306,7 +306,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       } 
       else if (!left->isArray && right->isArray && right->attr.op != '[') 
       {
-         printf("SEMANTIC ERROR(%d): '%s' requires both operands be arrays or not but lhs is not an array and rhs is an array.\n",current->lineno, largerTokens[op]);
+         printf("SEMANTIC ERROR(%d): '%s' requires both operands be arrays or not but lhs is not an array and rhs is an array.\n", current->lineno, largerTokens[op]);
          numErrors++;
       }      
    }
@@ -496,12 +496,14 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             // Errors
             if (current->child[0])
             {
-               if (current->child[0]->type != Boolean && current->child[0]->type != UndefinedType) {
+               if (current->child[0]->type != Boolean && current->child[0]->type != UndefinedType) 
+               {
                   printf("SEMANTIC ERROR(%d): Expecting Boolean test condition in while statement but got %s.\n", current->lineno, type_str(current->child[0]->type, false, false));
                   numErrors++;
                }
 
-               if (current->child[0]->isArray) {
+               if (current->child[0]->isArray) 
+               {
                   printf("SEMANTIC ERROR(%d): Cannot use array as test condition in while statement.\n", current->lineno);
                   numErrors++;
                }
