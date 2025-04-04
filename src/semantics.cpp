@@ -681,8 +681,9 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case CallK: {
          // only ever need a single child for the ID
          treeTraverse(current->child[0], symtab);
-         tmp = (TreeNode *)(symtab->lookup(current->attr.name))
-         if (tmp) {
+         tmp = (TreeNode *)(symtab->lookup(current->attr.name));
+         if (tmp) 
+         {
             if (tmp->kind.decl != FuncK)
             {
                printf("SEMANTIC ERROR(%d): '%s' is a simple variable and cannot be called.\n",current->lineno, current->attr.name);
