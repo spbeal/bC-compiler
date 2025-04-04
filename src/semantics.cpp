@@ -335,9 +335,9 @@ void decl_traverse(TreeNode * current, SymbolTable *symtab) {
 
 void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
    if (current->kind.stmt != CompoundK) new_scope = 1;
-
-   TreeNode * tmp;
+   TreeNode * tmp = NULL;
    int rememberFoffset;
+
    switch (current->kind.stmt) {
       case IfK: {
          if (new_scope)
@@ -345,6 +345,23 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             symtab->enter((char *)"IfStmt");
             rememberFoffset = foffset;
             treeTraverse(current->child[0], symtab);
+
+            if (current->child[0]) tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+            if (tmp == NULL) tmp = current->child[0];
+            else
+            {
+               if (tmp->type != Boolean && tmp->type != UndefinedType) 
+               {
+                  printf("SEMANTIC ERROR(%d): Expecting Boolean test condition in if statement but got %s.\n", current->lineno, type_str(tmp->type, false, false));
+                  numErrors++;
+               }
+               if (tmp->isArray)
+               {
+                  printf("SEMANTIC ERROR(%d): Cannot use array as test condition in if statement.\n", current->lineno);
+                  numErrors++;
+               }
+            }
+
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
             treeTraverse(current->child[2], symtab);
@@ -367,6 +384,21 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             symtab->enter((char *)"WhileStmt");
             rememberFoffset = foffset;
             treeTraverse(current->child[0], symtab);
+
+            // Errors
+            if (current->child[0])
+            {
+               if (current->child[0]->type != Boolean && current->child[0]->type != UndefinedType) {
+                  printf("SEMANTIC ERROR(%d): Expecting Boolean test condition in while statement but got %s.\n", current->lineno, type_str(current->child[0]->type, false, false));
+                  numErrors++;
+               }
+
+               if (current->child[0]->isArray) {
+                  printf("SEMANTIC ERROR(%d): Cannot use array as test condition in while statement.\n", current->lineno);
+                  numErrors++;
+               }
+            }
+
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
             treeTraverse(current->child[2], symtab);
@@ -439,17 +471,34 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          if (current->child[0] != NULL)
          {
             tmp = (TreeNode *) symtab->lookup(current->child[0]->attr.name);
+            if (current->child[0]->type == UndefinedType);
+            else if (tmp != NULL && tmp->isArray)
+            {
+               printf("SEMANTIC ERROR(%d): Cannot return an array.\n", current->lineno);
+               numErrors++;               
+            }
+            else if (current_function != NULL && current_function->type != current->child[0]->type)
+            {
+               if (current_function->type != Void) printf("SEMANTIC ERROR(%d): Function '%s' at line %d is expecting to return %s but returns %s.\n",current->lineno, current_function->attr.name, current_function->lineno, type_str(current_function->type, false, false), type_str(current->child[0]->type, false, false));
+               else printf("SEMANTIC ERROR(%d): Function '%s' at line %d is expecting no return value, but return has a value.\n", current->lineno, current_function->attr.name, current_function->lineno);
+               numErrors++;
+            }
          }
          else if (current_function != NULL) // child is null
          {
             printf("SEMANTIC ERROR(%d): Function '%s' at line %d is expecting to return %s but return has no value.\n",current->lineno, current_function->attr.name, current_function->lineno, type_str(current_function->type, false, false));
             numErrors++;
          }
-          
 
          break;
       }
       case BreakK: {
+         // This means within the file and main.
+         if (symtab->depth() <= 2) 
+         {
+            printf("SEMANTIC ERROR(%d): Cannot have a break statement outside of loop.\n", current->lineno);
+            numErrors++;
+         }
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
@@ -457,6 +506,22 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case RangeK: {
+         for (int i = 0; i < 3; i++) // MAXCHILDREN
+         {
+            if (current->child[i] != NULL) 
+            {
+               if (current->child[i]->type != Integer) 
+               {
+                  printf("SEMANTIC ERROR(%d): Expecting type int in position %d in range of for statement but got %s.\n",current->lineno, i+1, type_str(current->child[i]->type, false, false));
+                  numErrors++;
+               }
+               if (current->child[i]->isArray) 
+               {
+                  printf("SEMANTIC ERROR(%d): Cannot use array in position %d in range of for statement.\n",current->lineno, i+1);
+                  numErrors++;
+               }
+            }
+         }
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
@@ -719,9 +784,9 @@ bool insertError(TreeNode *current, SymbolTable *symtab) {
    if (symtab->insert(current->attr.name, current)) {
       return true;
    }
-   // ERROR
-   printf("Error 4");
-   numErrors++;
+   // // ERROR
+   // printf("Error 4");
+   // numErrors++;
    return false;
 }
 
