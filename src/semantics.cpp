@@ -151,6 +151,7 @@ TreeNode *loadIOLib(TreeNode *syntree)
 
 void operator_errors(TreeNode *current, SymbolTable *symtab)
 {
+   int op = current->attr.op;  
    TreeNode * left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
    TreeNode * right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
    TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);
