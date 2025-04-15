@@ -74,6 +74,20 @@ void initTokenStrings()
    largerTokens[THEN] = (char *)"then";
    largerTokens[TO] = (char *)"to";
    largerTokens[WHILE] = (char *)"while";
+   largerTokens[STRINGCONST] = (char *)"stringconst";
+
+   largerTokens['?'] = (char *)"?";
+   largerTokens['<'] = (char *)"<";
+   largerTokens['>'] = (char *)">";
+   largerTokens['='] = (char *)"=";
+   largerTokens['%'] = (char *)"%";
+   largerTokens['-'] = (char *)"-";
+   largerTokens['+'] = (char *)"+";
+   largerTokens['*'] = (char *)"*";
+   largerTokens['/'] = (char *)"/";
+
+
+
    largerTokens[LASTTERM] = (char *)"lastterm";
 }
 
