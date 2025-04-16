@@ -658,39 +658,38 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case AssignK: {
          // Just like op
          // current->type = Integer;
-         // int op = current->attr.op;  
-         // switch (op)
-         // {
-         //    case AND: case NOT: case OR: current->type = Boolean;
-         //    case '=': case '[': 
-         //       current->type = current->child[0]->type;
-         //       if (current->child[0]->type != UndefinedType) 
-         //          current->type = current->child[0]->type;
-         //       break;
-         //    case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
-         //       current->type = Boolean;
-         //       break;
-         //    default:
-         //       break;
-         // }
-         if (current->child[0] == NULL) {
-            //printf("ERROR: left child has no type - semantics.cpp::treeExpTraverse()\t%s\n", current->attr.name);
-         } else {
-            // look up childs type and set it to current type
-            tmp = 
-               (TreeNode *) symtab->lookup(current->child[0]->attr.name);
-
-            if (tmp == NULL) {
-               // child is not in the symbol table, but it does exist
-               // FIX for array not being in symbol table, but the child existing. 
+         int op = current->attr.op;  
+         switch (op)
+         {
+            case AND: case NOT: case OR: current->type = Boolean;
+            case '=': case '[': 
                current->type = current->child[0]->type;
-               current->child[0]->isAssigned = true;
-            } else {
-               tmp->isAssigned = true;
-               current->type = tmp->type;
-            }
-
+               if (current->child[0]->type != UndefinedType) 
+                  current->type = current->child[0]->type;
+               break;
+            case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
+               current->type = Boolean;
+               break;
+            default:
+               break;
          }
+         // if (current->child[0] == NULL) {
+         // } else {
+         //    // look up childs type and set it to current type
+         //    tmp = 
+         //       (TreeNode *) symtab->lookup(current->child[0]->attr.name);
+
+         //    if (tmp == NULL) {
+         //       // child is not in the symbol table, but it does exist
+         //       // FIX for array not being in symbol table, but the child existing. 
+         //       current->type = current->child[0]->type;
+         //       current->child[0]->isAssigned = true;
+         //    } else {
+         //       tmp->isAssigned = true;
+         //       current->type = tmp->type;
+         //    }
+
+         // }
 
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
@@ -724,12 +723,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          {
             if (current->child[0] != NULL)
             {
-               tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
-               if (tmp == NULL) {
-                  current->type = current->child[0]->type;
-               } else {
-                  current->type = tmp->type;
-               }
+               // tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+               // if (tmp == NULL) {
+               //    current->type = current->child[0]->type;
+               // } else {
+               //    current->type = tmp->type;
+               // }
             }
             else
             {
@@ -745,10 +744,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->varKind = Global;
             current->offset = goffset - 1;
             goffset -= current->size;
-         }
-         else // not array, not char
-         {
-            //current->varKind = Global;
          }
          break;
       }
