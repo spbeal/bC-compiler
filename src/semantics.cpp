@@ -658,37 +658,38 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case AssignK: {
          // Just like op
          // current->type = Integer;
+
+         if (current->child[0] == NULL) {} 
+         else {
+            tmp = (TreeNode *) symtab->lookup(current->child[0]->attr.name);
+
+            if (tmp == NULL) {
+               current->type = current->child[0]->type;
+               current->child[0]->isAssigned = true;
+            } else {
+               tmp->isAssigned = true;
+               current->type = tmp->type;
+            }
+         }
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
          operator_errors(current, symtab);
 
-         int op = current->attr.op;  
-         switch (op)
-         {
-            case AND: case NOT: case OR: current->type = Boolean;
-            case '=': case '[': 
-               current->type = current->child[0]->type;
-               if (current->child[0]->type != UndefinedType) 
-                  current->type = current->child[0]->type;
-               break;
-            case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
-               current->type = Boolean;
-               break;
-            default:
-               break;
-         }
-         // if (current->child[0] == NULL) {} else {
-         //    tmp = (TreeNode *) symtab->lookup(current->child[0]->attr.name);
-
-         //    if (tmp == NULL) {
+         // int op = current->attr.op;  
+         // switch (op)
+         // {
+         //    case AND: case NOT: case OR: current->type = Boolean;
+         //    case '=': case '[': 
          //       current->type = current->child[0]->type;
-         //       current->child[0]->isAssigned = true;
-         //    } else {
-         //       tmp->isAssigned = true;
-         //       current->type = tmp->type;
-         //    }
-
+         //       if (current->child[0]->type != UndefinedType) 
+         //          current->type = current->child[0]->type;
+         //       break;
+         //    case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
+         //       current->type = Boolean;
+         //       break;
+         //    default:
+         //       break;
          // }
 
          break;
