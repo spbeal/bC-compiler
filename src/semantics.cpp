@@ -304,7 +304,6 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
    // ------------------------------------------------
    else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == '<' || op == GEQ || op == LEQ) 
    {
-      printf("%s", right->type);
       if (left->type != right->type) {
          printf("SEMANTIC ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n", current->lineno, largerTokens[op], type_str(left->type, false, false), type_str(right->type, false, false));
          numErrors++;
