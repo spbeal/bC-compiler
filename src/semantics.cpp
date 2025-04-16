@@ -496,7 +496,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
 
             if (current->child[0]) tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
             if (tmp == NULL) tmp = current->child[0];
-            else
+            if (tmp != NULL)
             {
                if (tmp->type != Boolean && tmp->type != UndefinedType) 
                {
