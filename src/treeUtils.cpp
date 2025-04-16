@@ -86,8 +86,6 @@ void initTokenStrings()
    largerTokens['*'] = (char *)"*";
    largerTokens['/'] = (char *)"/";
 
-
-
    largerTokens[LASTTERM] = (char *)"lastterm";
 }
 
