@@ -254,7 +254,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
    // ------------------------------------------------
    else if ((op == AND || op == OR || op == NOT ))
    {
-      if (left->type || right->type != Boolean)
+      if (left->type != Boolean || right->type != Boolean)
       {
          if (left->type != Boolean)
          {
@@ -263,7 +263,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
          }
          if (right->type != Boolean)
          {
-            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but lhs is of %s.\n", current->lineno, largerTokens[op], type_str(right->type, false, false));
+            printf("SEMANTIC ERROR(%d): '%s' requires operands of type bool but rhs is of %s.\n", current->lineno, largerTokens[op], type_str(right->type, false, false));
             numErrors++;
          }
       }
