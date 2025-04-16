@@ -658,6 +658,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case AssignK: {
          // Just like op
          // current->type = Integer;
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
+
          int op = current->attr.op;  
          switch (op)
          {
@@ -686,9 +690,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          // }
 
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
          operator_errors(current, symtab);
 
          break;
