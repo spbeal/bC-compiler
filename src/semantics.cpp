@@ -688,7 +688,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
-         current->type = Integer;
          int op = current->attr.op;  
 
          // Check all operators
