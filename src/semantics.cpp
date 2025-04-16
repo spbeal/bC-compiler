@@ -325,7 +325,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
          numErrors++;
       }
       else if (right->type != Integer) {
-         printf("SEMANTIC ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", current->lineno, right->attr.name, type_str(right->type, false, false));
+         printf("SEMANTIC ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", current->lineno, left->attr.name, type_str(right->type, false, false));
          numErrors++;
       }
       if (right->isArray) {

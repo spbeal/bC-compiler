@@ -168,6 +168,6 @@ whitespace  [\ \t]
 
 [0-9]+         { return setValue(line, NUMCONST, yytext); }
 {whitespace}+  ;
-.              { printf("ERROR(%d): Token error, invalid or misplaced input character: \'%c\'. Character Ignored.\n", line, yytext[0]); numErrors++;}
+.              { printf("TOKEN ERROR(%d): invalid or misplaced input character: \'%c\'. Character Ignored.\n", line, yytext[0]); numErrors++;}
 
 
