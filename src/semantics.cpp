@@ -286,7 +286,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
          }
          if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
          {
-            printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op],  largerTokens[op]);
+            printf("SEMANTIC ERROR(%d): The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
             numErrors++;
          }
       }
@@ -308,7 +308,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       }
       if (((left->isArray && left->attr.op != '[') || (right->isArray && right->attr.op != '[')))
       {
-         printf("SEMANTIC ERROR(%d): '%s' The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op], largerTokens[op]);
+         printf("SEMANTIC ERROR(%d): The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
          numErrors++;
       }
    }
