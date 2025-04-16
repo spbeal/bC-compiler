@@ -198,9 +198,7 @@ void call_errors(TreeNode *current, SymbolTable *symtab)
 
 void operator_errors(TreeNode *current, SymbolTable *symtab)
 {
-   printf("seg fault?");
    if (current->child[0] == NULL){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
-   
    int op = current->attr.op;  
    TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);   
    TreeNode * left = NULL;
