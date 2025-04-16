@@ -198,11 +198,12 @@ void call_errors(TreeNode *current, SymbolTable *symtab)
 
 void operator_errors(TreeNode *current, SymbolTable *symtab)
 {
+   if (current->child[0] == NULL){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
+   
    int op = current->attr.op;  
+   TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);   
    TreeNode * left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
    TreeNode * right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
-   TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);
-   if (current->child[0] == NULL){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
    else { 
       if (current->child[0]->attr.op == '[') 
       {
@@ -224,7 +225,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
       op == '/' || op == '+' || op == '-' || op == '*')
       {
-         if (left->type || right->type != Integer)
+         if (left->type != Integer || right->type != Integer)
          {
             if (left->type != Integer)
             {
