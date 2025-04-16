@@ -202,21 +202,28 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
    
    int op = current->attr.op;  
    TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);   
-   TreeNode * left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
-   TreeNode * right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
-   else { 
+   TreeNode * left = NULL;
+   TreeNode * right = NULL;
+
+   if (current->child[0] != NULL) { 
       if (current->child[0]->attr.op == '[') 
       {
          left = current->child[0];
       }
       else 
       {
-         if (left == NULL){ left = current->child[0]; }
+         left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
       }
+      if (left == NULL){ left = current->child[0]; }
       if (left->type == UndefinedType && !left->isArray) return;
    }
-   if (current->child[1] != NULL && right == NULL) { 
-      right = current->child[1];
+   if (current->child[1] != NULL)
+   {
+      right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
+      if (right == NULL)
+      {
+         right = current->child[1];
+      }
    }
 
    // ------------------------------------------------
