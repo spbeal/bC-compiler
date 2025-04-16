@@ -250,9 +250,33 @@ void showAllocation(FILE * listing, TreeNode * tree)
    fprintf(listing, " [mem: %s loc: %d size: %d]", varKindToStr(tree->varKind), tree->offset, tree->size);
 }
 
+// char* type_str(ExpType type, bool isStatic, bool isArray) {
+//    //char * return_str = "";
+//    static char return_str[50];
+//    return_str[0] = '\0';
+//    if (isStatic) strcat(return_str, "static ");
+//    if (isArray) strcat(return_str, "array of ");
+
+//    switch(type) {
+//       case Integer: strcat(return_str, "type int"); break;
+//       case Boolean: strcat(return_str, "type bool"); break;
+//       case Char:    strcat(return_str, "type char"); break;
+//       case Void:    strcat(return_str, "type void"); break;
+//       case UndefinedType: strcat(return_str, "type UndefinedType"); break;
+//       default:      strcat(return_str, "invalid"); break;
+//    }
+
+//    return return_str;
+// }
+
 char* type_str(ExpType type, bool isStatic, bool isArray) {
-   //char * return_str = "";
-   static char return_str[50];
+   // Use a static array of buffers so each call gets a different one
+   static char buffers[4][50]; // Supports up to 4 nested/parallel calls
+   static int next = 0;
+
+   char *return_str = buffers[next];
+   next = (next + 1) % 4;
+
    return_str[0] = '\0';
    if (isStatic) strcat(return_str, "static ");
    if (isArray) strcat(return_str, "array of ");
@@ -268,6 +292,7 @@ char* type_str(ExpType type, bool isStatic, bool isArray) {
 
    return return_str;
 }
+
 
 void printTreeNode(FILE *listing, TreeNode *tree)
 {
