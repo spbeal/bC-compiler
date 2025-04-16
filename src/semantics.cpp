@@ -658,36 +658,31 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case AssignK: {
          // Just like op
          // current->type = Integer;
-         int op = current->attr.op;  
-         switch (op)
-         {
-            case AND: case NOT: case OR: current->type = Boolean;
-            case '=': case '[': 
-               current->type = current->child[0]->type;
-               if (current->child[0]->type != UndefinedType) 
-                  current->type = current->child[0]->type;
-               break;
-            case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
-               current->type = Boolean;
-               break;
-            default:
-               break;
-         }
-         // if (current->child[0] == NULL) {
-         // } else {
-         //    // look up childs type and set it to current type
-         //    tmp = 
-         //       (TreeNode *) symtab->lookup(current->child[0]->attr.name);
-
-         //    if (tmp == NULL) {
-         //       // child is not in the symbol table, but it does exist
-         //       // FIX for array not being in symbol table, but the child existing. 
+         // int op = current->attr.op;  
+         // switch (op)
+         // {
+         //    case AND: case NOT: case OR: current->type = Boolean;
+         //    case '=': case '[': 
          //       current->type = current->child[0]->type;
-         //       current->child[0]->isAssigned = true;
-         //    } else {
-         //       tmp->isAssigned = true;
-         //       current->type = tmp->type;
-         //    }
+         //       if (current->child[0]->type != UndefinedType) 
+         //          current->type = current->child[0]->type;
+         //       break;
+         //    case EQ: case NEQ: case LEQ: case GEQ: case '<': case '>':
+         //       current->type = Boolean;
+         //       break;
+         //    default:
+         //       break;
+         // }
+         if (current->child[0] == NULL) {} else {
+            tmp = (TreeNode *) symtab->lookup(current->child[0]->attr.name);
+
+            if (tmp == NULL) {
+               current->type = current->child[0]->type;
+               current->child[0]->isAssigned = true;
+            } else {
+               tmp->isAssigned = true;
+               current->type = tmp->type;
+            }
 
          // }
 
@@ -723,12 +718,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          {
             if (current->child[0] != NULL)
             {
-               // tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
-               // if (tmp == NULL) {
-               //    current->type = current->child[0]->type;
-               // } else {
-               //    current->type = tmp->type;
-               // }
+               tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+               if (tmp == NULL) {
+                  current->type = current->child[0]->type;
+               } else {
+                  current->type = tmp->type;
+               }
             }
             else
             {
