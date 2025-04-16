@@ -1,5 +1,6 @@
 %{
 #include "scanType.h"
+#include "yyerror.h"
 
 #include "treeNodes.h"
 #include "treeUtils.h"
@@ -16,6 +17,7 @@ extern "C" int yyparse();
 extern "C" FILE *yyin;
 
 extern void yyerror(const char *msg);
+
 //TreeNode* var = newDeclNode(VarK, UndefinedType, $2);
 void printToken(TokenData myData, string tokenName, int type = 0) {
    cout << "Line: " << myData.linenum << " Type: " << tokenName;
@@ -334,6 +336,7 @@ factor     : immutable {$$ = $1;}
 mutable    : ID    {$$ = newExpNode(IdK, $1); $$->attr.name = $1->svalue;}                                   
              | ID '[' exp ']'   {
                                  TreeNode * id = newExpNode(IdK, $1);
+                                 id->isArray = true;
                                  $$ = newExpNode(OpK, $2, id, $3); 
                                  $$->isArray = true;
                                 }                       

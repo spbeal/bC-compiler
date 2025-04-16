@@ -724,7 +724,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          // Check all operators
          if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>'
-             || op == AND || op == NOT || op == OR  || op == EQ)
+             || op == AND || op == NOT || op == OR  || op == EQ || op == '?')
             current->type = Boolean;
          else if (op == '=' || op == '[')
             current->type = current->child[0]->type;
