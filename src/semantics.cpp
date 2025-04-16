@@ -236,12 +236,12 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       return;
    }
 
-   if (left != NULL) {
-      printf("DEBUG: lhs = %s, type = %s\n", left->attr.name, type_str(left->type, false, false));
-   }
-   if (right != NULL) {
-      printf("DEBUG: rhs = %s, type = %s\n", right->attr.name, type_str(right->type, false, false));
-   }
+   // if (left != NULL) {
+   //    printf("DEBUG: lhs = %s, type = %s\n", left->attr.name, type_str(left->type, false, false));
+   // }
+   // if (right != NULL) {
+   //    printf("DEBUG: rhs = %s, type = %s\n", right->attr.name, type_str(right->type, false, false));
+   // }
    
 
    // For unary operators, we don't need to check right
