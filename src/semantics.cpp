@@ -201,8 +201,8 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
    if (current->child[0] == NULL){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
    int op = current->attr.op;  
    TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);   
-   TreeNode * left = NULL;
-   TreeNode * right = NULL;
+   TreeNode * left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+   TreeNode * right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
 
    if (current->child[0] != NULL) { 
       if (current->child[0]->attr.op == '[') 
@@ -657,7 +657,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    switch (current->kind.exp) {
       case AssignK: {
          // Just like op
-         current->type = Integer;
+         // current->type = Integer;
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
@@ -697,7 +697,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case OpK: {
          //current->varKind = Local;
          // Check the children because Ops require children
-         current->type = Integer;
+         // current->type = Integer;
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
