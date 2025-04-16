@@ -5,3 +5,10 @@ ASN_5_extras
 ASN_6
 
 test_files/
+src/codegen.o
+*.o
+src/parser.tab.h
+src/parser.tab.c
+src/parser.output
+src/lex.yy.c
+src/bC
