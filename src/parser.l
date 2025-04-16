@@ -149,11 +149,10 @@ whitespace  [\ \t]
 "static"          { return setValue(line, STATIC, yytext); }
 
 \/\/.*         { }
-
+"bool"          { return setValue(line, BOOL, yytext); }
 "false"          { return setValue(line, BOOLCONST, yytext); }
 "true"          { return setValue(line, BOOLCONST, yytext); }
 "int"          { return setValue(line, INT, yytext); }
-"bool"          { return setValue(line, BOOL, yytext); }
 "char"          { return setValue(line, CHAR, yytext); }
 
 ^"#DRBC ".*    { return setValue(line, PRECOMPILER, yytext); }
@@ -163,9 +162,7 @@ whitespace  [\ \t]
 
 {charcon} { return setValue(line, CHARCONST, yytext); }
 {stringcon}   { return setValue(line, STRINGCONST, yytext); }
-
 {letter}{letdig}*   { return setValue(line, ID, yytext); }
-
 [0-9]+         { return setValue(line, NUMCONST, yytext); }
 {whitespace}+  ;
 .              { printf("TOKEN ERROR(%d): invalid or misplaced input character: \'%c\'. Character Ignored.\n", line, yytext[0]); numErrors++;}

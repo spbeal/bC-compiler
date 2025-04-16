@@ -103,7 +103,7 @@ void initErrorProcessing() {
     niceTokenNameMap["THEN"] = (char *)"\"then\"";
     niceTokenNameMap["TO"] = (char *)"\"to\"";
     niceTokenNameMap["WHILE"] = (char *)"\"while\"";
-    niceTokenNameMap["$end"] = (char *)"end of input";
+    niceTokenNameMap["$end"] = (char *)"end of input";    
 }
 
 
@@ -161,7 +161,7 @@ void yyerror(const char *msg)
 
     // make a copy of msg string
     space = strdup(msg);
-
+    printf("%s", space);
     // split out components
     numstrs = split(space, strs, ' ');
     if (numstrs>4) trim(strs[3]);
