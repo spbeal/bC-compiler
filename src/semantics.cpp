@@ -746,7 +746,8 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          // only ever need a single child for the ID
          treeTraverse(current->child[0], symtab);
          tmp = (TreeNode *)(symtab->lookup(current->attr.name));
-         if (tmp) 
+
+         if (tmp != NULL) 
          {
             if (tmp->kind.decl != FuncK)
             {
@@ -786,7 +787,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                printf("SEMANTIC ERROR(%d): Cannot use function '%s' as a variable.\n", current->lineno, tmp->attr.name);
                numErrors++;
             }
-            
+
             current->isUsed = true;
             tmp->isUsed = true;
             current->type = tmp->type;
