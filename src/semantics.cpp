@@ -198,34 +198,65 @@ void call_errors(TreeNode *current, SymbolTable *symtab)
 
 void operator_errors(TreeNode *current, SymbolTable *symtab)
 {
-   if (current->child[0] == NULL){ printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno); numErrors++; return;}
+   if (current->child[0] == NULL) {
+      printf("SYNTAX ERROR(%d): child 0 cannot be NULL\n", current->lineno);
+      numErrors++;
+      return;
+   }
    
    int op = current->attr.op;  
-   TreeNode * tmp = (TreeNode *)symtab->lookup(current->attr.name);   
-   TreeNode * left = NULL;
-   TreeNode * right = NULL;
+   TreeNode *tmp = (TreeNode *)symtab->lookup(current->attr.name);   
+   TreeNode *left = NULL;
+   TreeNode *right = NULL;
 
-   if (current->child[0] != NULL) { 
-      if (current->child[0]->attr.op == '[') 
-      {
+   // Initialize left safely
+   if (current->child[0] != NULL) {
+      if (current->child[0]->attr.op == '[') {
          left = current->child[0];
-      }
-      else 
-      {
+      } else {
          left = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+         if (left == NULL) {
+            left = current->child[0];
+         }
       }
-      if (left == NULL){ left = current->child[0]; }
-      if (left->type == UndefinedType && !left->isArray) return;
    }
-   if (current->child[1] != NULL)
-   {
+
+   // Initialize right safely
+   if (current->child[1] != NULL) {
       right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
-      if (right == NULL)
-      {
+      if (right == NULL) {
          right = current->child[1];
       }
    }
 
+   // Check if left is valid before proceeding
+   if (left == NULL) {
+      printf("SEMANTIC ERROR(%d): Left operand is NULL.\n", current->lineno);
+      numErrors++;
+      return;
+   }
+
+   // For unary operators, we don't need to check right
+   if (op == INC || op == DEC || op == '?' || op == CHSIGN) {
+      if (left->isArray && left->attr.op != '[') {
+         printf("SEMANTIC ERROR(%d): The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
+         numErrors++;
+      } 
+      if (left->type != Integer) {
+         printf("SEMANTIC ERROR(%d): Unary '%s' requires an operand of type int but was given %s.\n", current->lineno, largerTokens[op], type_str(left->type, false, false));
+         numErrors++;
+      }
+      return;
+   }
+
+   // For binary operators, we need to check right
+   if (right == NULL) {
+      printf("SEMANTIC ERROR(%d): Right operand is NULL.\n", current->lineno);
+      numErrors++;
+      return;
+   }
+
+   // Rest of the function remains the same
    // ------------------------------------------------
    // ------------------------------------------------
    if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
@@ -286,18 +317,6 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       }
       if (right->isArray) {
          printf("SEMANTIC ERROR(%d): Array index is the unindexed array '%s'.\n", current->lineno, right->attr.name);
-         numErrors++;
-      }
-   }
-   // ------------------------------------------------
-   else if ( op == INC || op == DEC || op == '?' || op == CHSIGN) 
-   {
-      if (left->isArray && left->attr.op != '[') {
-         printf("SEMANTIC ERROR(%d): The operation '%s' does not work with arrays.\n", current->lineno, largerTokens[op]);
-        numErrors++;
-      } 
-      if (left->type != Integer) {
-         printf("SEMANTIC ERROR(%d): Unary '%s' requires an operand of type int but was given %s.\n",  current->lineno, largerTokens[op], type_str(left->type, false, false));
          numErrors++;
       }
    }
@@ -624,7 +643,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
          break;
       }
       case RangeK: {
-         for (int i = 0; i < 3; i++) // MAXCHILDREN
+         for (int i = 0; i < MAXCHILDREN; i++) // MAXCHILDREN
          {
             if (current->child[i] != NULL) 
             {
@@ -717,14 +736,15 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          else if (op == SIZEOF) current->type = Integer;
          else 
          {
+            // Required for seg faults
             if (current->child[0] != NULL)
             {
-               // tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
-               // if (tmp == NULL) {
-               //    current->type = current->child[0]->type;
-               // } else {
-               //    current->type = tmp->type;
-               // }
+               tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+               if (tmp == NULL) {
+                  current->type = current->child[0]->type;
+               } else {
+                  current->type = tmp->type;
+               }
             }
             else
             {
