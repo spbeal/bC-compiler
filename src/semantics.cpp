@@ -786,12 +786,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                printf("SEMANTIC ERROR(%d): Cannot use function '%s' as a variable.\n", current->lineno, tmp->attr.name);
                numErrors++;
             }
-            if (!tmp->isAssigned && !tmp->isArray && tmp->kind.decl == VarK) {
-               printf("SEMANTIC WARNING(%d): Variable '%s' may be uninitialized when used here.\n", current->lineno, tmp->attr.name);
-               tmp->isAssigned = true;
-               numWarnings++;
-            }
-
+            
             current->isUsed = true;
             tmp->isUsed = true;
             current->type = tmp->type;
@@ -800,6 +795,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             current->size = tmp->size;
             current->varKind = tmp->varKind;
             current->offset = tmp->offset;
+
+            if (!tmp->isAssigned && !tmp->isArray && tmp->kind.decl == VarK) {
+               printf("SEMANTIC WARNING(%d): Variable '%s' may be uninitialized when used here.\n", current->lineno, tmp->attr.name);
+               tmp->isAssigned = true;
+               numWarnings++;
+            }
          }
          break;
       }
