@@ -658,10 +658,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case AssignK: {
          // Just like op
          // current->type = Integer;
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
-         operator_errors(current, symtab);
          int op = current->attr.op;  
 
          switch (op)
@@ -678,6 +674,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
             default:
                break;
          }
+         treeTraverse(current->child[0], symtab);
+         treeTraverse(current->child[1], symtab);
+         treeTraverse(current->child[2], symtab);
+         operator_errors(current, symtab);
 
          break;
       }
@@ -704,7 +704,15 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          else if (op == SIZEOF) current->type = Integer;
          else 
          {
-            if (current->child[0] != NULL);
+            if (current->child[0] != NULL)
+            {
+               tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+               if (tmp == NULL) {
+                  current->type = current->child[0]->type;
+               } else {
+                  current->type = tmp->type;
+               }
+            }
             else
             {
                printf("ERROR: Op child can not be NULL - semantics.cpp::treeExpTraverse\n");
