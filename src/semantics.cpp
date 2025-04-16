@@ -236,6 +236,11 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       return;
    }
 
+   // Stops us from calling more errors on undefined / undeclared 
+   if (left->type == UndefinedType && !left->isArray) {
+      return;
+   }
+
    // if (left != NULL) {
    //    printf("DEBUG: lhs = %s, type = %s\n", left->attr.name, type_str(left->type, false, false));
    // }
@@ -834,11 +839,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          }
          break;
       }
-      default: 
-         treeTraverse(current->child[0], symtab);
-         treeTraverse(current->child[1], symtab);
-         treeTraverse(current->child[2], symtab);
-         break;
+      break;
    }
 }
 
