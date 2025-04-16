@@ -657,13 +657,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    switch (current->kind.exp) {
       case AssignK: {
          // Just like op
+         current->type = Integer;
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
          operator_errors(current, symtab);
          int op = current->attr.op;  
-
-         current->type = Integer;
 
          switch (op)
          {
@@ -685,6 +684,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
       case OpK: {
          //current->varKind = Local;
          // Check the children because Ops require children
+         current->type = Integer;
          treeTraverse(current->child[0], symtab);
          treeTraverse(current->child[1], symtab);
          treeTraverse(current->child[2], symtab);
