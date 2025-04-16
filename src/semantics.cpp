@@ -718,12 +718,12 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          {
             if (current->child[0] != NULL)
             {
-               // tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
-               // if (tmp == NULL) {
-               //    current->type = current->child[0]->type;
-               // } else {
-               //    current->type = tmp->type;
-               // }
+               tmp = (TreeNode *)symtab->lookup(current->child[0]->attr.name);
+               if (tmp == NULL) {
+                  current->type = current->child[0]->type;
+               } else {
+                  current->type = tmp->type;
+               }
             }
             else
             {
