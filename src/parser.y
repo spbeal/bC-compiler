@@ -31,7 +31,6 @@ void printToken(TokenData myData, string tokenName, int type = 0) {
 }
 TreeNode *syntaxTree;
 SymbolTable * symtab;
-// SymbolTable * symbolTable;
 
 void initAll()
 {
@@ -43,7 +42,6 @@ void initAll()
 extern "C" int tokenErrors;
 int numErrors = 0;
 int numWarnings = 0;
-// the syntax tree goes here
 extern int line;
 extern int yylex();
 
@@ -378,9 +376,10 @@ int main(int argc, char **argv) {
   char *file = NULL;
   extern FILE *yyin;
   int globalOffset;
-  initAll();
   symtab = new SymbolTable();
   symtab->debug(false);
+  initAll();
+
 
 
    while ((option = getopt (argc, argv, "")) != -1)
