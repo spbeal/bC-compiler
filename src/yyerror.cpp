@@ -70,6 +70,7 @@ void initErrorProcessing() {
     niceTokenNameMap["ADDASS"] = (char *)"\"+=\"";
     niceTokenNameMap["AND"] = (char *)"\"and\"";
     niceTokenNameMap["BOOL"] = (char *)"\"bool\"";
+    niceTokenNameMap["BOOL,"] = (char *)"\"bool\"";
     niceTokenNameMap["BOOLCONST"] = (char *)"Boolean constant";
     niceTokenNameMap["BREAK"] = (char *)"\"break\"";
     niceTokenNameMap["BY"] = (char *)"\"by\"";
@@ -161,13 +162,14 @@ void yyerror(const char *msg)
 
     // make a copy of msg string
     space = strdup(msg);
-    printf("%s", space);
+
     // split out components
     numstrs = split(space, strs, ' ');
     if (numstrs>4) trim(strs[3]);
 
     // translate components
     for (int i=3; i<numstrs; i+=2) {
+        printf("%s\n", strs[i]);
         strs[i] = niceTokenStr(strs[i]);
     }
 
