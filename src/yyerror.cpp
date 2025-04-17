@@ -191,7 +191,7 @@ void yyerror(const char *msg)
     numErrors++;      // count the number of errors
 
     free(space);
-    
-    printf("Number of warnings: %d\n", numWarnings);
-    printf("Number of errors: %d\n", numErrors);
+
+    // printf("Number of warnings: %d\n", numWarnings);
+    // printf("Number of errors: %d\n", numErrors);
 }
