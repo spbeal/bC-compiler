@@ -406,11 +406,15 @@ int main(int argc, char **argv) {
       codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
    }
 
-    if (numWarnings == 0 && numErrors == 0)
-    {
+    /* if (numWarnings == 0 && numErrors == 0)
+    { */
+            fflush(stdout);
+
         printf("Number of warnings: %d\n", numWarnings);
+        fflush(stdout);
         printf("Number of errors: %d\n", numErrors);
-    }
+        fflush(stdout);
+    //}
    
    return 0;
 }
