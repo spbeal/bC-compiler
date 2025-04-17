@@ -168,7 +168,6 @@ void yyerror(const char *msg)
 
     // translate components
     for (int i=3; i<numstrs; i+=2) {
-        printf("%s\n", strs[i]);
         strs[i] = niceTokenStr(strs[i]);
     }
 
