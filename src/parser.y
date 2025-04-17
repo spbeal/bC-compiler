@@ -36,6 +36,7 @@ SymbolTable * symtab;
 void initAll()
 {
   syntaxTree = initializeNode(NULL, NULL, NULL, NULL);
+  initErrorProcessing();
   initTokenStrings();
 }
   

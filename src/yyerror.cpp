@@ -70,7 +70,6 @@ void initErrorProcessing() {
     niceTokenNameMap["ADDASS"] = (char *)"\"+=\"";
     niceTokenNameMap["AND"] = (char *)"\"and\"";
     niceTokenNameMap["BOOL"] = (char *)"\"bool\"";
-    niceTokenNameMap["BOOL,"] = (char *)"\"bool\"";
     niceTokenNameMap["BOOLCONST"] = (char *)"Boolean constant";
     niceTokenNameMap["BREAK"] = (char *)"\"break\"";
     niceTokenNameMap["BY"] = (char *)"\"by\"";
