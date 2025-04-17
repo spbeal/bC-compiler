@@ -1,3 +1,8 @@
+%define api.pure false
+%define parse.error verbose
+%defines
+%locations
+
 %{
 #include "scanType.h"
 #include "yyerror.h"
