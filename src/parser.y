@@ -16,7 +16,7 @@ extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE *yyin;
 
-// extern void yyerror(const char *msg);
+extern void yyerror(const char *msg);
 
 //TreeNode* var = newDeclNode(VarK, UndefinedType, $2);
 void printToken(TokenData myData, string tokenName, int type = 0) {
@@ -406,15 +406,11 @@ int main(int argc, char **argv) {
       codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
    }
 
-    /* if (numWarnings == 0 && numErrors == 0)
-    { */
-            fflush(stdout);
-
+    // if (numWarnings == 0 && numErrors == 0)
+    // {
         printf("Number of warnings: %d\n", numWarnings);
-        fflush(stdout);
         printf("Number of errors: %d\n", numErrors);
-        fflush(stdout);
-    //}
+    // }
    
    return 0;
 }
