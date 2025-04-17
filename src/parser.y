@@ -406,8 +406,11 @@ int main(int argc, char **argv) {
       codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
    }
 
-   printf("Number of warnings: %d\n", numWarnings);
-   printf("Number of errors: %d\n", numErrors);
+    if (numWarnings == 0 && numErrors == 0)
+    {
+        printf("Number of warnings: %d\n", numWarnings);
+        printf("Number of errors: %d\n", numErrors);
+    }
    
    return 0;
 }
