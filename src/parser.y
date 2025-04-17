@@ -16,7 +16,7 @@ extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE *yyin;
 
-extern void yyerror(const char *msg);
+// extern void yyerror(const char *msg);
 
 //TreeNode* var = newDeclNode(VarK, UndefinedType, $2);
 void printToken(TokenData myData, string tokenName, int type = 0) {
