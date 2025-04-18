@@ -2,6 +2,9 @@
 %define parse.error verbose
 %defines
 %locations
+// top two lines fixes local machine seg faults
+
+
 
 %{
 #include "scanType.h"
@@ -13,7 +16,6 @@
 #include "semantics.h"
 #include "emitcode.h"
 #include "codegen.h"
-// #include "symbolTable.h"
 
 using namespace std;
 
@@ -161,7 +163,7 @@ typeSpec : INT {$$ = Integer;}
     | CHAR {$$ = Char;}
     ;
 
-funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6);}
+funDecl : typeSpec ID '(' parms ')' stmt { $$ = newDeclNode(FuncK, $1, $2, $4, $6);}
     | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
     | typeSpec error   {$$ = NULL; }
     | typeSpec ID '(' error   {$$ = NULL; }
@@ -170,22 +172,22 @@ funDecl : typeSpec ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, $1, $2, $4, $6
     | ID '('parms')' error {$$ = NULL;}
     ;
 
-parms : parmList {$$ = $1;}
+parms : parmList { $$ = $1;}
     |  {$$ = NULL;}
     ;
 
-parmList : parmList ';' parmTypeList {$$ = addSibling($1, $3);}
-    | parmTypeList {$$ = $1;}
-    | parmList ';' error {$$ = NULL; }
-    | error {$$ = NULL; }
+parmList : parmList ';' parmTypeList { $$ = addSibling($1, $3);}
+    | parmTypeList { $$ = $1;}
+    | parmList ';' error { $$ = NULL; }
+    | error { $$ = NULL; }
     ;
 
-parmTypeList : typeSpec parmIdList {setType($2, $1, false); $$ = $2;}
-    | typeSpec error {$$ = NULL; yyerrok;}
+parmTypeList : typeSpec parmIdList { setType($2, $1, false); $$ = $2;}
+    | typeSpec error { $$ = NULL; yyerrok;}
     ;
 
 parmIdList: parmIdList ',' parmId {$$ = addSibling($1, $3);}
-    | parmId {$$ = $1;}
+    | parmId { $$ = $1;}
     | error {$$ = NULL; yyerrok;}
     ;
 
@@ -384,39 +386,33 @@ int main(int argc, char **argv) {
   symtab = new SymbolTable();
   symtab->debug(false);
   initAll();
+ 
+  while ((option = getopt (argc, argv, "")) != -1)
+    switch (option)
+    {
+    default:
+        ;
+    }
+  if ( optind == argc ) yyparse();
+  for (index = optind; index < argc; index++) 
+  {
+    yyin = fopen (argv[index], "r");
+    yyparse();
+    fclose (yyin);
+  }
+  if(numErrors == 0)
+  {
+    syntaxTree = semanticAnalysis(syntaxTree, symtab, globalOffset);
+    //printTree(stdout, syntaxTree); // set to true, true for assignment 4
+  }
+  if(numErrors == 0)
+  {
+    codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
+  }
 
-
-
-   while ((option = getopt (argc, argv, "")) != -1)
-      switch (option)
-      {
-      default:
-         ;
-      }
-   if ( optind == argc ) yyparse();
-   for (index = optind; index < argc; index++) 
-   {
-      yyin = fopen (argv[index], "r");
-      yyparse();
-      fclose (yyin);
-   }
-
-   if(numErrors == 0)
-   {
-      syntaxTree = semanticAnalysis(syntaxTree, symtab, globalOffset);
-      //printTree(stdout, syntaxTree); // set to true, true for assignment 4
-   }
-   if(numErrors == 0)
-   {
-      codegen(stdout, (char *)argv[1], syntaxTree, symtab, globalOffset, false);
-   }
-
-    // if (numWarnings == 0 && numErrors == 0)
-    // {
-    printf("Number of warnings: %d\n", numWarnings);
-    printf("Number of errors: %d\n", numErrors);
-    // }
+  printf("Number of warnings: %d\n", numWarnings);
+  printf("Number of errors: %d\n", numErrors);
    
-   return 0;
+  return 0;
 }
 

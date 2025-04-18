@@ -192,6 +192,7 @@ void yyerror(const char *msg)
 
     free(space);
 
+    // Will always print this if I put it here
     // printf("Number of warnings: %d\n", numWarnings);
     // printf("Number of errors: %d\n", numErrors);
 }

@@ -18,6 +18,7 @@ extern int numErrors;
 int setValue(int linenum, int tokenClass, char *svalue) {
     yylval.tokenData = new TokenData;
     if (!svalue) {
+     printf("Are you kidding me");
      fprintf(stderr, "ERROR: Null token string at line %d\n", linenum);
      exit(1);
     }
