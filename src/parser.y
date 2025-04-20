@@ -164,8 +164,7 @@ typeSpec : INT {$$ = Integer;}
     ;
 
 funDecl : typeSpec ID '(' parms ')' stmt { $$ = newDeclNode(FuncK, $1, $2, $4, $6);}
-    | ID '(' parms ')' stmt {$$     | STATIC typeSpec ';' {$$ = NULL; yyerrok;}
-= newDeclNode(FuncK, Void, $1, $3, $5);}
+    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
     | typeSpec error   {$$ = NULL; }
     | typeSpec ID '(' error   {$$ = NULL; }
     | typeSpec ID '(' parms ')' error {$$ = NULL; }
