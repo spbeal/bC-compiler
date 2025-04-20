@@ -598,7 +598,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             treeTraverse(current->child[2], symtab);
             foffset = rememberFoffset;
             
-            // Check for unused variables in current scope
+            // Check for unused variables in this scope
             symtab->applyToAll(used_warnings);
             
             symtab->leave();
@@ -861,19 +861,11 @@ void used_warnings(std::string str, void * curr) {
          case VarK: {
             char *dash = strchr(current->attr.name, '-');
             if (dash != NULL) *dash = '\0'; // truncate for expressions
-            
-            // Check if this is a scoped variable (not global or static)
-            if (current->varKind == Local) {
-               printf("SEMANTIC WARNING(%d): The variable '%s' seems not to be used.\n", current->lineno, current->attr.name);
-               current->isUsed = true;
-               numWarnings++;
-            }
+            printf("SEMANTIC WARNING(%d): The variable '%s' seems not to be used.\n",current->lineno, current->attr.name);
             break;           
          }
          case ParamK:
             printf("SEMANTIC WARNING(%d): The parameter '%s' seems not to be used.\n",current->lineno, current->attr.name);
-            current->isUsed = true;
-            numWarnings++;
             break;
          case FuncK:
             // If main we ignore
@@ -881,10 +873,11 @@ void used_warnings(std::string str, void * curr) {
                return;
             }
             printf("SEMANTIC WARNING(%d): The function '%s' seems not to be used.\n",current->lineno, current->attr.name);
-            current->isUsed = true;
-            numWarnings++;
             break;
+
       }
+      current->isUsed = true;
+      numWarnings++;
    }
 }
 
