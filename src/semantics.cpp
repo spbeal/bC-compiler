@@ -599,7 +599,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             foffset = rememberFoffset;
             
             // Check for unused variables in this scope
-            symtab->applyToAll(used_warnings);
+            //symtab->applyToAll(used_warnings);
             
             symtab->leave();
          }
@@ -612,8 +612,9 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             treeTraverse(current->child[2], symtab);
             
             // Check for unused variables in this scope
-            symtab->applyToAll(used_warnings);
+            //symtab->applyToAll(used_warnings);
          }
+         // symtab->applyToAll(used_warnings);
          break;
       }
       case ReturnK: {
@@ -741,7 +742,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          // Check all operators
          if (
-            op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>' || op == EQ
+            op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>' || op == EQ || op == '=' 
              //|| op == AND || op == NOT || op == OR  || op == '?'
             )
             current->type = Boolean;
