@@ -614,8 +614,6 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             // Check for unused variables in this scope
             symtab->applyToAll(used_warnings);
          }
-
-         // IF AFTER FUNCTION TREAT DIFFERENTLY
          break;
       }
       case ReturnK: {
