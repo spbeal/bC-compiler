@@ -209,7 +209,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
    TreeNode *left = NULL;
    TreeNode *right = NULL;
 
-   // Initialize left safely
+   // Initialize left
    if (current->child[0] != NULL) {
       if (current->child[0]->attr.op == '[') {
          left = current->child[0];
@@ -221,7 +221,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       }
    }
 
-   // Initialize right safely
+   // Initialize right
    if (current->child[1] != NULL) {
       right = (TreeNode *)symtab->lookup(current->child[1]->attr.name);
       if (right == NULL) {
@@ -262,10 +262,9 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       return;
    }
 
-   // For binary operators, we need to check right
    if (right == NULL) {
-      printf("SEMANTIC ERROR(%d): Right operand is NULL.\n", current->lineno);
-      numErrors++;
+      //printf("SEMANTIC ERROR(%d): Right operand is NULL.\n", current->lineno);
+      //numErrors++;
       return;
    }
 
@@ -689,7 +688,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
    switch (current->kind.exp) {
       case AssignK: {
          // Just like op
-         // current->type = Integer;
+         //current->type = Integer;
 
          if (current->child[0] == NULL) {} 
          else {
@@ -736,16 +735,18 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
          int op = current->attr.op;  
 
          // Check all operators
-         if (op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>'
-             || op == AND || op == NOT || op == OR  || op == EQ || op == '?')
+         if (
+            op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>' || op == EQ
+             //|| op == AND || op == NOT || op == OR  || op == '?'
+            )
             current->type = Boolean;
-         else if (op == '=' || op == '[')
-            current->type = current->child[0]->type;
-            if (op == '[') current->isArray = true;
-         else if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
-             op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
-             op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
-            current->type = Integer;
+         // else if (op == '=' || op == '[')
+         //    current->type = current->child[0]->type;
+         //    if (op == '[') current->isArray = true;
+         // else if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
+         //     op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
+         //     op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
+         //    current->type = Integer;
          else if (op == SIZEOF) current->type = Integer;
          else 
          {
