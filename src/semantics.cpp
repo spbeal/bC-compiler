@@ -333,7 +333,7 @@ void operator_errors(TreeNode *current, SymbolTable *symtab)
       }
    }
    // ------------------------------------------------
-   else if (op == '=' || op == EQ || op == NEQ || op == '>' || op == '<' || op == GEQ || op == LEQ) 
+   else if (op == EQ || op == NEQ || op == '>' || op == '<' || op == GEQ || op == LEQ) 
    {
       if (left->type != right->type) {
          printf("SEMANTIC ERROR(%d): '%s' requires operands of the same type but lhs is %s and rhs is %s.\n", current->lineno, largerTokens[op], type_str(left->type, false, false), type_str(right->type, false, false));
@@ -599,7 +599,7 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             foffset = rememberFoffset;
             
             // Check for unused variables in this scope
-            //symtab->applyToAll(used_warnings);
+            symtab->applyToAll(used_warnings);
             
             symtab->leave();
          }
@@ -742,7 +742,7 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
 
          // Check all operators
          if (
-            op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>' || op == EQ || op == '=' 
+            op == GEQ || op == LEQ || op == NEQ || op == '<' || op == '>' || op == EQ // || op == '=' 
              //|| op == AND || op == NOT || op == OR  || op == '?'
             )
             current->type = Boolean;
