@@ -1,12 +1,7 @@
 Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/call.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/call.bC)
-Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/elsif.bC
-Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/everythingS20.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/everythingS20.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/exp.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/exp.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/if.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/if.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/exp.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/if.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/init.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/init.bC)
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/loops.bC
@@ -20,11 +15,10 @@ diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/sma
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/testExample.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/testExample.bC)
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/tiny.bC
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/whileif.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/whileif.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors1/whileif.bC
 0 Files skipped.
-7/16 Passed.
-8/20 Points.
+11/16 Passed.
+13/20 Points.
 Targeted Testing: /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/*.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/basicAll4.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/callerr.bC
@@ -71,24 +65,21 @@ Failed:
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/undefined.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/undefined.bC)
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/uninitialized.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/uninitialized.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/whileif.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/whileif.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors2/whileif.bC
 0 Files skipped.
-13/30 Passed.
-8/20 Points.
+14/30 Passed.
+9/20 Points.
 Targeted Testing: /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/*.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/badcontrol.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/basicAll5.bC
-Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/callerr.bC
-Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/control2.bC
 Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/control.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/control.bC)
+diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/callerr.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/callerr.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/control2.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/control.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/decllists.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/decllists.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/gcd2.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/gcd2.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/gcd.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/gcd.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/gcd2.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/gcd.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/initbad.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/io.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/loops.bC
@@ -104,8 +95,8 @@ Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/small.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/tinyType.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors3/tinyType.bC)
 0 Files skipped.
-10/18 Passed.
-11/20 Points.
+12/18 Passed.
+13/20 Points.
 Targeted Testing: /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors4/*.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors4/assignSmall.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors4/assignSmall.bC)
@@ -163,8 +154,7 @@ diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/bul
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/call4.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/call4.bC)
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/callconst.bC
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/callframes.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/callframes.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/callframes.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/callglobal.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/calllocal.bC
 Failed: 
@@ -177,18 +167,13 @@ Failed:
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/errormessages.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/errormessages.bC)
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/everything05.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/everything05.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factor.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factor.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorial2.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorial2.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorial.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorial.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorialr.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorialr.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factor.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorial2.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorial.bC
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/factorialr.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/fractal.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/fractal.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/gcdsm.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/gcdsm.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/gcdsm.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/invalidChar.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/memory2.bC
 Failed: 
@@ -200,8 +185,7 @@ Failed:
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overkill.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overkill.bC)
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlayArray.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlayArray.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlay.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlay.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlay.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlayCall.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlayCall.bC)
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/overlayTmp2.bC
@@ -211,15 +195,12 @@ Failed:
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/parmtiny.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/parmtiny.bC)
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/poker.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/poker.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope35.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope35.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope35.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope3.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope3.bC)
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope4.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope4.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope4.bC
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope5.bC
-Failed: 
-diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope6.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope6.bC)
+Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/scope6.bC
 Failed: 
 diff -y <(./bC /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/simpleDefine.bC) <(/y/shared/Engineering/cs-drbc/cs445/bC 6  /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/simpleDefine.bC)
 Passed /y/shared/Engineering/cs-drbc/cs445/bC_in_6/inputFilesErrors5/strand.bC

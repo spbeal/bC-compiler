@@ -136,8 +136,8 @@ varDecl : typeSpec varDeclList ';' {setType($2, $1, false); $$ = $2; }
 
 scopedVarDecl : STATIC typeSpec varDeclList ';' {$$ = $3; setType($3, $2, true);}
     | typeSpec varDeclList ';' {$$ = $2; setType($2, $1, false) ;}
-    | typeSpec error ';'   {$$ = NULL; yyerrok;}
     | STATIC typeSpec ';' {$$ = NULL; yyerrok;}
+    | typeSpec error ';'   {$$ = NULL; yyerrok;}
     ;
 
 varDeclList : varDeclList ',' varDeclInit {$$ = addSibling($1, $3);}
@@ -164,7 +164,8 @@ typeSpec : INT {$$ = Integer;}
     ;
 
 funDecl : typeSpec ID '(' parms ')' stmt { $$ = newDeclNode(FuncK, $1, $2, $4, $6);}
-    | ID '(' parms ')' stmt {$$ = newDeclNode(FuncK, Void, $1, $3, $5);}
+    | ID '(' parms ')' stmt {$$     | STATIC typeSpec ';' {$$ = NULL; yyerrok;}
+= newDeclNode(FuncK, Void, $1, $3, $5);}
     | typeSpec error   {$$ = NULL; }
     | typeSpec ID '(' error   {$$ = NULL; }
     | typeSpec ID '(' parms ')' error {$$ = NULL; }

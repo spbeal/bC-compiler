@@ -597,6 +597,10 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             treeTraverse(current->child[1], symtab);
             treeTraverse(current->child[2], symtab);
             foffset = rememberFoffset;
+            
+            // Check for unused variables in current scope
+            symtab->applyToAll(used_warnings);
+            
             symtab->leave();
          }
          else
@@ -606,6 +610,9 @@ void stmt_traverse(TreeNode * current, SymbolTable *symtab) {
             current->size = foffset;
             treeTraverse(current->child[1], symtab);
             treeTraverse(current->child[2], symtab);
+            
+            // Check for unused variables in this scope
+            symtab->applyToAll(used_warnings);
          }
 
          // IF AFTER FUNCTION TREAT DIFFERENTLY
@@ -740,9 +747,6 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
              //|| op == AND || op == NOT || op == OR  || op == '?'
             )
             current->type = Boolean;
-         // else if (op == '=' || op == '[')
-         //    current->type = current->child[0]->type;
-         //    if (op == '[') current->isArray = true;
          // else if (op == ADDASS || op == SUBASS || op == MULASS || op == DIVASS || 
          //     op == DEC || op == INC || op == MIN || op == MAX || op == '%' ||
          //     op == '/' || op == '?' || op == '+' || op == '-' || op == '*')
@@ -766,6 +770,10 @@ void exp_traverse(TreeNode * current, SymbolTable *symtab) {
                numErrors++;
             }
          }
+         if (op == '=' || op == '[')
+            current->type = current->child[0]->type;
+            if (op == '[') current->isArray = true;
+            
          operator_errors(current, symtab);
          break;
       }
@@ -853,11 +861,19 @@ void used_warnings(std::string str, void * curr) {
          case VarK: {
             char *dash = strchr(current->attr.name, '-');
             if (dash != NULL) *dash = '\0'; // truncate for expressions
-            printf("SEMANTIC WARNING(%d): The variable '%s' seems not to be used.\n",current->lineno, current->attr.name);
+            
+            // Check if this is a scoped variable (not global or static)
+            if (current->varKind == Local) {
+               printf("SEMANTIC WARNING(%d): The variable '%s' seems not to be used.\n", current->lineno, current->attr.name);
+               current->isUsed = true;
+               numWarnings++;
+            }
             break;           
          }
          case ParamK:
             printf("SEMANTIC WARNING(%d): The parameter '%s' seems not to be used.\n",current->lineno, current->attr.name);
+            current->isUsed = true;
+            numWarnings++;
             break;
          case FuncK:
             // If main we ignore
@@ -865,11 +881,10 @@ void used_warnings(std::string str, void * curr) {
                return;
             }
             printf("SEMANTIC WARNING(%d): The function '%s' seems not to be used.\n",current->lineno, current->attr.name);
+            current->isUsed = true;
+            numWarnings++;
             break;
-
       }
-      current->isUsed = true;
-      numWarnings++;
    }
 }
 
